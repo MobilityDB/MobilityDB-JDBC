@@ -1,0 +1,14 @@
+group 'edu.ulb'
+version '1.0-SNAPSHOT'
+
+allprojects {
+    apply plugin: 'java'
+}
+
+project(':mobilitydb-jdbc'){}
+
+project(':example'){
+    dependencies {
+        implementation project(':mobilitydb-jdbc')
+    }
+}
