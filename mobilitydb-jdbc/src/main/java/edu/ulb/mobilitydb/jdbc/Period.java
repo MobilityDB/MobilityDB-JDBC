@@ -8,7 +8,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Period extends PGobject {
+@TypeName(name = "period")
+public class Period extends DataType {
     private String period;
     private Date lower;
     private Date upper;
@@ -19,13 +20,11 @@ public class Period extends PGobject {
     /** Instantiate with default state. */
     public Period() {
         super();
-        setType("period");
     }
 
     public Period(final String value) throws SQLException {
         this();
         setValue(value);
-        setType("period");
     }
 
     /** {@inheritDoc} */

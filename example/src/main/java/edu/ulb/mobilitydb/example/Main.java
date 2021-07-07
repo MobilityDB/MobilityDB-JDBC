@@ -1,5 +1,6 @@
 package edu.ulb.mobilitydb.example;
 
+import edu.ulb.mobilitydb.jdbc.DataTypeHandler;
 import edu.ulb.mobilitydb.jdbc.Period;
 import org.postgresql.PGConnection;
 
@@ -21,7 +22,7 @@ public class Main {
             Connection con = DriverManager.getConnection(url, user, password);
             // Add the JDBC extension object
             PGConnection pgconn = (PGConnection) con;
-            pgconn.addDataType("period", Period.class);
+            DataTypeHandler.INSTANCE.registerTypes(pgconn);
 
             String command = "SELECT period ('2000-01-01','2000-01-02', false, true)";
             Statement st = con.createStatement();
