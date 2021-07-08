@@ -1,7 +1,7 @@
 package edu.ulb.mobilitydb.example;
 
 import edu.ulb.mobilitydb.jdbc.DataTypeHandler;
-import edu.ulb.mobilitydb.jdbc.Period;
+import edu.ulb.mobilitydb.jdbc.time.Period;
 import org.postgresql.PGConnection;
 
 import java.sql.Connection;

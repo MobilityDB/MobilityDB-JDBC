@@ -1,4 +1,4 @@
-package edu.ulb.mobilitydb.jdbc;
+package edu.ulb.mobilitydb.jdbc.core;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface TypeName {
-    public String name();
+    String name();
 }

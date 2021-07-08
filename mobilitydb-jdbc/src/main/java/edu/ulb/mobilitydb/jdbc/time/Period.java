@@ -1,6 +1,7 @@
-package edu.ulb.mobilitydb.jdbc;
+package edu.ulb.mobilitydb.jdbc.time;
 
-import org.postgresql.util.PGobject;
+import edu.ulb.mobilitydb.jdbc.core.DataType;
+import edu.ulb.mobilitydb.jdbc.core.TypeName;
 
 import java.sql.SQLException;
 import java.text.DateFormat;

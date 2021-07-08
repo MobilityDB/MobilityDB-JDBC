@@ -1,20 +1,23 @@
 package edu.ulb.mobilitydb.jdbc;
 
+import edu.ulb.mobilitydb.jdbc.boxes.TBox;
+import edu.ulb.mobilitydb.jdbc.core.DataType;
+import edu.ulb.mobilitydb.jdbc.core.TypeName;
+import edu.ulb.mobilitydb.jdbc.time.Period;
 import org.postgresql.PGConnection;
-import org.postgresql.util.PGobject;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public enum DataTypeHandler {
     INSTANCE;
 
-    private Class<? extends DataType>[] types;
+    private final ArrayList<Class<? extends DataType>> types;
 
-    @SuppressWarnings("unchecked")
     DataTypeHandler() {
-        types = new Class[]{
-            Period.class
-        };
+        types = new ArrayList<>();
+        types.add(Period.class);
+        types.add(TBox.class);
     }
 
     public void registerTypes(PGConnection connection) {
