@@ -27,7 +27,7 @@ public class Main {
             String command = "SELECT period ('2000-01-01','2000-01-02', false, true)";
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(command);
-
+            
             if (rs.next()) {
                 Period a = (Period)rs.getObject(1);
                 System.out.format("Value retrieved: %s%n", a.toString());

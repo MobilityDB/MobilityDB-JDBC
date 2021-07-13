@@ -7,8 +7,20 @@ allprojects {
 
 project(':mobilitydb-jdbc'){}
 
+repositories {
+    mavenCentral()
+}
+
 project(':example'){
     dependencies {
         implementation project(':mobilitydb-jdbc')
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     }
 }
+
+test {
+    useJUnitPlatform()
+}
+
+test.onlyIf { !project.hasProperty('mySkipTests') }
