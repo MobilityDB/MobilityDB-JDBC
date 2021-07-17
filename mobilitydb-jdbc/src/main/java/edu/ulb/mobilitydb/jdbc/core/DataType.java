@@ -5,7 +5,7 @@ import org.postgresql.util.PGobject;
 import java.sql.SQLException;
 
 public abstract class DataType extends PGobject {
-    public DataType() {
+    protected DataType() {
         super();
 
         // register type

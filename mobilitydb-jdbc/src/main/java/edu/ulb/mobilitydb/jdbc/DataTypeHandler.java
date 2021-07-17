@@ -20,15 +20,11 @@ public enum DataTypeHandler {
         types.add(TBox.class);
     }
 
-    public void registerTypes(PGConnection connection) {
-        try {
-            for (Class<? extends DataType> clazz : types) {
-                if (clazz.isAnnotationPresent(TypeName.class)) {
-                    connection.addDataType(clazz.getAnnotation(TypeName.class).name(), clazz);
-                }
+    public void registerTypes(PGConnection connection) throws SQLException {
+        for (Class<? extends DataType> clazz : types) {
+            if (clazz.isAnnotationPresent(TypeName.class)) {
+                connection.addDataType(clazz.getAnnotation(TypeName.class).name(), clazz);
             }
-        } catch (SQLException ex) {
-            // log? throw?
         }
     }
 }
