@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class PeriodTest {
-    static String validValue = "[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]";
     static Stream<Arguments> periodInclusiveProvider() {
         return Stream.of(
             arguments("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]", true, true),
@@ -99,7 +98,7 @@ class PeriodTest {
     @MethodSource("periodInclusiveProvider")
     void testSetValueBounds(String value, boolean lowerInclusion, boolean upperInclusion)
             throws SQLException {
-        Period period = new Period(validValue);
+        Period period = new Period();
         period.setValue(value);
         assertAll("Constructor inclusion values",
                 () -> assertEquals(lowerInclusion, period.isLowerInclusive()),
@@ -115,7 +114,7 @@ class PeriodTest {
             "a,b,c,d"
     })
     void testSetValueInvalidValue(String value) throws SQLException {
-        Period period = new Period(validValue);
+        Period period = new Period();
         SQLException thrown = assertThrows(
                 SQLException.class,
                 () -> period.setValue(value)
@@ -130,7 +129,7 @@ class PeriodTest {
             "{2021-09-08 00:00:00+01, 2021-09-08 00:00:00+01]"
     })
     void testSetValueInvalidLowerBoundFlag(String value) throws SQLException {
-        Period period = new Period(validValue);
+        Period period = new Period();
         SQLException thrown = assertThrows(
                 SQLException.class,
                 () -> period.setValue(value)
@@ -145,7 +144,7 @@ class PeriodTest {
             "[2021-09-08 00:00:00+01, 2021-09-08 00:00:00+01{"
     })
     void testSetValueInvalidUpperBoundFlag(String value) throws SQLException {
-        Period period = new Period(validValue);
+        Period period = new Period();
         SQLException thrown = assertThrows(
                 SQLException.class,
                 () -> period.setValue(value)
@@ -160,7 +159,7 @@ class PeriodTest {
             "(2021-09-08 00:00:00+01, 2021-09-08)"
     })
     void testSetValueInvalidDateFormat(String value) throws SQLException {
-        Period period = new Period(validValue);
+        Period period = new Period();
         DateTimeParseException thrown = assertThrows(
                 DateTimeParseException.class,
                 () -> period.setValue(value)
@@ -191,5 +190,12 @@ class PeriodTest {
         Period periodB = new Period(periodA.getUpper(), periodA.getUpper().plusSeconds(1),
                 periodA.isLowerInclusive(), periodA.isUpperInclusive());
         assertNotEquals(periodA, periodB);
+    }
+
+    @Test
+    void testEmptyEquals() {
+        Period periodA = new Period();
+        Period periodB = new Period();
+        assertEquals(periodA, periodB);
     }
 }

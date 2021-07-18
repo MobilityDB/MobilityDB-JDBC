@@ -20,6 +20,10 @@ public class Period extends DataType {
     private static final String UPPER_INCLUSIVE = "]";
     private static final String UPPER_EXCLUSIVE = ")";
 
+    public Period() {
+        super();
+    }
+
     public Period(final String value) throws SQLException {
         super();
         setValue(value);
@@ -46,6 +50,10 @@ public class Period extends DataType {
     /** {@inheritDoc} */
     @Override
     public String getValue() {
+        if (lower == null || upper == null) {
+            return null;
+        }
+
         DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
 
         return String.format("%s%s, %s%s",
@@ -111,8 +119,20 @@ public class Period extends DataType {
         if (obj instanceof Period) {
             Period fobj = (Period) obj;
 
-            return lower.isEqual(fobj.getLower()) && lowerInclusive == fobj.isLowerInclusive() &&
-                    upper.isEqual(fobj.getUpper()) && upperInclusive == fobj.isUpperInclusive();
+            boolean lowerAreEqual = lowerInclusive == fobj.isLowerInclusive();
+            boolean upperAreEqual = upperInclusive == fobj.isUpperInclusive();
+
+            if (lower != null && fobj.getLower() != null) {
+                lowerAreEqual = lowerAreEqual && lower.isEqual(fobj.getLower());
+            } else {
+                lowerAreEqual = lowerAreEqual && lower == fobj.getLower();
+            }
+
+            if (upper != null && fobj.getUpper() != null) {
+                upperAreEqual = upperAreEqual && upper.isEqual(fobj.getUpper());
+            }
+
+            return lowerAreEqual && upperAreEqual;
         }
 
         return false;
@@ -125,9 +145,8 @@ public class Period extends DataType {
     }
 
     private void validate() throws SQLException {
-        // Are null values valid?
         if (lower == null || upper == null) {
-            return;
+            throw new SQLException("The lower and upper bounds must be defined");
         }
 
         if (lower.isAfter(upper)) {
