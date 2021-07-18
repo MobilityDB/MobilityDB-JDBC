@@ -1,15 +1,15 @@
 package edu.ulb.mobilitydb.jdbc.integration.time;
 
 import edu.ulb.mobilitydb.jdbc.time.Period;
-import junit.framework.TestCase;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PeriodTest extends TestCase {
+public class PeriodTest {
     private Period period;
 
     public PeriodTest() throws SQLException {
@@ -20,8 +20,8 @@ public class PeriodTest extends TestCase {
     @DisplayName("Verifying period constructor")
     public void testConstructor() {
         assertAll("Constructor values",
-                () -> assertEquals(period.isLowerInclusive(), false),
-                () -> assertEquals(period.isUpperInclusive(), true)
+                () -> assertEquals(false, period.isLowerInclusive()),
+                () -> assertEquals(true, period.isUpperInclusive())
         );
 
     }

@@ -93,9 +93,9 @@ public class Period extends DataType {
         }
 
         if (values[1].endsWith(UPPER_INCLUSIVE)) {
-            this.lowerInclusive = true;
+            this.upperInclusive = true;
         } else if (values[1].endsWith(UPPER_EXCLUSIVE)) {
-            this.lowerInclusive = false;
+            this.upperInclusive = false;
         } else {
             throw new SQLException("Upper bound flag must be either ']' or ')'");
         }
