@@ -1,0 +1,34 @@
+plugins {
+    id 'java-library'
+    id "org.sonarqube" version "3.3"
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.postgresql:postgresql:42.2.16'
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.7.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.2.0'
+    testImplementation "org.mockito:mockito-core:3.+"
+}
+
+test {
+    filter {
+        includeTestsMatching("edu.ulb.mobilitydb.jdbc.unit.*")
+    }
+}
+
+task integrationTests(type: Test) {
+    filter {
+        includeTestsMatching("edu.ulb.mobilitydb.jdbc.integration.*")
+    }
+}
+
+
+test.onlyIf { !project.hasProperty('mySkipTests') }

@@ -1,0 +1,17 @@
+plugins {
+    id 'application'
+}
+
+group 'edu.ulb.mobilitydb'
+version '1.0-SNAPSHOT'
+
+mainClassName = 'edu.ulb.mobilitydb.example.Main'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.postgresql:postgresql:42.2.16'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

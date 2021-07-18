@@ -1,0 +1,5 @@
+rootProject.name = 'MobilityDB-JDBC'
+include 'mobilitydb-jdbc'
+include 'example'
+include 'integrationTest'
+
