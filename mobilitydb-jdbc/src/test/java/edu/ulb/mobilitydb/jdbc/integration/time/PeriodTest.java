@@ -9,16 +9,16 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PeriodTest {
+class PeriodTest {
     private Period period;
 
-    public PeriodTest() throws SQLException {
+    PeriodTest() throws SQLException {
         period = new Period("(2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01]");
     }
 
     @Test
     @DisplayName("Verifying period constructor")
-    public void testConstructor() {
+    void testConstructor() {
         assertAll("Constructor values",
                 () -> assertEquals(false, period.isLowerInclusive()),
                 () -> assertEquals(true, period.isUpperInclusive())

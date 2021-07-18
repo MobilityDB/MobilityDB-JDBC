@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id "org.sonarqube" version "3.3"
+    id 'jacoco'
 }
 
 repositories {
@@ -23,6 +24,14 @@ test {
     filter {
         includeTestsMatching("edu.ulb.mobilitydb.jdbc.unit.*")
     }
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+    dependsOn test // tests are required to run before generating the report
 }
 
 task integrationTests(type: Test) {
@@ -33,5 +42,3 @@ task integrationTests(type: Test) {
     }
 }
 
-
-test.onlyIf { !project.hasProperty('mySkipTests') }

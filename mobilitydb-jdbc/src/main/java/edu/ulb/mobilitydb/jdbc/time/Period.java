@@ -9,30 +9,24 @@ import java.time.format.DateTimeFormatter;
 
 @TypeName(name = "period")
 public class Period extends DataType {
-    private final DateTimeFormatter format;
     private OffsetDateTime lower;
     private OffsetDateTime upper;
     private boolean lowerInclusive;
     private boolean upperInclusive;
 
+    private static final String FORMAT = "yyyy-MM-dd HH:mm:ssX";
     private static final String LOWER_INCLUSIVE = "[";
     private static final String LOWER_EXCLUSIVE = "(";
     private static final String UPPER_INCLUSIVE = "]";
     private static final String UPPER_EXCLUSIVE = ")";
 
-    /** Instantiate with default state. */
-    public Period() {
-        super();
-        format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX");
-    }
-
     public Period(final String value) throws SQLException {
-        this();
+        super();
         setValue(value);
     }
 
     public Period(OffsetDateTime lower, OffsetDateTime upper) throws SQLException {
-        this();
+        super();
         this.lower = lower;
         this.upper = upper;
         this.lowerInclusive = true;
@@ -41,7 +35,7 @@ public class Period extends DataType {
     }
 
     public Period(OffsetDateTime lower, OffsetDateTime upper, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        this();
+        super();
         this.lower = lower;
         this.upper = upper;
         this.lowerInclusive = lowerInclusive;
@@ -51,8 +45,10 @@ public class Period extends DataType {
 
     /** {@inheritDoc} */
     @Override
-    public String toString() {
-        return String.format("%s%s,%s%s",
+    public String getValue() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
+
+        return String.format("%s%s, %s%s",
                 lowerInclusive ? LOWER_INCLUSIVE : LOWER_EXCLUSIVE,
                 format.format(lower),
                 format.format(upper),
@@ -79,6 +75,7 @@ public class Period extends DataType {
     @Override
     public void setValue(final String value) throws SQLException {
         String[] values = value.split(",");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
 
         if (values.length != 2) {
             throw new SQLException("Could not parse period value");
@@ -105,6 +102,28 @@ public class Period extends DataType {
         validate();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (obj instanceof Period) {
+            Period fobj = (Period) obj;
+
+            return lower.isEqual(fobj.getLower()) && lowerInclusive == fobj.isLowerInclusive() &&
+                    upper.isEqual(fobj.getUpper()) && upperInclusive == fobj.isUpperInclusive();
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        String value = getValue();
+        return value != null ? value.hashCode() : 0;
+    }
+
     private void validate() throws SQLException {
         // Are null values valid?
         if (lower == null || upper == null) {
@@ -115,7 +134,7 @@ public class Period extends DataType {
             throw new SQLException("The lower bound must be less than or equal to the upper bound");
         }
 
-        if (lower == upper && (!lowerInclusive || !upperInclusive)) {
+        if (lower.isEqual(upper) && (!lowerInclusive || !upperInclusive)) {
             throw new SQLException("The lower and upper bounds must be inclusive for an instant period");
         }
     }

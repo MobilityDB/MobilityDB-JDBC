@@ -17,7 +17,7 @@ public abstract class DataType extends PGobject {
     }
 
     @Override
-    public abstract String toString();
+    public abstract String getValue();
 
     @Override
     public abstract void setValue(final String value) throws SQLException;
