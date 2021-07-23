@@ -12,12 +12,12 @@ public class TBox extends DataType {
     }
 
     @Override
-    public String toString() {
-        return null;
+    public String getValue() {
+        return this.value;
     }
 
     @Override
     public void setValue(String value) throws SQLException {
-
+        this.value = value;
     }
 }
