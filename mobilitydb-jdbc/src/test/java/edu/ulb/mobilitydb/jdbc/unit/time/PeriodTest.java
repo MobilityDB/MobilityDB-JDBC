@@ -26,6 +26,19 @@ class PeriodTest {
         );
     }
 
+    static Stream<Arguments> periodTimezoneProvider() {
+        return Stream.of(
+            arguments("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]",
+                "[2021-09-08 01:00:00+02, 2021-09-10 02:00:00+03]"),
+            arguments("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)",
+                "[2021-09-08 03:00:00+04, 2021-09-10 04:00:00+05)"),
+            arguments("(2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]",
+                "(2021-09-07 22:00:00-01, 2021-09-09 21:00:00-02]"),
+            arguments("(2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)",
+                "(2021-09-07 20:00:00-03, 2021-09-09 19:00:00-04)")
+        );
+    }
+
     @Test
     void testConstructor() throws SQLException {
         String value = "[2021-04-08 05:04:45+01, 2021-09-10 10:00:00+01]";
@@ -180,6 +193,14 @@ class PeriodTest {
     }
 
     @ParameterizedTest
+    @MethodSource("periodTimezoneProvider")
+    void testEqualsTimeZone(String first, String second) throws SQLException {
+        Period periodA = new Period(first);
+        Period periodB = new Period(second);
+        assertEquals(periodA, periodB);
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = {
             "[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)",
             "(2021-09-07 00:00:00+01, 2021-09-12 00:00:00+01]",
@@ -187,9 +208,19 @@ class PeriodTest {
     })
     void testNotEquals(String value) throws SQLException {
         Period periodA = new Period(value);
-        Period periodB = new Period(periodA.getUpper(), periodA.getUpper().plusSeconds(1),
+        Period periodB = new Period(periodA.getLower(), periodA.getUpper().plusSeconds(1),
                 periodA.isLowerInclusive(), periodA.isUpperInclusive());
         assertNotEquals(periodA, periodB);
+    }
+
+    @ParameterizedTest
+    @MethodSource("periodTimezoneProvider")
+    void testNotEqualsTimeZone(String first, String second) throws SQLException {
+        Period periodA = new Period(first);
+        Period periodB = new Period(second);
+        Period periodC = new Period(periodB.getLower(), periodB.getUpper().plusSeconds(1),
+                periodB.isLowerInclusive(), periodB.isUpperInclusive());
+        assertNotEquals(periodA, periodC);
     }
 
     @Test
