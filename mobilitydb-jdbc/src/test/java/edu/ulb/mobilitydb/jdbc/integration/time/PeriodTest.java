@@ -38,7 +38,7 @@ class PeriodTest extends BaseIntegrationTest {
             Period retrievedPeriod = (Period) rs.getObject(1);
             assertEquals(period, retrievedPeriod);
         } else {
-            fail("Period was not retried.");
+            fail("Period was not retrieved.");
         }
 
         readStatement.close();

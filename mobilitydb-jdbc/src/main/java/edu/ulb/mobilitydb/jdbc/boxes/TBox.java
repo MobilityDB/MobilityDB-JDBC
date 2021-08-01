@@ -7,10 +7,10 @@ import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-@TypeName(name = "TBox")
+@TypeName(name = "tbox")
 public class TBox extends DataType {
-    private float xmin;
-    private float xmax;
+    private float xmin = 0.0f;
+    private float xmax = 0.0f;
     private OffsetDateTime tmin;
     private OffsetDateTime tmax;
 
@@ -27,31 +27,42 @@ public class TBox extends DataType {
 
     public TBox(float xmin, float xmax) {
         super();
-        this.xmin = xmin;
-        this.xmax = xmax;
-        validate();
+        this.xmin = xmin + 0f;
+        this.xmax = xmax + 0f;
     }
 
     public TBox(OffsetDateTime tmin, OffsetDateTime tmax) {
         super();
         this.tmin = tmin;
         this.tmax = tmax;
-        validate();
     }
 
     public TBox(float xmin, OffsetDateTime tmin, float xmax, OffsetDateTime tmax) {
         super();
-        this.xmin = xmin;
-        this.xmax = xmax;
+        this.xmin = xmin + 0f;
+        this.xmax = xmax + 0f;
         this.tmin = tmin;
         this.tmax = tmax;
-        validate();
     }
 
 
     @Override
     public String getValue() {
-        return this.value;
+        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
+        if (xmin != 0.0f && tmin != null) {
+            return String.format("TBOX((%f, %s), (%f, %s))",
+                    xmin,
+                    format.format(tmin),
+                    xmax,
+                    format.format(tmax));
+        } else if(xmin != 0.0f) {
+            return String.format("TBOX((%f, ), (%f, ))", xmin, xmax);
+        } else if(tmin != null) {
+            return String.format("TBOX((, %s), (, %s))", format.format(tmin), format.format(tmax));
+        } else {
+            return null;
+        }
+
     }
 
     @Override
@@ -59,14 +70,14 @@ public class TBox extends DataType {
         value = value.replace("TBOX","")
                 .replace("(","")
                 .replace(")","");
-        String[] values = value.split(",");
+        String[] values = value.split(",", -1);
         DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
 
         if (values.length != 4 ) {
             throw new SQLException("Could not parse TBox value, invalid number of arguments.");
         }
-        if(values[0].indexOf('.') != -1) {
-            if (values[2].indexOf('.') != -1) {
+        if(values[0].trim().length() > 0) {
+            if (values[2].trim().length() > 0) {
                 this.xmin = Float.parseFloat(values[0]);
                 this.xmax = Float.parseFloat(values[2]);
             } else {
@@ -83,16 +94,8 @@ public class TBox extends DataType {
         }
     }
 
-
-    private void validate() {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) {
-            return false;
-        }
         if (obj instanceof TBox) {
             TBox fobj = (TBox) obj;
 

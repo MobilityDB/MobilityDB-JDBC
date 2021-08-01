@@ -18,6 +18,8 @@ public abstract class BaseIntegrationTest {
     protected static Connection con;
 
     private static final String[] timeTypes = new String[] { "period" };
+    private static final String[] boxTypes = new String[] { "tbox" };
+
 
     @BeforeAll
     static void connectionSetup() throws SQLException {
@@ -25,38 +27,46 @@ public abstract class BaseIntegrationTest {
         PGConnection pgConnection = (PGConnection) con;
         DataTypeHandler.INSTANCE.registerTypes(pgConnection);
 
-        for (String type : timeTypes) {
-            createTimeTable(type);
+        for (String name : timeTypes) {
+            createTable(name, "time");
+        }
+        for (String name : boxTypes) {
+            createTable(name, "box");
         }
     }
 
     @AfterAll
     static void connectionDispose() throws SQLException {
         if (con != null) {
-            for (String type : timeTypes) {
-                dropTable(type);
+            for (String name : timeTypes) {
+                dropTable(name);
             }
-
+            for (String name : boxTypes) {
+                dropTable(name);
+            }
             con.close();
         }
     }
 
     @BeforeEach
     void init() throws SQLException {
-        for (String type : timeTypes) {
-            clearTimeTable(type);
+        for (String name : timeTypes) {
+            clearTable(name);
+        }
+        for (String name : boxTypes) {
+            clearTable(name);
         }
     }
 
-    public static void createTimeTable(String type) throws SQLException {
-        String command = String.format("CREATE TABLE IF NOT EXISTS tbl_%1$s (timetype %1$s NOT NULL);", type);
+    public static void createTable(String name, String type) throws SQLException {
+        String command = String.format("CREATE TABLE IF NOT EXISTS tbl_%1$s (%2$stype %1$s NOT NULL);", name, type);
         Statement st = con.createStatement();
         st.execute(command);
         st.close();
     }
 
-    private static void clearTimeTable(String type) throws SQLException {
-        String command = String.format("TRUNCATE TABLE tbl_%s;", type);
+    private static void clearTable(String name) throws SQLException {
+        String command = String.format("TRUNCATE TABLE tbl_%s;", name);
         Statement st = con.createStatement();
         st.execute(command);
         st.close();
