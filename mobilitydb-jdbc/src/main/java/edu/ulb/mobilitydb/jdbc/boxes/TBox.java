@@ -81,16 +81,20 @@ public class TBox extends DataType {
                 this.xmin = Float.parseFloat(values[0]);
                 this.xmax = Float.parseFloat(values[2]);
             } else {
-                throw new SQLException("Xmin and xmax should have values.");
+                throw new SQLException("Xmax should have a value.");
             }
+        } else if(values[2].trim().length() > 0) {
+            throw new SQLException("Xmin should have a value.");
         }
         if (values[1].trim().length() > 0) {
             if (values[3].trim().length() > 0) {
                 this.tmin = OffsetDateTime.parse(values[1].trim(), format);
                 this.tmax = OffsetDateTime.parse(values[3].trim(), format);
             } else {
-                throw new SQLException("Tmin and tmax should have values.");
+                throw new SQLException("Tmax should have a value.");
             }
+        } else if(values[3].trim().length() > 0) {
+            throw new SQLException("Tmin should have a value.");
         }
     }
 
