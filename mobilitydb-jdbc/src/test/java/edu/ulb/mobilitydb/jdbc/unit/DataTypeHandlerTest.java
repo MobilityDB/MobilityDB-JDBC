@@ -19,6 +19,6 @@ class DataTypeHandlerTest {
         PGConnection mockedConnection = mock(PGConnection.class);
         DataTypeHandler.INSTANCE.registerTypes(mockedConnection);
         verify(mockedConnection, atLeastOnce()).addDataType("period", Period.class);
-        verify(mockedConnection, atLeastOnce()).addDataType("TBOX", TBox.class);
+        verify(mockedConnection, atLeastOnce()).addDataType("tbox", TBox.class);
     }
 }
