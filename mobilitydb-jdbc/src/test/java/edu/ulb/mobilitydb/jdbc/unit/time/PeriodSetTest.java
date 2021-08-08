@@ -1,16 +1,17 @@
 package edu.ulb.mobilitydb.jdbc.unit.time;
 
+import edu.ulb.mobilitydb.jdbc.time.Period;
 import edu.ulb.mobilitydb.jdbc.time.PeriodSet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class PeriodSetTest {
@@ -74,5 +75,68 @@ class PeriodSetTest {
         PeriodSet periodSetA = new PeriodSet(value);
         PeriodSet periodSetB = new PeriodSet(periodSetA.getValue());
         assertEquals(periodSetA.getValue(), periodSetB.getValue());
+    }
+
+    @Test
+    void testPeriodListConstructor() throws SQLException {
+        String expectedValue = "{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}";
+        PeriodSet periodSet = new PeriodSet(
+                new Period("[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01]"),
+                new Period("[2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]")
+        );
+        assertEquals(expectedValue, periodSet.getValue());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "[2019-09-08 00:00:00+01, 2019-09-12 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]",
+            "{[2019-09-08 00:00:00+01, 2019-09-12 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]",
+            "[2019-09-08 00:00:00+01, 2019-09-12 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}"
+    })
+    void testConstructorInvalidValue(String value) {
+        SQLException thrown = assertThrows(
+                SQLException.class,
+                () -> new PeriodSet(value)
+        );
+        assertEquals("Could not parse period set value.", thrown.getMessage());
+    }
+
+    @Test
+    void testPeriodWithoutValue() throws SQLException {
+        Period[][] tests = {
+                new Period[]{new Period()},
+                new Period[]{new Period("[2019-09-08 00:00:00+01, 2019-09-12 00:00:00+01]"), new Period()}
+        };
+
+        for (Period[] periods : tests) {
+            SQLException thrown = assertThrows(
+                    SQLException.class,
+                    () -> new PeriodSet(periods)
+            );
+            assertEquals("All periods should have a value.", thrown.getMessage());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{[2019-09-08 00:00:00+01, 2019-09-12 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}",
+            "{[2019-09-08 00:00:00+01, 2019-09-11 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}"
+    })
+    void testInvalidPeriods(String value) {
+        SQLException thrown = assertThrows(
+                SQLException.class,
+                () -> new PeriodSet(value)
+        );
+        assertEquals("The periods of a period set cannot overlap.", thrown.getMessage());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{[2019-09-08 00:00:00+01, 2019-09-11 00:00:00+01], (2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}",
+            "{[2019-09-08 00:00:00+01, 2019-09-11 00:00:00+01), [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}"
+    })
+    void testValidPeriods(String value) throws SQLException {
+        PeriodSet periodSet = new PeriodSet(value);
+        assertEquals(value, periodSet.getValue());
     }
 }

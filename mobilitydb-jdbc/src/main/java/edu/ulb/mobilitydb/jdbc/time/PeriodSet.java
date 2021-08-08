@@ -5,6 +5,7 @@ import edu.ulb.mobilitydb.jdbc.core.TypeName;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +23,13 @@ public class PeriodSet extends DataType {
     public PeriodSet(String value) throws SQLException {
         this();
         setValue(value);
+        validate();
+    }
+
+    public PeriodSet(Period... periods) throws SQLException {
+        this();
+        Collections.addAll(periodList, periods);
+        validate();
     }
 
     @Override
@@ -66,5 +74,32 @@ public class PeriodSet extends DataType {
     public int hashCode() {
         String value = getValue();
         return value != null ? value.hashCode() : 0;
+    }
+
+    private void validate() throws SQLException {
+        for (int i = 0; i < periodList.size(); i++) {
+            Period x = periodList.get(i);
+
+            if (periodIsInValid(x)) {
+                throw new SQLException("All periods should have a value.");
+            }
+
+            if (i + 1 < periodList.size()) {
+                Period y = periodList.get(i + 1);
+
+                if (periodIsInValid(y)) {
+                    throw new SQLException("All periods should have a value.");
+                }
+
+                if (x.getUpper().isAfter(y.getLower()) ||
+                    (x.getUpper().isEqual(y.getLower()) && x.isUpperInclusive() && y.isLowerInclusive())) {
+                    throw new SQLException("The periods of a period set cannot overlap.");
+                }
+            }
+        }
+    }
+
+    private boolean periodIsInValid(Period period) {
+        return period == null || period.getValue() == null;
     }
 }
