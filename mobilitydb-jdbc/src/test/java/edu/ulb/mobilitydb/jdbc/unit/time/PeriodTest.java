@@ -126,7 +126,7 @@ class PeriodTest {
             "",
             "a,b,c,d"
     })
-    void testSetValueInvalidValue(String value) throws SQLException {
+    void testSetValueInvalidValue(String value) {
         Period period = new Period();
         SQLException thrown = assertThrows(
                 SQLException.class,
@@ -141,7 +141,7 @@ class PeriodTest {
             ")2021-09-08 00:00:00+01, 2021-09-08 00:00:00+01)",
             "{2021-09-08 00:00:00+01, 2021-09-08 00:00:00+01]"
     })
-    void testSetValueInvalidLowerBoundFlag(String value) throws SQLException {
+    void testSetValueInvalidLowerBoundFlag(String value) {
         Period period = new Period();
         SQLException thrown = assertThrows(
                 SQLException.class,
@@ -156,7 +156,7 @@ class PeriodTest {
             "[2021-09-08 00:00:00+01, 2021-09-08 00:00:00+01[",
             "[2021-09-08 00:00:00+01, 2021-09-08 00:00:00+01{"
     })
-    void testSetValueInvalidUpperBoundFlag(String value) throws SQLException {
+    void testSetValueInvalidUpperBoundFlag(String value) {
         Period period = new Period();
         SQLException thrown = assertThrows(
                 SQLException.class,
@@ -171,7 +171,7 @@ class PeriodTest {
             "(-09-08 00:00:00+01, 2021-09-08 00:00:00+01]",
             "(2021-09-08 00:00:00+01, 2021-09-08)"
     })
-    void testSetValueInvalidDateFormat(String value) throws SQLException {
+    void testSetValueInvalidDateFormat(String value) {
         Period period = new Period();
         DateTimeParseException thrown = assertThrows(
                 DateTimeParseException.class,
