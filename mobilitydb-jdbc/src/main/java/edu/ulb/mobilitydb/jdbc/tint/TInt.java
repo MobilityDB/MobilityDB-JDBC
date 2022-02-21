@@ -31,8 +31,20 @@ public class TInt extends DataType implements TemporalDataType<Integer> {
 
     @Override
     public void setValue(final String value) throws SQLException {
-        // TODO: Add logic to check the type of TInt
-        temporalType = TemporalType.TEMPORAL_INSTANT;
+        if (!value.startsWith("{") && !value.startsWith("[") && !value.startsWith("(")) {
+            temporalType = TemporalType.TEMPORAL_INSTANT;
+        } else if (value.startsWith("[") || value.startsWith("(")) {
+            temporalType = TemporalType.TEMPORAL_SEQUENCE;
+        } else if (value.startsWith("{")){
+            if (value.startsWith("[",1) || value.startsWith("(",1)) {
+                temporalType = TemporalType.TEMPORAL_SEQUENCE_SET;
+            } else {
+                temporalType = TemporalType.TEMPORAL_INSTANT_SET;
+            }
+        } else{
+            throw new SQLException("Could not parse TInt value.");
+        }
+
         this.value = value;
     };
 

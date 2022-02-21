@@ -17,4 +17,9 @@ public class TemporalInstant<V, T extends DataType & TemporalDataType<V>> {
     public TemporalValue<V> getTemporalValue() {
         return temporalValue;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s@%s", temporalValue.getValue(),temporalValue.getTime());
+    }
 }
