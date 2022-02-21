@@ -4,9 +4,11 @@ import edu.ulb.mobilitydb.jdbc.boxes.STBox;
 import edu.ulb.mobilitydb.jdbc.boxes.TBox;
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
+import edu.ulb.mobilitydb.jdbc.tbool.TBool;
 import edu.ulb.mobilitydb.jdbc.time.Period;
 import edu.ulb.mobilitydb.jdbc.time.PeriodSet;
 import edu.ulb.mobilitydb.jdbc.time.TimestampSet;
+import edu.ulb.mobilitydb.jdbc.tint.TInt;
 import org.postgresql.PGConnection;
 
 import java.sql.SQLException;
@@ -24,6 +26,7 @@ public enum DataTypeHandler {
         types.add(TimestampSet.class);
         types.add(TBox.class);
         types.add(STBox.class);
+        types.add(TInt.class);
     }
 
     public void registerTypes(PGConnection connection) throws SQLException {
