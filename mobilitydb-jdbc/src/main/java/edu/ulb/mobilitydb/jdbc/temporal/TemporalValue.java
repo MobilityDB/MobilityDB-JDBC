@@ -26,4 +26,9 @@ public class TemporalValue<T> {
     public void setTime(OffsetDateTime time) {
         this.time = time;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s@%s", value, time);
+    }
 }

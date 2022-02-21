@@ -19,6 +19,7 @@ public abstract class BaseIntegrationTest {
 
     private static final String[] timeTypes = new String[] { "period", "periodset", "timestampset" };
     private static final String[] boxTypes = new String[] { "tbox", "stbox" };
+    private static final String[] temporalTypes = new String[] { "tint" };
 
     @BeforeAll
     static void connectionSetup() throws SQLException {
@@ -32,6 +33,9 @@ public abstract class BaseIntegrationTest {
         for (String name : boxTypes) {
             createTable(name, "box");
         }
+        for (String name : temporalTypes) {
+            createTable(name, "temporal");
+        }
     }
 
     @AfterAll
@@ -41,6 +45,9 @@ public abstract class BaseIntegrationTest {
                 dropTable(name);
             }
             for (String name : boxTypes) {
+                dropTable(name);
+            }
+            for (String name : temporalTypes) {
                 dropTable(name);
             }
             con.close();
@@ -53,6 +60,9 @@ public abstract class BaseIntegrationTest {
             clearTable(name);
         }
         for (String name : boxTypes) {
+            clearTable(name);
+        }
+        for (String name : temporalTypes) {
             clearTable(name);
         }
     }
