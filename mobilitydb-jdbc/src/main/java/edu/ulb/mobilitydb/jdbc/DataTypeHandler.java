@@ -27,6 +27,7 @@ public enum DataTypeHandler {
         types.add(TBox.class);
         types.add(STBox.class);
         types.add(TInt.class);
+        types.add(TBool.class);
     }
 
     public void registerTypes(PGConnection connection) throws SQLException {

@@ -8,7 +8,7 @@ public class TemporalInstant<V, T extends DataType & TemporalDataType<V>> {
 
     public TemporalInstant(T temporal) throws Exception {
         if (temporal.getTemporalType() != TemporalType.TEMPORAL_INSTANT) {
-            throw new Exception("Invalid type");
+            throw new Exception("Invalid temporal type.");
         }
         this.temporal = temporal;
         temporalValue = temporal.getSingleTemporalValue(temporal.getValue());
