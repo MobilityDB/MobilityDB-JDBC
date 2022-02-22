@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class TIntInstTest extends BaseIntegrationTest {
 
     @Test
-    void testIntConstructor() throws Exception {
+    void testIntTimeConstructor() throws Exception {
         String value = "10@2021-04-08 05:04:45+02";
         ZoneOffset tz = ZoneOffset.of("+02:00");
         OffsetDateTime time = OffsetDateTime.of(2021,4, 8,

@@ -3,8 +3,6 @@ package edu.ulb.mobilitydb.jdbc.integration.tfloat;
 import edu.ulb.mobilitydb.jdbc.integration.BaseIntegrationTest;
 import edu.ulb.mobilitydb.jdbc.tfloat.TFloat;
 import edu.ulb.mobilitydb.jdbc.tfloat.TFloatInst;
-import edu.ulb.mobilitydb.jdbc.tint.TInt;
-import edu.ulb.mobilitydb.jdbc.tint.TIntInst;
 import org.junit.jupiter.api.Test;
 
 import java.sql.PreparedStatement;
