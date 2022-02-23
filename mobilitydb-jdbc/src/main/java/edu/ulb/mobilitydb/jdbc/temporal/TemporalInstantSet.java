@@ -2,7 +2,6 @@ package edu.ulb.mobilitydb.jdbc.temporal;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -97,5 +96,10 @@ public abstract class TemporalInstantSet<V, T extends DataType & TemporalDataTyp
 
     public T getDataType() {
         return temporalDataType;
+    }
+
+    @Override
+    public String toString() {
+        return buildValue();
     }
 }

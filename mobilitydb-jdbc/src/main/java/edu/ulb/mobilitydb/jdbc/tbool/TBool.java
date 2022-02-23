@@ -55,9 +55,15 @@ public class TBool extends DataType implements TemporalDataType<Boolean> {
 
     @Override
     public TemporalValue<Boolean> getSingleTemporalValue(String value) {
+        Boolean b;
         DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
         String[] values = value.trim().split("@");
         OffsetDateTime time = OffsetDateTime.parse(values[1].trim(), format);
-        return new TemporalValue<>(values[0].equals("t") ? true : false, time);
+        if(values[0].length() == 1) {
+            b = values[0].equals("t") ? true : false;
+        } else {
+            b = Boolean.parseBoolean(values[0]);
+        }
+        return new TemporalValue<>(b, time);
     }
 }

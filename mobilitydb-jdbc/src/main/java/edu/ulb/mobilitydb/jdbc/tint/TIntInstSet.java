@@ -2,8 +2,6 @@ package edu.ulb.mobilitydb.jdbc.tint;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalInstantSet;
 
-import java.time.OffsetDateTime;
-
 public class TIntInstSet extends TemporalInstantSet<Integer, TInt> {
 
     //READ
