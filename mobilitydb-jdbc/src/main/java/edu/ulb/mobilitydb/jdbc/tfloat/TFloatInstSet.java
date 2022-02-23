@@ -1,8 +1,8 @@
 package edu.ulb.mobilitydb.jdbc.tfloat;
 
-import edu.ulb.mobilitydb.jdbc.temporal.TemporalInstantSet;
+import edu.ulb.mobilitydb.jdbc.temporal.TInstantSet;
 
-public class TFloatInstSet extends TemporalInstantSet<Float, TFloat> {
+public class TFloatInstSet extends TInstantSet<Float, TFloat> {
 
     public TFloatInstSet(TFloat temporalDataType) throws Exception {
         super(temporalDataType);

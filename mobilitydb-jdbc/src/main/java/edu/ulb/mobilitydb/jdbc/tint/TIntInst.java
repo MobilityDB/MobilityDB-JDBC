@@ -1,10 +1,10 @@
 package edu.ulb.mobilitydb.jdbc.tint;
 
-import edu.ulb.mobilitydb.jdbc.temporal.TemporalInstant;
+import edu.ulb.mobilitydb.jdbc.temporal.TInstant;
 
 import java.time.OffsetDateTime;
 
-public class TIntInst extends TemporalInstant<Integer, TInt> {
+public class TIntInst extends TInstant<Integer, TInt> {
 
     public TIntInst(TInt temporal) throws Exception {
         super(temporal);

@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
-public abstract class TemporalInstantSet<V, T extends DataType & TemporalDataType<V>> {
+public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> {
     private T temporalDataType; //tint, tbool
     private List<TemporalValue<V>> temporalValues; //int, bool
 
-    protected TemporalInstantSet(T temporalDataType) throws Exception {
+    protected TInstantSet(T temporalDataType) throws Exception {
         this.temporalDataType = temporalDataType;
         validateTemporal();
         temporalValues = new ArrayList<>();
         parseValue(temporalDataType.getValue());
     }
 
-    protected TemporalInstantSet(Supplier<? extends T> tConstructor, String value) throws Exception {
+    protected TInstantSet(Supplier<? extends T> tConstructor, String value) throws Exception {
         temporalDataType = tConstructor.get();
         temporalDataType.setValue(value);
         temporalValues = new ArrayList<>();
@@ -26,7 +26,7 @@ public abstract class TemporalInstantSet<V, T extends DataType & TemporalDataTyp
         parseValue(value);
     }
 
-    protected TemporalInstantSet(Supplier<? extends T> tConstructor, String[] values) throws Exception {
+    protected TInstantSet(Supplier<? extends T> tConstructor, String[] values) throws Exception {
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
         for (String val : values) {
@@ -36,10 +36,10 @@ public abstract class TemporalInstantSet<V, T extends DataType & TemporalDataTyp
         validateTemporal();
     }
 
-    protected TemporalInstantSet(Supplier<? extends T> tConstructor, TemporalInstant<V, T>[] values) throws Exception {
+    protected TInstantSet(Supplier<? extends T> tConstructor, TInstant<V, T>[] values) throws Exception {
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
-        for (TemporalInstant<V, T> val : values) {
+        for (TInstant<V, T> val : values) {
             temporalValues.add(val.getTemporalValue());
         }
         temporalDataType.setValue(buildValue());
@@ -48,7 +48,7 @@ public abstract class TemporalInstantSet<V, T extends DataType & TemporalDataTyp
 
     private void validateTemporal() throws Exception {
         if (temporalDataType.getTemporalType() != TemporalType.TEMPORAL_INSTANT_SET) {
-            throw new Exception("Invalid temporal type.");
+            throw new Exception("Invalid TInstantSet type.");
         }
     }
 
@@ -74,8 +74,8 @@ public abstract class TemporalInstantSet<V, T extends DataType & TemporalDataTyp
 
     @Override
     public boolean equals(Object obj) {
-        if ( obj instanceof TemporalInstantSet) {
-            TemporalInstantSet fobj = (TemporalInstantSet) obj;
+        if ( obj instanceof TInstantSet) {
+            TInstantSet fobj = (TInstantSet) obj;
 
             if (this.temporalValues.size() != fobj.temporalValues.size()) {
                 return false;

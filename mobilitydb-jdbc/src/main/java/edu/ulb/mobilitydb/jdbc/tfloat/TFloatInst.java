@@ -1,11 +1,10 @@
 package edu.ulb.mobilitydb.jdbc.tfloat;
 
-import edu.ulb.mobilitydb.jdbc.temporal.TemporalInstant;
+import edu.ulb.mobilitydb.jdbc.temporal.TInstant;
 
 import java.time.OffsetDateTime;
-import java.util.function.Supplier;
 
-public class TFloatInst extends TemporalInstant<Float, TFloat> {
+public class TFloatInst extends TInstant<Float, TFloat> {
 
     public TFloatInst(TFloat temporal) throws Exception {
         super(temporal);

@@ -1,10 +1,10 @@
 package edu.ulb.mobilitydb.jdbc.tbool;
 
-import edu.ulb.mobilitydb.jdbc.temporal.TemporalInstant;
+import edu.ulb.mobilitydb.jdbc.temporal.TInstant;
 
 import java.time.OffsetDateTime;
 
-public class TBoolInst extends TemporalInstant<Boolean, TBool> {
+public class TBoolInst extends TInstant<Boolean, TBool> {
 
     public TBoolInst(TBool temporal) throws Exception {
         super(temporal);

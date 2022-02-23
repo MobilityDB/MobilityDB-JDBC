@@ -1,8 +1,8 @@
 package edu.ulb.mobilitydb.jdbc.tint;
 
-import edu.ulb.mobilitydb.jdbc.temporal.TemporalInstantSet;
+import edu.ulb.mobilitydb.jdbc.temporal.TInstantSet;
 
-public class TIntInstSet extends TemporalInstantSet<Integer, TInt> {
+public class TIntInstSet extends TInstantSet<Integer, TInt> {
 
     //READ
     public TIntInstSet(TInt temporalDataType) throws Exception {

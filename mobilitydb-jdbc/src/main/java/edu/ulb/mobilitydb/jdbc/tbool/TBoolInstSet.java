@@ -1,8 +1,8 @@
 package edu.ulb.mobilitydb.jdbc.tbool;
 
-import edu.ulb.mobilitydb.jdbc.temporal.TemporalInstantSet;
+import edu.ulb.mobilitydb.jdbc.temporal.TInstantSet;
 
-public class TBoolInstSet extends TemporalInstantSet<Boolean, TBool> {
+public class TBoolInstSet extends TInstantSet<Boolean, TBool> {
 
     public TBoolInstSet(TBool temporalDataType) throws Exception {
         super(temporalDataType);
