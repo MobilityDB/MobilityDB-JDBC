@@ -97,7 +97,7 @@ public class TIntSeqTest extends BaseIntegrationTest {
     @Test
     void testInstantsIncUppDefaultConstructor() throws Exception {
         TIntInst[] values = new TIntInst[] {new TIntInst("25@2001-01-01 08:30:00+02"),
-                new TIntInst("48@2001-01-03 18:00:00+02"), new TIntInst("76@2001-01-03 20:20:00+02")};
+                new TIntInst("76@2001-01-03 18:00:00+02"), new TIntInst("76@2001-01-03 20:20:00+02")};
         //[25@2001-01-01 08:30:00+02, 48@2001-01-03 18:00:00+02, 76@2001-01-03 20:20:00+02]
         TIntSeq tIntSeq = new TIntSeq(values);
 
@@ -125,7 +125,7 @@ public class TIntSeqTest extends BaseIntegrationTest {
     @Test
     void testInstantsIncUppConstructor() throws Exception {
         TIntInst[] values = new TIntInst[] {new TIntInst("25@2001-01-01 08:30:00+02"),
-                new TIntInst("48@2001-01-03 18:00:00+02"), new TIntInst("76@2001-01-03 20:20:00+02")};
+                new TIntInst("76@2001-01-03 18:00:00+02"), new TIntInst("76@2001-01-03 20:20:00+02")};
 
         TIntSeq tIntSeq = new TIntSeq(values, true, false);
 

@@ -1,6 +1,7 @@
 package edu.ulb.mobilitydb.jdbc.tbool;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TInstantSet;
+import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 public class TBoolInstSet extends TInstantSet<Boolean, TBool> {
 
@@ -18,5 +19,13 @@ public class TBoolInstSet extends TInstantSet<Boolean, TBool> {
 
     public TBoolInstSet(TBoolInst[] values) throws Exception {
         super(TBool::new, values);
+    }
+
+    @Override
+    protected Temporal<Boolean, TBool> convert(Object obj) {
+        if (obj instanceof TBoolInstSet) {
+            return (TBoolInstSet) obj;
+        }
+        return null;
     }
 }

@@ -2,9 +2,15 @@ package edu.ulb.mobilitydb.jdbc.temporal;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 
+/**
+ * Wraps a Temporal data type
+ * @param <V> - Base type of the temporal data type eg. Integer, Boolean
+ * @param <T> - Temporal Data Type eg. TInt, TBool
+ */
 public abstract class Temporal<V, T extends DataType & TemporalDataType<V>>  {
     protected TemporalType type;
-    protected T temporalDataType; //Tint, Tbool
+    // Eg. TInt, TBool
+    protected T temporalDataType;
 
     public Temporal(TemporalType type) {
         this.type = type;
@@ -33,8 +39,12 @@ public abstract class Temporal<V, T extends DataType & TemporalDataType<V>>  {
 
     protected abstract String buildValue();
 
-    protected abstract boolean areEqual(Temporal<V, T> otherTemporal);
-
+    /**
+     * Allow the non abstract classes to convert the object used in equals method
+     * to the correct type
+     * @param obj
+     * @return
+     */
     protected abstract Temporal<V,T> convert(Object obj);
 
     public T getDataType() {
@@ -44,13 +54,5 @@ public abstract class Temporal<V, T extends DataType & TemporalDataType<V>>  {
     @Override
     public String toString() {
         return buildValue();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (getClass() == obj.getClass()) {
-            return areEqual(convert(obj));
-        }
-        return false;
     }
 }

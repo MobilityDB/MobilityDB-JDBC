@@ -1,6 +1,7 @@
 package edu.ulb.mobilitydb.jdbc.tint;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TInstantSet;
+import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 public class TIntInstSet extends TInstantSet<Integer, TInt> {
 
@@ -23,5 +24,13 @@ public class TIntInstSet extends TInstantSet<Integer, TInt> {
     //Array of TIntInst
     public TIntInstSet(TIntInst[] values) throws Exception {
         super(TInt::new, values);
+    }
+
+    @Override
+    protected Temporal<Integer, TInt> convert(Object obj) {
+        if (obj instanceof TIntInstSet) {
+            return (TIntInstSet) obj;
+        }
+        return null;
     }
 }

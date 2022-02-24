@@ -41,14 +41,21 @@ public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> exte
         return temporalValue.toString();
     }
 
-    @Override
-    protected boolean areEqual(Temporal<V,T> otherTemporal) {
-        TInstant<V, T> other = (TInstant<V, T>) otherTemporal;
-        return this.temporalValue.getValue().equals(other.temporalValue.getValue()) &&
-                this.temporalValue.getTime().isEqual(other.temporalValue.getTime());
-    }
-
     public TemporalValue<V> getTemporalValue() {
         return temporalValue;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (getClass() == obj.getClass()) {
+            TInstant<V, T> otherTemporal = (TInstant<V, T>) convert(obj);
+            return this.temporalValue.getValue().equals(otherTemporal.temporalValue.getValue()) &&
+                    this.temporalValue.getTime().isEqual(otherTemporal.temporalValue.getTime());
+        }
+        return false;
     }
 }

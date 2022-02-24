@@ -1,6 +1,7 @@
 package edu.ulb.mobilitydb.jdbc.tfloat;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TInstantSet;
+import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 public class TFloatInstSet extends TInstantSet<Float, TFloat> {
 
@@ -20,4 +21,11 @@ public class TFloatInstSet extends TInstantSet<Float, TFloat> {
         super(TFloat::new, values);
     }
 
+    @Override
+    protected Temporal<Float, TFloat> convert(Object obj) {
+        if (obj instanceof TFloatInstSet) {
+            return (TFloatInstSet) obj;
+        }
+        return null;
+    }
 }

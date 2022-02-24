@@ -2,7 +2,6 @@ package edu.ulb.mobilitydb.jdbc.tbool;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TInstant;
 import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
-import edu.ulb.mobilitydb.jdbc.tfloat.TFloatInst;
 
 import java.time.OffsetDateTime;
 

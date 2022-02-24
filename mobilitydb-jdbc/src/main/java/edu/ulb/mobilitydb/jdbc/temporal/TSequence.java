@@ -3,14 +3,12 @@ package edu.ulb.mobilitydb.jdbc.temporal;
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 
 import java.sql.SQLException;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
 
-public class TSequence<V,T extends DataType & TemporalDataType<V>>{
-    private T temporalDataType; //tint, tbool
+public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> extends Temporal<V, T> {
     private List<TemporalValue<V>> temporalValues; //int, bool
     private boolean lowerInclusive;
     private boolean upperInclusive;
@@ -21,21 +19,24 @@ public class TSequence<V,T extends DataType & TemporalDataType<V>>{
     private static final String UPPER_EXCLUSIVE = ")";
 
     protected TSequence(T temporalDataType) throws Exception {
+        super(TemporalType.TEMPORAL_SEQUENCE);
         this.temporalDataType = temporalDataType;
-        validateTemporal();
+        validate();
         temporalValues = new ArrayList<>();
         parseValue(temporalDataType.getValue());
     }
 
     protected TSequence(Supplier<? extends T> tConstructor, String value) throws Exception {
+        super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalDataType.setValue(value);
         temporalValues = new ArrayList<>();
-        validateTemporal();
+        validate();
         parseValue(value);
     }
 
     protected TSequence(Supplier<? extends T> tConstructor, String[] values) throws Exception {
+        super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
         for (String val : values) {
@@ -44,11 +45,12 @@ public class TSequence<V,T extends DataType & TemporalDataType<V>>{
         this.lowerInclusive = true;
         this.upperInclusive = false;
         temporalDataType.setValue(buildValue());
-        validateTemporal();
+        validate();
     }
 
     protected TSequence(Supplier<? extends T> tConstructor, String[] values, boolean lowerInclusive,
             boolean upperInclusive) throws Exception {
+        super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
         for (String val : values) {
@@ -57,10 +59,11 @@ public class TSequence<V,T extends DataType & TemporalDataType<V>>{
         this.lowerInclusive = lowerInclusive;
         this.upperInclusive = upperInclusive;
         temporalDataType.setValue(buildValue());
-        validateTemporal();
+        validate();
     }
 
     protected TSequence(Supplier<? extends T> tConstructor, TInstant<V, T>[] values) throws Exception {
+        super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
         for (TInstant<V, T> val : values) {
@@ -69,11 +72,12 @@ public class TSequence<V,T extends DataType & TemporalDataType<V>>{
         this.lowerInclusive = true;
         this.upperInclusive = false;
         temporalDataType.setValue(buildValue());
-        validateTemporal();
+        validate();
     }
 
     protected TSequence(Supplier<? extends T> tConstructor, TInstant<V, T>[] values, boolean lowerInclusive,
                         boolean upperInclusive) throws Exception {
+        super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
         for (TInstant<V, T> val : values) {
@@ -82,13 +86,7 @@ public class TSequence<V,T extends DataType & TemporalDataType<V>>{
         this.lowerInclusive = lowerInclusive;
         this.upperInclusive = upperInclusive;
         temporalDataType.setValue(buildValue());
-        validateTemporal();
-    }
-
-    private void validateTemporal() throws Exception {
-        if (temporalDataType.getTemporalType() != TemporalType.TEMPORAL_SEQUENCE) {
-            throw new Exception("Invalid TSequence type.");
-        }
+        validate();
     }
 
     private void parseValue(String value) throws SQLException {
@@ -122,7 +120,13 @@ public class TSequence<V,T extends DataType & TemporalDataType<V>>{
         }
     }
 
-    private String buildValue() {
+    @Override
+    protected void validateTemporalDataType() throws Exception {
+        // TODO: Implement
+    }
+
+    @Override
+    protected String buildValue() {
         StringJoiner sj = new StringJoiner(", ");
         for (TemporalValue<V> temp : temporalValues) {
             sj.add(temp.toString());
@@ -133,29 +137,28 @@ public class TSequence<V,T extends DataType & TemporalDataType<V>>{
                 upperInclusive ? UPPER_INCLUSIVE : UPPER_EXCLUSIVE);
     }
 
-    private TemporalValue<V> get(int i){
-        return temporalValues.get(i);
-    }
-
     @Override
     public boolean equals(Object obj) {
-        if ( obj instanceof TSequence) {
-            TSequence fobj = (TSequence) obj;
+        if (obj == null) {
+            return false;
+        }
 
-            boolean lowerAreEqual = lowerInclusive == fobj.lowerInclusive;
-            boolean upperAreEqual = upperInclusive == fobj.upperInclusive;
+        if (getClass() == obj.getClass()) {
+            TSequence<V, T> otherTemporal = (TSequence<V, T>) convert(obj);
+            boolean lowerAreEqual = lowerInclusive == otherTemporal.lowerInclusive;
+            boolean upperAreEqual = upperInclusive == otherTemporal.upperInclusive;
 
             if (!lowerAreEqual || ! upperAreEqual) {
                 return false;
             }
 
-            if (this.temporalValues.size() != fobj.temporalValues.size()) {
+            if (this.temporalValues.size() != otherTemporal.temporalValues.size()) {
                 return false;
             }
 
             for (int i = 0; i < this.temporalValues.size(); i++) {
                 TemporalValue<V> thisVal = this.temporalValues.get(i);
-                TemporalValue<V> otherVal = fobj.get(i);
+                TemporalValue<V> otherVal = otherTemporal.temporalValues.get(i);
                 boolean valueCheck = thisVal.getValue().equals(otherVal.getValue())
                         && thisVal.getTime().isEqual(otherVal.getTime());
                 if (!valueCheck) {
@@ -165,14 +168,5 @@ public class TSequence<V,T extends DataType & TemporalDataType<V>>{
             return true;
         }
         return false;
-    }
-
-    public T getDataType() {
-        return temporalDataType;
-    }
-
-    @Override
-    public String toString() {
-        return buildValue();
     }
 }
