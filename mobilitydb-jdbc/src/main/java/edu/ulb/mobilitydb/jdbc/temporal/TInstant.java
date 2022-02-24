@@ -1,21 +1,23 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
+import edu.ulb.mobilitydb.jdbc.core.MobilityDBException;
 
+import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.function.Supplier;
 
 public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> extends Temporal<V, T> {
     private TemporalValue<V> temporalValue; //int, bool
 
-    protected TInstant(T temporalDataType) throws Exception {
+    protected TInstant(T temporalDataType) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT);
         this.temporalDataType = temporalDataType;
         validate();
         temporalValue = temporalDataType.getSingleTemporalValue(temporalDataType.getValue());
     }
 
-    protected TInstant(Supplier<? extends T> tConstructor, String value) throws Exception {
+    protected TInstant(Supplier<? extends T> tConstructor, String value) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT);
         temporalDataType = tConstructor.get();
         temporalDataType.setValue(value);
@@ -23,7 +25,7 @@ public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> exte
         temporalValue = temporalDataType.getSingleTemporalValue(temporalDataType.getValue());
     }
 
-    protected TInstant(Supplier<? extends T> tConstructor, V value, OffsetDateTime time) throws Exception {
+    protected TInstant(Supplier<? extends T> tConstructor, V value, OffsetDateTime time) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT);
         temporalDataType = tConstructor.get();
         temporalValue = new TemporalValue<>(value, time);
@@ -32,7 +34,7 @@ public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> exte
     }
 
     @Override
-    protected void validateTemporalDataType() throws Exception {
+    protected void validateTemporalDataType() throws MobilityDBException {
         // TODO: Implement
     }
 
@@ -57,5 +59,11 @@ public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> exte
                     this.temporalValue.getTime().isEqual(otherTemporal.temporalValue.getTime());
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        String value = toString();
+        return value != null ? value.hashCode() : 0;
     }
 }

@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TIntSeqTest extends BaseIntegrationTest {
+class TIntSeqTest extends BaseIntegrationTest {
     @Test
     void testStringConstructor() throws Exception {
         String value = "[1@2001-01-01 08:00:00+02, 1@2001-01-03 08:00:00+02]";

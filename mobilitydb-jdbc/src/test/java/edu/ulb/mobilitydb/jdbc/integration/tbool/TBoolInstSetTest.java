@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TBoolInstSetTest extends BaseIntegrationTest {
+class TBoolInstSetTest extends BaseIntegrationTest {
 
     @Test
     void testStringConstructor() throws Exception {

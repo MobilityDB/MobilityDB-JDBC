@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TFloatInstSetTest extends BaseIntegrationTest {
+class TFloatInstSetTest extends BaseIntegrationTest {
     @Test
     void testStringConstructor() throws Exception {
         String value = "{1.0@2001-01-01 08:00:00+03, 2.0@2001-01-03 08:00:00+03}";

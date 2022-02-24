@@ -27,7 +27,7 @@ public class TBool extends DataType implements TemporalDataType<Boolean> {
     @Override
     public String getValue() {
         return value;
-    };
+    }
 
     @Override
     public void setValue(final String value) throws SQLException {
@@ -46,7 +46,7 @@ public class TBool extends DataType implements TemporalDataType<Boolean> {
         }
 
         this.value = value;
-    };
+    }
 
     @Override
     public TemporalType getTemporalType() {
@@ -60,7 +60,7 @@ public class TBool extends DataType implements TemporalDataType<Boolean> {
         String[] values = value.trim().split("@");
         OffsetDateTime time = OffsetDateTime.parse(values[1].trim(), format);
         if(values[0].length() == 1) {
-            b = values[0].equals("t") ? true : false;
+            b = values[0].equals("t");
         } else {
             b = Boolean.parseBoolean(values[0]);
         }

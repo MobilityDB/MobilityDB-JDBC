@@ -13,7 +13,7 @@ import java.time.ZoneOffset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TFloatInstTest extends BaseIntegrationTest {
+class TFloatInstTest extends BaseIntegrationTest {
     @Test
     void testIntConstructor() throws Exception {
         String value = "1.5@2021-04-08 05:04:45+02";

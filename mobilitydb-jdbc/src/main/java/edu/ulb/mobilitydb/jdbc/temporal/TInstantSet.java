@@ -2,6 +2,7 @@ package edu.ulb.mobilitydb.jdbc.temporal;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -10,7 +11,7 @@ import java.util.function.Supplier;
 public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> extends Temporal<V, T> {
     private List<TemporalValue<V>> temporalValues; //int, bool
 
-    protected TInstantSet(T temporalDataType) throws Exception {
+    protected TInstantSet(T temporalDataType) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT_SET);
         this.temporalDataType = temporalDataType;
         validate();
@@ -18,7 +19,7 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
         parseValue(temporalDataType.getValue());
     }
 
-    protected TInstantSet(Supplier<? extends T> tConstructor, String value) throws Exception {
+    protected TInstantSet(Supplier<? extends T> tConstructor, String value) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT_SET);
         temporalDataType = tConstructor.get();
         temporalDataType.setValue(value);
@@ -27,7 +28,7 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
         parseValue(value);
     }
 
-    protected TInstantSet(Supplier<? extends T> tConstructor, String[] values) throws Exception {
+    protected TInstantSet(Supplier<? extends T> tConstructor, String[] values) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT_SET);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
@@ -38,7 +39,7 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
         validate();
     }
 
-    protected TInstantSet(Supplier<? extends T> tConstructor, TInstant<V, T>[] values) throws Exception {
+    protected TInstantSet(Supplier<? extends T> tConstructor, TInstant<V, T>[] values) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT_SET);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
@@ -50,7 +51,7 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
     }
 
     @Override
-    protected void validateTemporalDataType() throws Exception {
+    protected void validateTemporalDataType() throws SQLException {
         // TODO: Implement
     }
 
@@ -94,5 +95,11 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        String value = toString();
+        return value != null ? value.hashCode() : 0;
     }
 }

@@ -1,6 +1,9 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
+import edu.ulb.mobilitydb.jdbc.core.MobilityDBException;
+
+import java.sql.SQLException;
 
 /**
  * Wraps a Temporal data type
@@ -12,28 +15,28 @@ public abstract class Temporal<V, T extends DataType & TemporalDataType<V>>  {
     // Eg. TInt, TBool
     protected T temporalDataType;
 
-    public Temporal(TemporalType type) {
+    protected Temporal(TemporalType type) {
         this.type = type;
     }
 
-    protected void validate() throws Exception {
+    protected void validate() throws SQLException {
         validateTemporalType();
         validateTemporalDataType();
     }
 
     /**
-     * Throws an exception if Temporal data type is not valid
-     * @throws Exception
+     * Throws an MobilityDBException if Temporal data type is not valid
+     * @throws MobilityDBException
      */
-    protected abstract void validateTemporalDataType() throws Exception;
+    protected abstract void validateTemporalDataType() throws SQLException;
 
     /**
      * Verifies that the given temporal data type has the correct temporal type
-     * @throws Exception
+     * @throws MobilityDBException
      */
-    protected void validateTemporalType() throws Exception {
+    protected void validateTemporalType() throws SQLException {
         if (temporalDataType.getTemporalType() != type) {
-            throw new Exception("Invalid temporal type.");
+            throw new MobilityDBException("Invalid temporal type.");
         }
     }
 

@@ -27,7 +27,7 @@ public class TInt extends DataType implements TemporalDataType<Integer> {
     @Override
     public String getValue() {
         return value;
-    };
+    }
 
     @Override
     public void setValue(final String value) throws SQLException {
@@ -46,7 +46,7 @@ public class TInt extends DataType implements TemporalDataType<Integer> {
         }
 
         this.value = value;
-    };
+    }
 
     @Override
     public TemporalType getTemporalType() {

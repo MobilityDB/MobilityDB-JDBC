@@ -18,7 +18,7 @@ public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> exte
     private static final String UPPER_INCLUSIVE = "]";
     private static final String UPPER_EXCLUSIVE = ")";
 
-    protected TSequence(T temporalDataType) throws Exception {
+    protected TSequence(T temporalDataType) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         this.temporalDataType = temporalDataType;
         validate();
@@ -26,7 +26,7 @@ public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> exte
         parseValue(temporalDataType.getValue());
     }
 
-    protected TSequence(Supplier<? extends T> tConstructor, String value) throws Exception {
+    protected TSequence(Supplier<? extends T> tConstructor, String value) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalDataType.setValue(value);
@@ -35,7 +35,7 @@ public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> exte
         parseValue(value);
     }
 
-    protected TSequence(Supplier<? extends T> tConstructor, String[] values) throws Exception {
+    protected TSequence(Supplier<? extends T> tConstructor, String[] values) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
@@ -49,7 +49,7 @@ public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> exte
     }
 
     protected TSequence(Supplier<? extends T> tConstructor, String[] values, boolean lowerInclusive,
-            boolean upperInclusive) throws Exception {
+            boolean upperInclusive) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
@@ -62,7 +62,7 @@ public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> exte
         validate();
     }
 
-    protected TSequence(Supplier<? extends T> tConstructor, TInstant<V, T>[] values) throws Exception {
+    protected TSequence(Supplier<? extends T> tConstructor, TInstant<V, T>[] values) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
@@ -76,7 +76,7 @@ public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> exte
     }
 
     protected TSequence(Supplier<? extends T> tConstructor, TInstant<V, T>[] values, boolean lowerInclusive,
-                        boolean upperInclusive) throws Exception {
+                        boolean upperInclusive) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         temporalDataType = tConstructor.get();
         temporalValues = new ArrayList<>();
@@ -121,7 +121,7 @@ public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> exte
     }
 
     @Override
-    protected void validateTemporalDataType() throws Exception {
+    protected void validateTemporalDataType() throws SQLException {
         // TODO: Implement
     }
 
@@ -168,5 +168,11 @@ public abstract class TSequence<V,T extends DataType & TemporalDataType<V>> exte
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        String value = toString();
+        return value != null ? value.hashCode() : 0;
     }
 }
