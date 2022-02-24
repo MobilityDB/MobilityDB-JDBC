@@ -5,52 +5,50 @@ import edu.ulb.mobilitydb.jdbc.core.DataType;
 import java.time.OffsetDateTime;
 import java.util.function.Supplier;
 
-public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> {
-    private T temporalDataType; //tint, tbool
+public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> extends Temporal<V, T> {
     private TemporalValue<V> temporalValue; //int, bool
 
     protected TInstant(T temporalDataType) throws Exception {
+        super(TemporalType.TEMPORAL_INSTANT);
         this.temporalDataType = temporalDataType;
-        validateTemporal();
+        validate();
         temporalValue = temporalDataType.getSingleTemporalValue(temporalDataType.getValue());
     }
 
     protected TInstant(Supplier<? extends T> tConstructor, String value) throws Exception {
+        super(TemporalType.TEMPORAL_INSTANT);
         temporalDataType = tConstructor.get();
         temporalDataType.setValue(value);
-        validateTemporal();
+        validate();
         temporalValue = temporalDataType.getSingleTemporalValue(temporalDataType.getValue());
     }
 
     protected TInstant(Supplier<? extends T> tConstructor, V value, OffsetDateTime time) throws Exception {
+        super(TemporalType.TEMPORAL_INSTANT);
         temporalDataType = tConstructor.get();
         temporalValue = new TemporalValue<>(value, time);
         temporalDataType.setValue(temporalValue.toString());
-        validateTemporal();
-    }
-
-    private void validateTemporal() throws Exception {
-        if (temporalDataType.getTemporalType() != TemporalType.TEMPORAL_INSTANT) {
-            throw new Exception("Invalid TInstant type.");
-        }
+        validate();
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if ( obj instanceof TInstant) {
-            TInstant fobj = (TInstant) obj;
+    protected void validateTemporalDataType() throws Exception {
+        // TODO: Implement
+    }
 
-            return this.temporalValue.getValue().equals(fobj.temporalValue.getValue()) &&
-                    this.temporalValue.getTime().isEqual(fobj.temporalValue.getTime());
-        }
-        return false;
+    @Override
+    protected String buildValue() {
+        return temporalValue.toString();
+    }
+
+    @Override
+    protected boolean areEqual(Temporal<V,T> otherTemporal) {
+        TInstant<V, T> other = (TInstant<V, T>) otherTemporal;
+        return this.temporalValue.getValue().equals(other.temporalValue.getValue()) &&
+                this.temporalValue.getTime().isEqual(other.temporalValue.getTime());
     }
 
     public TemporalValue<V> getTemporalValue() {
         return temporalValue;
-    }
-
-    public T getDataType() {
-        return temporalDataType;
     }
 }

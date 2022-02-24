@@ -1,6 +1,8 @@
 package edu.ulb.mobilitydb.jdbc.tbool;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TInstant;
+import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
+import edu.ulb.mobilitydb.jdbc.tfloat.TFloatInst;
 
 import java.time.OffsetDateTime;
 
@@ -18,4 +20,11 @@ public class TBoolInst extends TInstant<Boolean, TBool> {
         super(TBool::new, value, time);
     }
 
+    @Override
+    protected Temporal<Boolean, TBool> convert(Object obj) {
+        if (obj instanceof TBoolInst) {
+            return (TBoolInst) obj;
+        }
+        return null;
+    }
 }

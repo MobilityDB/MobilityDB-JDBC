@@ -1,11 +1,11 @@
 package edu.ulb.mobilitydb.jdbc.tint;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TInstant;
+import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.time.OffsetDateTime;
 
 public class TIntInst extends TInstant<Integer, TInt> {
-
     public TIntInst(TInt temporal) throws Exception {
         super(temporal);
     }
@@ -18,4 +18,11 @@ public class TIntInst extends TInstant<Integer, TInt> {
         super(TInt::new, value, time);
     }
 
+    @Override
+    protected Temporal<Integer, TInt> convert(Object obj) {
+        if (obj instanceof TIntInst) {
+            return (TIntInst) obj;
+        }
+        return null;
+    }
 }
