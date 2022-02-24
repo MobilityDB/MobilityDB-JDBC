@@ -4,6 +4,8 @@ import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,10 +57,6 @@ public class PeriodSet extends DataType {
         validate();
     }
 
-    public Period[] getPeriods() {
-        return periodList.toArray(new Period[0]);
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof PeriodSet) {
@@ -75,6 +73,44 @@ public class PeriodSet extends DataType {
     public int hashCode() {
         String value = getValue();
         return value != null ? value.hashCode() : 0;
+    }
+
+    public Period[] getPeriods() {
+        return periodList.toArray(new Period[0]);
+    }
+
+    public Duration getDuration() {
+        Duration d = Duration.ZERO;
+
+        for (Period p : periodList) {
+            d = d.plus(p.duration());
+        }
+
+        return d;
+    }
+
+    public Duration getTimeSpan() {
+        if (periodList.isEmpty()) {
+            return Duration.ZERO;
+        }
+
+        return Duration.between(getStartTimestamp(), getEndTimestamp());
+    }
+
+    public OffsetDateTime getStartTimestamp() {
+        if (periodList.isEmpty()) {
+            return null;
+        }
+
+        return periodList.get(0).getLower();
+    }
+
+    public OffsetDateTime getEndTimestamp() {
+        if (periodList.isEmpty()) {
+            return null;
+        }
+
+        return periodList.get(periodList.size() - 1).getUpper();
     }
 
     private void validate() throws SQLException {
