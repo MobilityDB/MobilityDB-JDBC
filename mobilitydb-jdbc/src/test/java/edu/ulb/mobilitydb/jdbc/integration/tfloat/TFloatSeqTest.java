@@ -4,9 +4,6 @@ import edu.ulb.mobilitydb.jdbc.integration.BaseIntegrationTest;
 import edu.ulb.mobilitydb.jdbc.tfloat.TFloat;
 import edu.ulb.mobilitydb.jdbc.tfloat.TFloatInst;
 import edu.ulb.mobilitydb.jdbc.tfloat.TFloatSeq;
-import edu.ulb.mobilitydb.jdbc.tint.TInt;
-import edu.ulb.mobilitydb.jdbc.tint.TIntInst;
-import edu.ulb.mobilitydb.jdbc.tint.TIntSeq;
 import org.junit.jupiter.api.Test;
 
 import java.sql.PreparedStatement;
@@ -15,7 +12,7 @@ import java.sql.ResultSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TFloatSeqTest extends BaseIntegrationTest {
+class TFloatSeqTest extends BaseIntegrationTest {
 
     @Test
     void testStringConstructor() throws Exception {

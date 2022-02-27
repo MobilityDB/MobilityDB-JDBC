@@ -1,6 +1,7 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Represents a temporal value that consists in the value and a timestamp
@@ -9,6 +10,7 @@ import java.time.OffsetDateTime;
 public class TemporalValue<T> {
     private T value;
     private OffsetDateTime time;
+    private static final String FORMAT = "yyyy-MM-dd HH:mm:ssX";
 
     public TemporalValue(T value, OffsetDateTime time) {
         this.value = value;
@@ -38,6 +40,7 @@ public class TemporalValue<T> {
      */
     @Override
     public String toString() {
-        return String.format("%s@%s", value, time);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
+        return String.format("%s@%s", value, format.format(time));
     }
 }

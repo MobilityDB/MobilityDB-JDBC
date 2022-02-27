@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public abstract class Temporal<V, T extends DataType & TemporalDataType<V>>  {
     protected TemporalType type;
-    // Eg. TInt, TBool
+    //Temporal data type eg. TInt, TBool
     protected T temporalDataType;
 
     protected Temporal(TemporalType type) {
