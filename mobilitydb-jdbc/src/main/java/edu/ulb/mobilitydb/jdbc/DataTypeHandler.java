@@ -10,6 +10,7 @@ import edu.ulb.mobilitydb.jdbc.time.Period;
 import edu.ulb.mobilitydb.jdbc.time.PeriodSet;
 import edu.ulb.mobilitydb.jdbc.time.TimestampSet;
 import edu.ulb.mobilitydb.jdbc.tint.TInt;
+import edu.ulb.mobilitydb.jdbc.ttext.TText;
 import org.postgresql.PGConnection;
 
 import java.sql.SQLException;
@@ -30,6 +31,7 @@ public enum DataTypeHandler {
         types.add(TInt.class);
         types.add(TBool.class);
         types.add(TFloat.class);
+        types.add(TText.class);
     }
 
     public void registerTypes(PGConnection connection) throws SQLException {
