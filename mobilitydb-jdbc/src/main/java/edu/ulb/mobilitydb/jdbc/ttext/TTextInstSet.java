@@ -1,6 +1,5 @@
 package edu.ulb.mobilitydb.jdbc.ttext;
 
-import edu.ulb.mobilitydb.jdbc.temporal.TInstant;
 import edu.ulb.mobilitydb.jdbc.temporal.TInstantSet;
 import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
