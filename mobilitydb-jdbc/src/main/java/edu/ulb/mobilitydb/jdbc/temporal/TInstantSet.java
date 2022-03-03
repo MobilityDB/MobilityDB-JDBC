@@ -64,7 +64,7 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
         return String.format("{%s}", sj.toString());
     }
 
-    private void parseValue(String value){
+    private void parseValue(String value) throws SQLException {
         String newValue = value.replace("{", "").replace("}", "");
         String[] values = newValue.split(",", -1);
         for (String val : values) {

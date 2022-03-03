@@ -39,7 +39,7 @@ public class TInt extends DataType implements TemporalDataType<Integer> {
     }
 
     @Override
-    public TemporalValue<Integer> getSingleTemporalValue(String value) {
+    public TemporalValue<Integer> getSingleTemporalValue(String value) throws SQLException {
         String[] values = value.trim().split("@");
         return new TemporalValue<>(Integer.parseInt(values[0]), DateTimeFormatHelper.getDateTimeFormat(values[1]));
     }

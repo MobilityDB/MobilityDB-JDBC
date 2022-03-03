@@ -10,7 +10,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.postgresql:postgresql:42.2.16'
+    implementation 'org.postgresql:postgresql:42.3.3'
+    implementation 'net.postgis:postgis-jdbc:2.5.1'
 
     testImplementation(platform('org.junit:junit-bom:5.7.2'))
     testImplementation('org.junit.jupiter:junit-jupiter')

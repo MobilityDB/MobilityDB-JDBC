@@ -39,7 +39,7 @@ public class TBool extends DataType implements TemporalDataType<Boolean> {
     }
 
     @Override
-    public TemporalValue<Boolean> getSingleTemporalValue(String value) {
+    public TemporalValue<Boolean> getSingleTemporalValue(String value) throws SQLException {
         Boolean b;
         String[] values = value.trim().split("@");
         if(values[0].length() == 1) {

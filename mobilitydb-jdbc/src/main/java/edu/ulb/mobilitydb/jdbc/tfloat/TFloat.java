@@ -37,7 +37,7 @@ public class TFloat extends DataType implements TemporalDataType<Float> {
     }
 
     @Override
-    public TemporalValue<Float> getSingleTemporalValue(String value) {
+    public TemporalValue<Float> getSingleTemporalValue(String value) throws SQLException {
         String[] values = value.trim().split("@");
         return new TemporalValue<>(Float.parseFloat(values[0]), DateTimeFormatHelper.getDateTimeFormat(values[1]));
     }

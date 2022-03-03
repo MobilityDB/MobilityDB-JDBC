@@ -37,7 +37,7 @@ public class TText extends DataType implements TemporalDataType<String> {
     }
 
     @Override
-    public TemporalValue<String> getSingleTemporalValue(String value) {
+    public TemporalValue<String> getSingleTemporalValue(String value) throws SQLException {
         String[] values = value.trim().split("@");
         if(values[0].startsWith("\"") && values[0].endsWith("\"")) {
             values[0] = values[0].replace("\"", "");
