@@ -1,6 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.tint;
 
-import edu.ulb.mobilitydb.jdbc.Helper;
+import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalDataType;
@@ -29,7 +29,7 @@ public class TInt extends DataType implements TemporalDataType<Integer> {
 
     @Override
     public void setValue(final String value) throws SQLException {
-        temporalType = Helper.getTemporalType(value, this.getClass().getSimpleName());
+        temporalType = TemporalType.getTemporalType(value, this.getClass().getSimpleName());
         this.value = value;
     }
 
@@ -41,6 +41,6 @@ public class TInt extends DataType implements TemporalDataType<Integer> {
     @Override
     public TemporalValue<Integer> getSingleTemporalValue(String value) {
         String[] values = value.trim().split("@");
-        return new TemporalValue<>(Integer.parseInt(values[0]), Helper.formatDate(values[1]));
+        return new TemporalValue<>(Integer.parseInt(values[0]), DateTimeFormatHelper.getDateTimeFormat(values[1]));
     }
 }

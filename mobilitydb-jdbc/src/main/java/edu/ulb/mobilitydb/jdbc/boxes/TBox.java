@@ -1,11 +1,11 @@
 package edu.ulb.mobilitydb.jdbc.boxes;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
+import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 
 @TypeName(name = "tbox")
 public class TBox extends DataType {
@@ -13,8 +13,6 @@ public class TBox extends DataType {
     private double xmax = 0.0f;
     private OffsetDateTime tmin;
     private OffsetDateTime tmax;
-
-    private static final String FORMAT = "yyyy-MM-dd HH:mm:ssX";
 
     public TBox() {
         super();
@@ -48,17 +46,17 @@ public class TBox extends DataType {
 
     @Override
     public String getValue() {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
         if (xmin != 0.0f && tmin != null) {
             return String.format("TBOX((%f, %s), (%f, %s))",
                     xmin,
-                    format.format(tmin),
+                    DateTimeFormatHelper.getStringFormat(tmin),
                     xmax,
-                    format.format(tmax));
+                    DateTimeFormatHelper.getStringFormat(tmax));
         } else if(xmin != 0.0f) {
             return String.format("TBOX((%f, ), (%f, ))", xmin, xmax);
         } else if(tmin != null) {
-            return String.format("TBOX((, %s), (, %s))", format.format(tmin), format.format(tmax));
+            return String.format("TBOX((, %s), (, %s))", DateTimeFormatHelper.getStringFormat(tmin),
+                    DateTimeFormatHelper.getStringFormat(tmax));
         } else {
             return null;
         }
@@ -71,7 +69,6 @@ public class TBox extends DataType {
                 .replace("(","")
                 .replace(")","");
         String[] values = value.split(",", -1);
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
 
         if (values.length != 4 ) {
             throw new SQLException("Could not parse TBox value, invalid number of arguments.");
@@ -88,8 +85,8 @@ public class TBox extends DataType {
         }
         if (values[1].trim().length() > 0) {
             if (values[3].trim().length() > 0) {
-                this.tmin = OffsetDateTime.parse(values[1].trim(), format);
-                this.tmax = OffsetDateTime.parse(values[3].trim(), format);
+                this.tmin = DateTimeFormatHelper.getDateTimeFormat(values[1].trim());
+                this.tmax = DateTimeFormatHelper.getDateTimeFormat(values[3].trim());
             } else {
                 throw new SQLException("Tmax should have a value.");
             }

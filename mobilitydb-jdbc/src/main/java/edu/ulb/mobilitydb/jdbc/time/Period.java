@@ -1,12 +1,12 @@
 package edu.ulb.mobilitydb.jdbc.time;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
+import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 
 @TypeName(name = "period")
 public class Period extends DataType {
@@ -15,7 +15,6 @@ public class Period extends DataType {
     private boolean lowerInclusive;
     private boolean upperInclusive;
 
-    private static final String FORMAT = "yyyy-MM-dd HH:mm:ssX";
     private static final String LOWER_INCLUSIVE = "[";
     private static final String LOWER_EXCLUSIVE = "(";
     private static final String UPPER_INCLUSIVE = "]";
@@ -55,12 +54,10 @@ public class Period extends DataType {
             return null;
         }
 
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
-
         return String.format("%s%s, %s%s",
                 lowerInclusive ? LOWER_INCLUSIVE : LOWER_EXCLUSIVE,
-                format.format(lower),
-                format.format(upper),
+                DateTimeFormatHelper.getStringFormat(lower),
+                DateTimeFormatHelper.getStringFormat(upper),
                 upperInclusive ? UPPER_INCLUSIVE : UPPER_EXCLUSIVE);
     }
 
@@ -84,7 +81,6 @@ public class Period extends DataType {
     @Override
     public void setValue(final String value) throws SQLException {
         String[] values = value.split(",");
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
 
         if (values.length != 2) {
             throw new SQLException("Could not parse period value.");
@@ -106,8 +102,8 @@ public class Period extends DataType {
             throw new SQLException("Upper bound flag must be either ']' or ')'.");
         }
 
-        this.lower = OffsetDateTime.parse(values[0].substring(1).trim(), format);
-        this.upper = OffsetDateTime.parse(values[1].substring(0, values[1].length() - 1).trim(), format);
+        this.lower = DateTimeFormatHelper.getDateTimeFormat(values[0].substring(1).trim());
+        this.upper = DateTimeFormatHelper.getDateTimeFormat(values[1].substring(0, values[1].length() - 1).trim());
         validate();
     }
 

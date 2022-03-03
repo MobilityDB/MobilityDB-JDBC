@@ -1,6 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.tbool;
 
-import edu.ulb.mobilitydb.jdbc.Helper;
+import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalDataType;
@@ -29,7 +29,7 @@ public class TBool extends DataType implements TemporalDataType<Boolean> {
 
     @Override
     public void setValue(final String value) throws SQLException {
-        temporalType = Helper.getTemporalType(value, this.getClass().getSimpleName());
+        temporalType = TemporalType.getTemporalType(value, this.getClass().getSimpleName());
         this.value = value;
     }
 
@@ -47,6 +47,6 @@ public class TBool extends DataType implements TemporalDataType<Boolean> {
         } else {
             b = Boolean.parseBoolean(values[0]);
         }
-        return new TemporalValue<>(b, Helper.formatDate(values[1]));
+        return new TemporalValue<>(b, DateTimeFormatHelper.getDateTimeFormat(values[1]));
     }
 }

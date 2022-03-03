@@ -1,11 +1,11 @@
 package edu.ulb.mobilitydb.jdbc.boxes;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
+import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -22,7 +22,6 @@ public class STBox  extends DataType {
     private boolean isGeodetic;
 
     private int srid;
-    private static final String FORMAT = "yyyy-MM-dd HH:mm:ssX";
 
     public STBox() {
         super();
@@ -90,14 +89,13 @@ public class STBox  extends DataType {
                 .replace("(","")
                 .replace(")","");
         String[] values = value.split(",");
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
         int nonEmpty = (int) Arrays.stream(values).filter(x -> !x.isBlank()).count();
         if (nonEmpty == 2) {
             String[] removedNull = Arrays.stream(values)
                     .filter(x -> !x.isBlank())
                     .toArray(String[]::new);
-            this.tmin = OffsetDateTime.parse(removedNull[0].trim(), format);
-            this.tmax = OffsetDateTime.parse(removedNull[1].trim(), format);
+            this.tmin = DateTimeFormatHelper.getDateTimeFormat(removedNull[0].trim());
+            this.tmax = DateTimeFormatHelper.getDateTimeFormat(removedNull[1].trim());
         } else {
             if ( nonEmpty >= 4) {
                 this.xmin = Double.parseDouble(values[0]);
@@ -110,8 +108,8 @@ public class STBox  extends DataType {
                 this.zmax = Double.parseDouble(values[2 + nonEmpty/2]);
             }
             if (hasT) {
-                this.tmin = OffsetDateTime.parse(values[nonEmpty/2 - 1].trim(), format);
-                this.tmax = OffsetDateTime.parse(values[(nonEmpty/2 - 1) + nonEmpty/2].trim(), format);
+                this.tmin = DateTimeFormatHelper.getDateTimeFormat(values[nonEmpty/2 - 1].trim());
+                this.tmax = DateTimeFormatHelper.getDateTimeFormat(values[(nonEmpty/2 - 1) + nonEmpty/2].trim());
             }
         }
         validate();

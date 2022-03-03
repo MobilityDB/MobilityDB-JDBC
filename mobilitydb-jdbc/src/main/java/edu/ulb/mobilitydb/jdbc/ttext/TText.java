@@ -1,6 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.ttext;
 
-import edu.ulb.mobilitydb.jdbc.Helper;
+import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalDataType;
@@ -27,7 +27,7 @@ public class TText extends DataType implements TemporalDataType<String> {
 
     @Override
     public void setValue(final String value) throws SQLException {
-        temporalType = Helper.getTemporalType(value, this.getClass().getSimpleName());
+        temporalType = TemporalType.getTemporalType(value, this.getClass().getSimpleName());
         this.value = value;
     }
 
@@ -42,6 +42,6 @@ public class TText extends DataType implements TemporalDataType<String> {
         if(values[0].startsWith("\"") && values[0].endsWith("\"")) {
             values[0] = values[0].replace("\"", "");
         }
-        return new TemporalValue<>(String.format("%s",values[0]), Helper.formatDate(values[1]));
+        return new TemporalValue<>(String.format("%s",values[0]), DateTimeFormatHelper.getDateTimeFormat(values[1]));
     }
 }

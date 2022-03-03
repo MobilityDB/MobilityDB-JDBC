@@ -1,12 +1,12 @@
 package edu.ulb.mobilitydb.jdbc.time;
 
 import edu.ulb.mobilitydb.jdbc.core.DataType;
+import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @TypeName(name = "timestampset")
 public class TimestampSet extends DataType {
     private final List<OffsetDateTime> dateTimeList;
-    private static final String FORMAT = "yyyy-MM-dd HH:mm:ssX";
 
     public TimestampSet() {
         super();
@@ -35,10 +34,8 @@ public class TimestampSet extends DataType {
 
     @Override
     public String getValue() {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
-
         return String.format("{%s}", dateTimeList.stream()
-                .map(format::format)
+                .map(DateTimeFormatHelper::getStringFormat)
                 .collect(Collectors.joining(", ")));
     }
 
@@ -48,10 +45,9 @@ public class TimestampSet extends DataType {
 
         if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
             String[] values = trimmed.substring(1, trimmed.length() - 1).split(",");
-            DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
 
             for (String v : values) {
-                OffsetDateTime date = OffsetDateTime.parse(v.trim(), format);
+                OffsetDateTime date = DateTimeFormatHelper.getDateTimeFormat(v.trim());
                 dateTimeList.add(date);
             }
         } else {
