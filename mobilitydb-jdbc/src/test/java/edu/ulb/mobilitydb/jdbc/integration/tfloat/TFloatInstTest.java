@@ -20,22 +20,22 @@ class TFloatInstTest extends BaseIntegrationTest {
         ZoneOffset tz = ZoneOffset.of("+02:00");
         OffsetDateTime time = OffsetDateTime.of(2021,4, 8,
                 5, 4, 45, 0, tz);
-        TFloatInst tIntInst = new TFloatInst(1.5f, time);
+        TFloatInst tFloatInst = new TFloatInst(1.5f, time);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tIntInst.getDataType());
+        insertStatement.setObject(1, tFloatInst.getDataType());
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tIntInst.getDataType());
+        readStatement.setObject(1, tFloatInst.getDataType());
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tIntInst, new TFloatInst(retrievedTFloat));
+            assertEquals(tFloatInst, new TFloatInst(retrievedTFloat));
         } else {
             fail("TFloat was not retrieved.");
         }

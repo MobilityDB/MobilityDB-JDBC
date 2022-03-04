@@ -1,4 +1,4 @@
-package edu.ulb.mobilitydb.jdbc.tgeo;
+package edu.ulb.mobilitydb.jdbc.tpoint.tgeom;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TInstant;
 import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
