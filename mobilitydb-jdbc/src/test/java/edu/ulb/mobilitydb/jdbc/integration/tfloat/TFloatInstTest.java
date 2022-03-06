@@ -16,26 +16,26 @@ import static org.junit.jupiter.api.Assertions.fail;
 class TFloatInstTest extends BaseIntegrationTest {
     @Test
     void testIntConstructor() throws Exception {
-        String value = "1.5@2021-04-08 05:04:45+02";
         ZoneOffset tz = ZoneOffset.of("+02:00");
         OffsetDateTime time = OffsetDateTime.of(2021,4, 8,
                 5, 4, 45, 0, tz);
         TFloatInst tFloatInst = new TFloatInst(1.5f, time);
+        TFloat tFloat = new TFloat(tFloatInst);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tFloatInst.getDataType());
+        insertStatement.setObject(1, tFloat);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tFloatInst.getDataType());
+        readStatement.setObject(1, tFloat);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tFloatInst, new TFloatInst(retrievedTFloat));
+            assertEquals(tFloat.getTemporal(), retrievedTFloat.getTemporal());
         } else {
             fail("TFloat was not retrieved.");
         }
@@ -46,23 +46,20 @@ class TFloatInstTest extends BaseIntegrationTest {
     @Test
     void testStringConstructor() throws Exception {
         String value = "38.2@2021-04-08 05:04:45+01";
-        ZoneOffset tz = ZoneOffset.of("+02:00");
-        OffsetDateTime time = OffsetDateTime.of(2021,4, 8,
-                5, 4, 45, 0, tz);
-        TFloatInst tFloatInst = new TFloatInst(value);
+        TFloat tFloat = new TFloat(value);
 
         PreparedStatement insertStatement = con.prepareStatement("INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tFloatInst.getDataType());
+        insertStatement.setObject(1, tFloat);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement("SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tFloatInst.getDataType());
+        readStatement.setObject(1, tFloat);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tFloatInst, new TFloatInst(retrievedTFloat));
+            assertEquals(tFloat.getTemporal(), retrievedTFloat.getTemporal());
         } else {
             fail("TFloat was not retrieved.");
         }

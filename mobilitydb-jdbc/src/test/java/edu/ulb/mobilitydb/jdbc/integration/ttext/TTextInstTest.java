@@ -16,26 +16,26 @@ import static org.junit.jupiter.api.Assertions.fail;
 class TTextInstTest extends BaseIntegrationTest {
     @Test
     void testStringTimeConstructor() throws Exception {
-        String value = "A@2021-04-08 05:04:45+02";
         ZoneOffset tz = ZoneOffset.of("+02:00");
         OffsetDateTime time = OffsetDateTime.of(2021,4, 8,
                 5, 4, 45, 0, tz);
         TTextInst tTextInst = new TTextInst("A", time);
+        TText tText = new TText(tTextInst);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_ttext (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tTextInst.getDataType());
+        insertStatement.setObject(1, tText);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_ttext WHERE temporaltype=?;");
-        readStatement.setObject(1, tTextInst.getDataType());
+        readStatement.setObject(1, tText);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TText retrievedTText = (TText) rs.getObject(1);
-            assertEquals(tTextInst, new TTextInst(retrievedTText));
+            assertEquals(tText.getTemporal(), retrievedTText.getTemporal());
         } else {
             fail("TText was not retrieved.");
         }
@@ -46,25 +46,23 @@ class TTextInstTest extends BaseIntegrationTest {
     @Test
     void testStringConstructor() throws Exception {
         String value = "A@2021-04-08 05:04:45+02";
-        ZoneOffset tz = ZoneOffset.of("+02:00");
-        OffsetDateTime time = OffsetDateTime.of(2021,4, 8,
-                5, 4, 45, 0, tz);
-        TTextInst tTextInst = new TTextInst(value);
+        
+        TText tText = new TText(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_ttext (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tTextInst.getDataType());
+        insertStatement.setObject(1, tText);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_ttext WHERE temporaltype=?;");
-        readStatement.setObject(1, tTextInst.getDataType());
+        readStatement.setObject(1, tText);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TText retrievedTText = (TText) rs.getObject(1);
-            assertEquals(tTextInst, new TTextInst(retrievedTText));
+            assertEquals(tText.getTemporal(), retrievedTText.getTemporal());
         } else {
             fail("TText was not retrieved.");
         }

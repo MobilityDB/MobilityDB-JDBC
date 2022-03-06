@@ -18,22 +18,22 @@ class TIntSeqSetTest extends BaseIntegrationTest {
         String value = "{[1@2001-01-01 08:00:00+02, 1@2001-01-03 08:00:00+02), " +
                 "[2@2001-01-04 08:00:00+02, 3@2001-01-05 08:00:00+02, 3@2001-01-06 08:00:00+02]}";
 
-        TIntSeqSet tIntSeqSet = new TIntSeqSet(value);
+        TInt tInt = new TInt(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tIntSeqSet.getDataType());
+        insertStatement.setObject(1, tInt);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tint WHERE temporaltype=?;");
-        readStatement.setObject(1, tIntSeqSet.getDataType());
+        readStatement.setObject(1, tInt);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TInt retrievedTInt = (TInt) rs.getObject(1);
-            assertEquals(tIntSeqSet, new TIntSeqSet(retrievedTInt));
+            assertEquals(tInt.getTemporal(), retrievedTInt.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }
@@ -47,21 +47,22 @@ class TIntSeqSetTest extends BaseIntegrationTest {
                 "[2@2001-01-04 08:00:00+02, 3@2001-01-05 08:00:00+02, 3@2001-01-06 08:00:00+02]"};
 
         TIntSeqSet tIntSeqSet = new TIntSeqSet(values);
+        TInt tInt = new TInt(tIntSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tIntSeqSet.getDataType());
+        insertStatement.setObject(1, tInt);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tint WHERE temporaltype=?;");
-        readStatement.setObject(1, tIntSeqSet.getDataType());
+        readStatement.setObject(1, tInt);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TInt retrievedTInt = (TInt) rs.getObject(1);
-            assertEquals(tIntSeqSet, new TIntSeqSet(retrievedTInt));
+            assertEquals(tInt.getTemporal(), retrievedTInt.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }
@@ -75,21 +76,22 @@ class TIntSeqSetTest extends BaseIntegrationTest {
                 new TIntSeq("[2@2001-01-04 08:00:00+02, 3@2001-01-05 08:00:00+02, 3@2001-01-06 08:00:00+02]")};
 
         TIntSeqSet tIntSeqSet = new TIntSeqSet(values);
+        TInt tInt = new TInt(tIntSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tIntSeqSet.getDataType());
+        insertStatement.setObject(1, tInt);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tint WHERE temporaltype=?;");
-        readStatement.setObject(1, tIntSeqSet.getDataType());
+        readStatement.setObject(1, tInt);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TInt retrievedTInt = (TInt) rs.getObject(1);
-            assertEquals(tIntSeqSet, new TIntSeqSet(retrievedTInt));
+            assertEquals(tInt.getTemporal(), retrievedTInt.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }

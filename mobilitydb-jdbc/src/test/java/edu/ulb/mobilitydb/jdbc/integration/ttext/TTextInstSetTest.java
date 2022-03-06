@@ -19,22 +19,22 @@ class TTextInstSetTest extends BaseIntegrationTest {
     void testStringConstructor() throws Exception {
         String value = "{A@2001-01-01 08:00:00+02, B@2001-01-03 08:00:00+02}";
 
-        TTextInstSet tTextInstSet = new TTextInstSet(value);
+        TText tText = new TText(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_ttext (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tTextInstSet.getDataType());
+        insertStatement.setObject(1, tText);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_ttext WHERE temporaltype=?;");
-        readStatement.setObject(1, tTextInstSet.getDataType());
+        readStatement.setObject(1, tText);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TText retrievedTText = (TText) rs.getObject(1);
-            assertEquals(tTextInstSet, new TTextInstSet(retrievedTText));
+            assertEquals(tText.getTemporal(), retrievedTText.getTemporal());
         } else {
             fail("TText was not retrieved.");
         }
@@ -48,21 +48,22 @@ class TTextInstSetTest extends BaseIntegrationTest {
                 "C@2001-01-03 20:20:00+02"};
 
         TTextInstSet tTextInstSet = new TTextInstSet(values);
+        TText tText = new TText(tTextInstSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_ttext (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tTextInstSet.getDataType());
+        insertStatement.setObject(1, tText);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_ttext WHERE temporaltype=?;");
-        readStatement.setObject(1, tTextInstSet.getDataType());
+        readStatement.setObject(1, tText);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TText retrievedTText = (TText) rs.getObject(1);
-            assertEquals(tTextInstSet, new TTextInstSet(retrievedTText));
+            assertEquals(tText.getTemporal(), retrievedTText.getTemporal());
         } else {
             fail("TText was not retrieved.");
         }
@@ -76,21 +77,22 @@ class TTextInstSetTest extends BaseIntegrationTest {
                 new TTextInst("B@2001-01-03 18:00:00+02"), new TTextInst("C@2001-01-03 20:20:00+02")};
 
         TTextInstSet tTextInstSet = new TTextInstSet(values);
+        TText tText = new TText(tTextInstSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_ttext (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tTextInstSet.getDataType());
+        insertStatement.setObject(1, tText);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_ttext WHERE temporaltype=?;");
-        readStatement.setObject(1, tTextInstSet.getDataType());
+        readStatement.setObject(1, tText);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TText retrievedTText = (TText) rs.getObject(1);
-            assertEquals(tTextInstSet, new TTextInstSet(retrievedTText));
+            assertEquals(tText.getTemporal(), retrievedTText.getTemporal());
         } else {
             fail("TText was not retrieved.");
         }

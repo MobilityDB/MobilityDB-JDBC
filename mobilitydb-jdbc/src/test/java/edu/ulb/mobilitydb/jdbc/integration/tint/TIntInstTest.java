@@ -17,7 +17,6 @@ class TIntInstTest extends BaseIntegrationTest {
 
     @Test
     void testIntTimeConstructor() throws Exception {
-        String value = "10@2021-04-08 05:04:45+02";
         ZoneOffset tz = ZoneOffset.of("+02:00");
         OffsetDateTime time = OffsetDateTime.of(2021,4, 8,
                 5, 4, 45, 0, tz);
@@ -48,23 +47,21 @@ class TIntInstTest extends BaseIntegrationTest {
     @Test
     void testStringConstructor() throws Exception {
         String value = "10@2021-04-08 05:04:45+01";
-        ZoneOffset tz = ZoneOffset.of("+02:00");
-        OffsetDateTime time = OffsetDateTime.of(2021,4, 8,
-                5, 4, 45, 0, tz);
-        TIntInst tIntInst = new TIntInst(value);
+
+        TInt tInt = new TInt(value);
 
         PreparedStatement insertStatement = con.prepareStatement("INSERT INTO tbl_tint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tIntInst.getDataType());
+        insertStatement.setObject(1, tInt);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement("SELECT temporaltype FROM tbl_tint WHERE temporaltype=?;");
-        readStatement.setObject(1, tIntInst.getDataType());
+        readStatement.setObject(1, tInt);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TInt retrievedTInt = (TInt) rs.getObject(1);
-            assertEquals(tIntInst, new TIntInst(retrievedTInt));
+            assertEquals(tInt.getTemporal(), retrievedTInt.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }

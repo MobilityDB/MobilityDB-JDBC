@@ -20,23 +20,23 @@ class TFloatSeqSetTest extends BaseIntegrationTest {
     void testStringConstructor() throws Exception {
         String value = "{[100.2@2019-09-08 08:00:00+02, 20.9@2019-09-09 08:00:00+02,20.4@2019-09-10 08:00:00+02]," +
                 "[15.6@2019-09-11 08:00:00+02, 30.7@2019-09-12 08:00:00+02]}";
-
-        TFloatSeqSet tFloatSeqSet = new TFloatSeqSet(value);
+        
+        TFloat tFloat = new TFloat(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tFloatSeqSet.getDataType());
+        insertStatement.setObject(1, tFloat);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tFloatSeqSet.getDataType());
+        readStatement.setObject(1, tFloat);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tFloatSeqSet, new TFloatSeqSet(retrievedTFloat));
+            assertEquals(tFloat.getTemporal(), retrievedTFloat.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }
@@ -50,21 +50,22 @@ class TFloatSeqSetTest extends BaseIntegrationTest {
                 "[15.6@2019-09-11 08:00:00+02, 30.7@2019-09-12 08:00:00+02]"};
 
         TFloatSeqSet tFloatSeqSet = new TFloatSeqSet(values);
+        TFloat tFloat = new TFloat(tFloatSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tFloatSeqSet.getDataType());
+        insertStatement.setObject(1, tFloat);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tFloatSeqSet.getDataType());
+        readStatement.setObject(1, tFloat);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tFloatSeqSet, new TFloatSeqSet(retrievedTFloat));
+            assertEquals(tFloat.getTemporal(), retrievedTFloat.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }
@@ -79,21 +80,22 @@ class TFloatSeqSetTest extends BaseIntegrationTest {
                 new TFloatSeq("[15.6@2019-09-11 08:00:00+02, 30.7@2019-09-12 08:00:00+02]")};
 
         TFloatSeqSet tFloatSeqSet = new TFloatSeqSet(values);
+        TFloat tFloat = new TFloat(tFloatSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tFloatSeqSet.getDataType());
+        insertStatement.setObject(1, tFloat);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tFloatSeqSet.getDataType());
+        readStatement.setObject(1, tFloat);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tFloatSeqSet, new TFloatSeqSet(retrievedTFloat));
+            assertEquals(tFloat.getTemporal(), retrievedTFloat.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }

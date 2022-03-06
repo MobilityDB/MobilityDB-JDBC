@@ -19,22 +19,22 @@ class TGeomPointSeqTest extends BaseIntegrationTest {
         String value = "[Point(10 10)@2019-09-08 09:07:32+04, Point(10 20)@2019-09-09 09:07:32+04," +
                 "Point(20 20)@2019-09-10 09:07:32+04]";
 
-        TGeomPointSeq tGeomPointSeq = new TGeomPointSeq(value);
+        TGeomPoint tGeomPoint = new TGeomPoint(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tgeompoint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tGeomPointSeq.getDataType());
+        insertStatement.setObject(1, tGeomPoint);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tgeompoint WHERE temporaltype=?;");
-        readStatement.setObject(1, tGeomPointSeq.getDataType());
+        readStatement.setObject(1, tGeomPoint);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TGeomPoint retrievedTGeomPoint = (TGeomPoint) rs.getObject(1);
-            assertEquals(tGeomPointSeq, new TGeomPointSeq(retrievedTGeomPoint));
+            assertEquals(tGeomPoint.getTemporal(), retrievedTGeomPoint.getTemporal());
         } else {
             fail("TGeomPoint was not retrieved.");
         }
@@ -48,21 +48,22 @@ class TGeomPointSeqTest extends BaseIntegrationTest {
             "Point(20 20)@2019-09-10 09:07:32+04"};
 
         TGeomPointSeq tGeomPointSeq = new TGeomPointSeq(values);
+        TGeomPoint tGeomPoint = new TGeomPoint(tGeomPointSeq);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tgeompoint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tGeomPointSeq.getDataType());
+        insertStatement.setObject(1, tGeomPoint);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tgeompoint WHERE temporaltype=?;");
-        readStatement.setObject(1, tGeomPointSeq.getDataType());
+        readStatement.setObject(1, tGeomPoint);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TGeomPoint retrievedTGeomPoint = (TGeomPoint) rs.getObject(1);
-            assertEquals(tGeomPointSeq, new TGeomPointSeq(retrievedTGeomPoint));
+            assertEquals(tGeomPoint.getTemporal(), retrievedTGeomPoint.getTemporal());
         } else {
             fail("TGeomPoint was not retrieved.");
         }
@@ -75,21 +76,22 @@ class TGeomPointSeqTest extends BaseIntegrationTest {
         String[] values = new String[] {"Point(10 10)@2019-09-08 09:07:32+04", "Point(10 20)@2019-09-09 09:07:32+04"};
 
         TGeomPointSeq tGeomPointSeq = new TGeomPointSeq(values, true, true);
+        TGeomPoint tGeomPoint = new TGeomPoint(tGeomPointSeq);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tgeompoint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tGeomPointSeq.getDataType());
+        insertStatement.setObject(1, tGeomPoint);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tgeompoint WHERE temporaltype=?;");
-        readStatement.setObject(1, tGeomPointSeq.getDataType());
+        readStatement.setObject(1, tGeomPoint);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TGeomPoint retrievedTGeomPoint = (TGeomPoint) rs.getObject(1);
-            assertEquals(tGeomPointSeq, new TGeomPointSeq(retrievedTGeomPoint));
+            assertEquals(tGeomPoint.getTemporal(), retrievedTGeomPoint.getTemporal());
         } else {
             fail("TGeomPoint was not retrieved.");
         }
@@ -104,21 +106,22 @@ class TGeomPointSeqTest extends BaseIntegrationTest {
                 new TGeomPointInst("Point(20 20)@2019-09-10 09:07:32+04")};
 
         TGeomPointSeq tGeomPointSeq = new TGeomPointSeq(values);
+        TGeomPoint tGeomPoint = new TGeomPoint(tGeomPointSeq);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tgeompoint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tGeomPointSeq.getDataType());
+        insertStatement.setObject(1, tGeomPoint);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tgeompoint WHERE temporaltype=?;");
-        readStatement.setObject(1, tGeomPointSeq.getDataType());
+        readStatement.setObject(1, tGeomPoint);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TGeomPoint retrievedTGeomPoint = (TGeomPoint) rs.getObject(1);
-            assertEquals(tGeomPointSeq, new TGeomPointSeq(retrievedTGeomPoint));
+            assertEquals(tGeomPoint.getTemporal(), retrievedTGeomPoint.getTemporal());
         } else {
             fail("TGeomPoint was not retrieved.");
         }
@@ -133,21 +136,22 @@ class TGeomPointSeqTest extends BaseIntegrationTest {
                 new TGeomPointInst("Point(12 20)@2001-01-03 20:20:00+02")};
 
         TGeomPointSeq tGeomPointSeq = new TGeomPointSeq(values, true, true);
+        TGeomPoint tGeomPoint = new TGeomPoint(tGeomPointSeq);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tgeompoint (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tGeomPointSeq.getDataType());
+        insertStatement.setObject(1, tGeomPoint);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tgeompoint WHERE temporaltype=?;");
-        readStatement.setObject(1, tGeomPointSeq.getDataType());
+        readStatement.setObject(1, tGeomPoint);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TGeomPoint retrievedTGeomPoint = (TGeomPoint) rs.getObject(1);
-            assertEquals(tGeomPointSeq, new TGeomPointSeq(retrievedTGeomPoint));
+            assertEquals(tGeomPoint.getTemporal(), retrievedTGeomPoint.getTemporal());
         } else {
             fail("TGeomPoint was not retrieved.");
         }
