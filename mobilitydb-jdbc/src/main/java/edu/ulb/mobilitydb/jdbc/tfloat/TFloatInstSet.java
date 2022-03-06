@@ -5,26 +5,21 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
-public class TFloatInstSet extends TInstantSet<Float, TFloat> {
-
-    public TFloatInstSet(TFloat temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
+public class TFloatInstSet extends TInstantSet<Float> {
     public TFloatInstSet(String value) throws SQLException {
-        super(TFloat::new, value);
+        super(value, TFloat::getSingleTemporalValue);
     }
 
     public TFloatInstSet(String[] values) throws SQLException {
-        super(TFloat::new, values);
+        super(values, TFloat::getSingleTemporalValue);
     }
 
     public TFloatInstSet(TFloatInst[] values) throws SQLException {
-        super(TFloat::new, values);
+        super(values);
     }
 
     @Override
-    protected Temporal<Float, TFloat> convert(Object obj) {
+    protected Temporal<Float> convert(Object obj) {
         if (obj instanceof TFloatInstSet) {
             return (TFloatInstSet) obj;
         }

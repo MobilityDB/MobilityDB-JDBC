@@ -3,6 +3,7 @@ package edu.ulb.mobilitydb.jdbc.tpoint.tgeom;
 import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
+import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalDataType;
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalType;
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalValue;
@@ -15,7 +16,7 @@ import java.sql.SQLException;
 
 @TypeName(name = "tgeompoint")
 public class TGeomPoint extends DataType implements TemporalDataType<Point> {
-    private TemporalType temporalType;
+    private Temporal<Point> temporal;
 
     public TGeomPoint() { super(); }
 
@@ -24,24 +25,47 @@ public class TGeomPoint extends DataType implements TemporalDataType<Point> {
         setValue(value);
     }
 
+    public TGeomPoint(Temporal<Point> temporal) throws SQLException {
+        super();
+        this.temporal = temporal;
+    }
+
     @Override
     public String getValue() {
-        return value;
+        return temporal.buildValue();
     }
 
     @Override
     public void setValue(String value) throws SQLException {
-        temporalType = TemporalType.getTemporalType(value, this.getClass().getSimpleName());
-        this.value = value;
+        TemporalType temporalType = TemporalType.getTemporalType(value, this.getClass().getSimpleName());
+        switch (temporalType) {
+            case TEMPORAL_INSTANT:
+                temporal = new TGeomPointInst(value);
+                break;
+            case TEMPORAL_INSTANT_SET:
+                temporal = new TGeomPointInstSet(value);
+                break;
+            case TEMPORAL_SEQUENCE:
+                temporal = new TGeomPointSeq(value);
+                break;
+            case TEMPORAL_SEQUENCE_SET:
+                // TODO
+                //temporal = new TGeomPointSeqSet(value);
+                break;
+        }
+    }
+
+    @Override
+    public Temporal<Point> getTemporal() {
+        return temporal;
     }
 
     @Override
     public TemporalType getTemporalType() {
-        return temporalType;
+        return temporal.getTemporalType();
     }
 
-    @Override
-    public TemporalValue<Point> getSingleTemporalValue(String value) throws SQLException {
+    public static TemporalValue<Point> getSingleTemporalValue(String value) throws SQLException {
         String[] values = value.trim().split("@");
         // TODO add validations to the string to avoid null exceptions
         // GeometryBuilder doesn't parse correctly if the geometry type is not in upper case

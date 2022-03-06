@@ -6,34 +6,29 @@ import org.postgis.Point;
 
 import java.sql.SQLException;
 
-public class TGeomPointSeq extends TSequence<Point, TGeomPoint> {
-
-    public TGeomPointSeq(TGeomPoint temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
+public class TGeomPointSeq extends TSequence<Point> {
     public TGeomPointSeq(String value) throws SQLException {
-        super(TGeomPoint::new, value);
+        super(value, TGeomPoint::getSingleTemporalValue);
     }
 
     public TGeomPointSeq(String[] values) throws SQLException {
-        super(TGeomPoint::new, values);
+        super(values, TGeomPoint::getSingleTemporalValue);
     }
 
     public TGeomPointSeq(String[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(TGeomPoint::new, values, lowerInclusive, upperInclusive);
+        super(values, lowerInclusive, upperInclusive, TGeomPoint::getSingleTemporalValue);
     }
 
     public TGeomPointSeq(TGeomPointInst[] values) throws SQLException {
-        super(TGeomPoint::new, values);
+        super(values);
     }
 
     public TGeomPointSeq(TGeomPointInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(TGeomPoint::new, values, lowerInclusive, upperInclusive);
+        super(values, lowerInclusive, upperInclusive);
     }
 
     @Override
-    protected Temporal<Point, TGeomPoint> convert(Object obj) {
+    protected Temporal<Point> convert(Object obj) {
         if (obj instanceof TGeomPointSeq) {
             return (TGeomPointSeq) obj;
         }

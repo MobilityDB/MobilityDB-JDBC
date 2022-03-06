@@ -6,22 +6,17 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
-public class TBoolInst extends TInstant<Boolean, TBool> {
-
-    public TBoolInst(TBool temporal) throws SQLException {
-        super(temporal);
-    }
-
+public class TBoolInst extends TInstant<Boolean> {
     public TBoolInst(String value) throws SQLException {
-        super(TBool::new, value);
+        super(value, TBool::getSingleTemporalValue);
     }
 
     public TBoolInst(boolean value, OffsetDateTime time) throws SQLException {
-        super(TBool::new, value, time);
+        super(value, time);
     }
 
     @Override
-    protected Temporal<Boolean, TBool> convert(Object obj) {
+    protected Temporal<Boolean> convert(Object obj) {
         if (obj instanceof TBoolInst) {
             return (TBoolInst) obj;
         }

@@ -17,23 +17,22 @@ class TBoolSeqSetTest extends BaseIntegrationTest {
     void testStringConstructor() throws Exception {
         String value = "{[True@2019-09-08 08:00:00+02 , False@2019-09-09 08:00:00+02, False@2019-09-10 08:00:00+02]," +
                 "[False@2019-09-11 08:00:00+02, True@2019-09-12 08:00:00+02]}";
-
-        TBoolSeqSet tBoolSeqSet = new TBoolSeqSet(value);
+        TBool tBool = new TBool(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tbool (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tBoolSeqSet.getDataType());
+        insertStatement.setObject(1, tBool);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tbool WHERE temporaltype=?;");
-        readStatement.setObject(1, tBoolSeqSet.getDataType());
+        readStatement.setObject(1, tBool);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TBool retrievedTBool = (TBool) rs.getObject(1);
-            assertEquals(tBoolSeqSet, new TBoolSeqSet(retrievedTBool));
+            assertEquals(tBool.getTemporal(), retrievedTBool.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }
@@ -47,21 +46,22 @@ class TBoolSeqSetTest extends BaseIntegrationTest {
                 "False@2019-09-10 08:00:00+02]", "[False@2019-09-11 08:00:00+02, True@2019-09-12 08:00:00+02]"};
 
         TBoolSeqSet tBoolSeqSet = new TBoolSeqSet(values);
+        TBool tBool = new TBool(tBoolSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tbool (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tBoolSeqSet.getDataType());
+        insertStatement.setObject(1, tBool);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tbool WHERE temporaltype=?;");
-        readStatement.setObject(1, tBoolSeqSet.getDataType());
+        readStatement.setObject(1, tBool);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TBool retrievedTBool = (TBool) rs.getObject(1);
-            assertEquals(tBoolSeqSet, new TBoolSeqSet(retrievedTBool));
+            assertEquals(tBool.getTemporal(), retrievedTBool.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }
@@ -76,21 +76,22 @@ class TBoolSeqSetTest extends BaseIntegrationTest {
                 new TBoolSeq("[False@2019-09-11 08:00:00+02, True@2019-09-12 08:00:00+02]")};
 
         TBoolSeqSet tBoolSeqSet = new TBoolSeqSet(values);
+        TBool tBool = new TBool(tBoolSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tbool (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tBoolSeqSet.getDataType());
+        insertStatement.setObject(1, tBool);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tbool WHERE temporaltype=?;");
-        readStatement.setObject(1, tBoolSeqSet.getDataType());
+        readStatement.setObject(1, tBool);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TBool retrievedTBool = (TBool) rs.getObject(1);
-            assertEquals(tBoolSeqSet, new TBoolSeqSet(retrievedTBool));
+            assertEquals(tBool.getTemporal(), retrievedTBool.getTemporal());
         } else {
             fail("TInt was not retrieved.");
         }

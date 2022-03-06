@@ -6,21 +6,17 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
-public class TIntInst extends TInstant<Integer, TInt> {
-    public TIntInst(TInt temporal) throws SQLException {
-        super(temporal);
-    }
-
+public class TIntInst extends TInstant<Integer> {
     public TIntInst(String value) throws SQLException {
-        super(TInt::new, value);
+        super(value, TInt::getSingleTemporalValue);
     }
 
     public TIntInst(int value, OffsetDateTime time) throws SQLException {
-        super(TInt::new, value, time);
+        super(value, time);
     }
 
     @Override
-    protected Temporal<Integer, TInt> convert(Object obj) {
+    protected Temporal<Integer> convert(Object obj) {
         if (obj instanceof TIntInst) {
             return (TIntInst) obj;
         }

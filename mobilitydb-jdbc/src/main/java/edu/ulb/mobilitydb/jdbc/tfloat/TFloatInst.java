@@ -6,22 +6,17 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
-public class TFloatInst extends TInstant<Float, TFloat> {
-
-    public TFloatInst(TFloat temporal) throws SQLException {
-        super(temporal);
-    }
-
+public class TFloatInst extends TInstant<Float> {
     public TFloatInst(String value) throws SQLException {
-        super(TFloat::new, value);
+        super(value, TFloat::getSingleTemporalValue);
     }
 
     public TFloatInst(float value, OffsetDateTime time) throws SQLException {
-        super(TFloat::new, value, time);
+        super(value, time);
     }
 
     @Override
-    protected Temporal<Float, TFloat> convert(Object obj) {
+    protected Temporal<Float> convert(Object obj) {
         if (obj instanceof TFloatInst) {
             return (TFloatInst) obj;
         }

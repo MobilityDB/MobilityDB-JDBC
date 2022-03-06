@@ -5,34 +5,29 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
-public class TTextSeq extends TSequence<String, TText> {
-
-    public TTextSeq(TText temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
+public class TTextSeq extends TSequence<String> {
     public TTextSeq(String value) throws SQLException {
-        super(TText::new, value);
+        super(value, TText::getSingleTemporalValue);
     }
 
     public TTextSeq(String[] values) throws SQLException {
-        super(TText::new, values);
+        super(values, TText::getSingleTemporalValue);
     }
 
     public TTextSeq(String[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(TText::new, values, lowerInclusive, upperInclusive);
+        super(values, lowerInclusive, upperInclusive, TText::getSingleTemporalValue);
     }
 
     public TTextSeq(TTextInst[] values) throws SQLException {
-        super(TText::new, values);
+        super(values);
     }
 
     public TTextSeq(TTextInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(TText::new, values, lowerInclusive, upperInclusive);
+        super(values, lowerInclusive, upperInclusive);
     }
 
     @Override
-    protected Temporal<String, TText> convert(Object obj) {
+    protected Temporal<String> convert(Object obj) {
         if (obj instanceof TTextSeq) {
             return (TTextSeq) obj;
         }

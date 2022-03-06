@@ -6,25 +6,21 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
-public class TFloatSeqSet extends TSequenceSet<Float, TFloat> {
-    public TFloatSeqSet(TFloat temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
+public class TFloatSeqSet extends TSequenceSet<Float> {
     public TFloatSeqSet(String value) throws SQLException {
-        super(TFloat::new, value);
+        super(value, TFloat::getSingleTemporalValue);
     }
 
     public TFloatSeqSet(String[] values) throws SQLException {
-        super(TFloat::new, values);
+        super(values, TFloat::getSingleTemporalValue);
     }
 
     public TFloatSeqSet(TFloatSeq[] values) throws SQLException {
-        super(TFloat::new, values);
+        super(values, TFloat::getSingleTemporalValue);
     }
 
     @Override
-    protected Temporal<Float, TFloat> convert(Object obj) {
+    protected Temporal<Float> convert(Object obj) {
         if (obj instanceof TFloatSeqSet) {
             return (TFloatSeqSet) obj;
         }

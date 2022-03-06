@@ -7,22 +7,17 @@ import org.postgis.Point;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
-public class TGeomPointInst extends TInstant<Point, TGeomPoint> {
-
-    public TGeomPointInst(TGeomPoint temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
+public class TGeomPointInst extends TInstant<Point> {
     public TGeomPointInst(String value) throws SQLException {
-        super(TGeomPoint::new, value);
+        super(value, TGeomPoint::getSingleTemporalValue);
     }
 
     public TGeomPointInst(Point value, OffsetDateTime time) throws SQLException {
-        super(TGeomPoint::new, value, time);
+        super(value, time);
     }
 
     @Override
-    protected Temporal<Point, TGeomPoint> convert(Object obj) {
+    protected Temporal<Point> convert(Object obj) {
         if (obj instanceof TGeomPointInst) {
             return (TGeomPointInst) obj;
         }

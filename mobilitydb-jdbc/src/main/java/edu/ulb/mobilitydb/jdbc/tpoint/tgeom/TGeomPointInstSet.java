@@ -6,26 +6,21 @@ import org.postgis.Point;
 
 import java.sql.SQLException;
 
-public class TGeomPointInstSet extends TInstantSet<Point, TGeomPoint> {
-
-    public TGeomPointInstSet(TGeomPoint temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
+public class TGeomPointInstSet extends TInstantSet<Point> {
     public TGeomPointInstSet(String value) throws SQLException {
-        super(TGeomPoint::new, value);
+        super(value, TGeomPoint::getSingleTemporalValue);
     }
 
     public TGeomPointInstSet(String[] values) throws SQLException {
-        super(TGeomPoint::new, values);
+        super(values, TGeomPoint::getSingleTemporalValue);
     }
 
     public TGeomPointInstSet(TGeomPointInst[] values) throws SQLException {
-        super(TGeomPoint::new, values);
+        super(values);
     }
 
     @Override
-    protected Temporal<Point, TGeomPoint> convert(Object obj) {
+    protected Temporal<Point> convert(Object obj) {
         if (obj instanceof TGeomPointInstSet) {
             return (TGeomPointInstSet) obj;
         }

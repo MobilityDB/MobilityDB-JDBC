@@ -1,52 +1,32 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
-import edu.ulb.mobilitydb.jdbc.core.DataType;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.function.Supplier;
 
-public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> extends Temporal<V, T> {
-    private List<TemporalValue<V>> temporalValues; //int, bool
+public abstract class TInstantSet<V> extends Temporal<V> {
+    private final List<TemporalValue<V>> temporalValues = new ArrayList<>(); //int, bool
 
-    protected TInstantSet(T temporalDataType) throws SQLException {
+    protected TInstantSet(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT_SET);
-        this.temporalDataType = temporalDataType;
+        parseValue(value, getSingleTemporalValue);
         validate();
-        temporalValues = new ArrayList<>();
-        parseValue(temporalDataType.getValue());
     }
 
-    protected TInstantSet(Supplier<? extends T> tConstructor, String value) throws SQLException {
+    protected TInstantSet(String[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT_SET);
-        temporalDataType = tConstructor.get();
-        temporalDataType.setValue(value);
-        temporalValues = new ArrayList<>();
-        validate();
-        parseValue(value);
-    }
-
-    protected TInstantSet(Supplier<? extends T> tConstructor, String[] values) throws SQLException {
-        super(TemporalType.TEMPORAL_INSTANT_SET);
-        temporalDataType = tConstructor.get();
-        temporalValues = new ArrayList<>();
         for (String val : values) {
-            temporalValues.add(temporalDataType.getSingleTemporalValue(val.trim()));
+            temporalValues.add(getSingleTemporalValue.run(val.trim()));
         }
-        temporalDataType.setValue(buildValue());
         validate();
     }
 
-    protected TInstantSet(Supplier<? extends T> tConstructor, TInstant<V, T>[] values) throws SQLException {
+    protected TInstantSet(TInstant<V>[] values) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT_SET);
-        temporalDataType = tConstructor.get();
-        temporalValues = new ArrayList<>();
-        for (TInstant<V, T> val : values) {
+        for (TInstant<V> val : values) {
             temporalValues.add(val.getTemporalValue());
         }
-        temporalDataType.setValue(buildValue());
         validate();
     }
 
@@ -56,7 +36,7 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
     }
 
     @Override
-    protected String buildValue() {
+    public String buildValue() {
         StringJoiner sj = new StringJoiner(", ");
         for (TemporalValue<V> temp : temporalValues) {
             sj.add(temp.toString());
@@ -64,11 +44,11 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
         return String.format("{%s}", sj.toString());
     }
 
-    private void parseValue(String value) throws SQLException {
+    private void parseValue(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         String newValue = value.replace("{", "").replace("}", "");
         String[] values = newValue.split(",", -1);
         for (String val : values) {
-            temporalValues.add(temporalDataType.getSingleTemporalValue(val.trim()));
+            temporalValues.add(getSingleTemporalValue.run(val.trim()));
         }
     }
 
@@ -79,7 +59,7 @@ public abstract class TInstantSet<V, T extends DataType & TemporalDataType<V>> e
         }
 
         if (getClass() == obj.getClass()) {
-            TInstantSet<V, T> otherTemporal = (TInstantSet<V, T>) convert(obj);
+            TInstantSet<V> otherTemporal = (TInstantSet<V>) convert(obj);
             if (this.temporalValues.size() != otherTemporal.temporalValues.size()) {
                 return false;
             }

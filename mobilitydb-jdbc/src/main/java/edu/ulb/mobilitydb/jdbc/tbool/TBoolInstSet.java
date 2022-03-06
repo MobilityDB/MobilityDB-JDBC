@@ -5,26 +5,21 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
-public class TBoolInstSet extends TInstantSet<Boolean, TBool> {
-
-    public TBoolInstSet(TBool temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
+public class TBoolInstSet extends TInstantSet<Boolean> {
     public TBoolInstSet(String value) throws SQLException {
-        super(TBool::new, value);
+        super(value, TBool::getSingleTemporalValue);
     }
 
     public TBoolInstSet(String[] values) throws SQLException {
-        super(TBool::new, values);
+        super(values, TBool::getSingleTemporalValue);
     }
 
     public TBoolInstSet(TBoolInst[] values) throws SQLException {
-        super(TBool::new, values);
+        super(values);
     }
 
     @Override
-    protected Temporal<Boolean, TBool> convert(Object obj) {
+    protected Temporal<Boolean> convert(Object obj) {
         if (obj instanceof TBoolInstSet) {
             return (TBoolInstSet) obj;
         }

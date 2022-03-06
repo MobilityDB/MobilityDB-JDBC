@@ -1,45 +1,30 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
-import edu.ulb.mobilitydb.jdbc.core.DataType;
-import edu.ulb.mobilitydb.jdbc.core.MobilityDBException;
-
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
-import java.util.function.Supplier;
 
-public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> extends Temporal<V, T> {
-    private TemporalValue<V> temporalValue; //int, bool
+public abstract class TInstant<V> extends Temporal<V> {
+    private final TemporalValue<V> temporalValue; //int, bool
 
-    protected TInstant(T temporalDataType) throws SQLException {
+    protected TInstant(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT);
-        this.temporalDataType = temporalDataType;
+        temporalValue = getSingleTemporalValue.run(value);
         validate();
-        temporalValue = temporalDataType.getSingleTemporalValue(temporalDataType.getValue());
     }
 
-    protected TInstant(Supplier<? extends T> tConstructor, String value) throws SQLException {
+    protected TInstant(V value, OffsetDateTime time) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT);
-        temporalDataType = tConstructor.get();
-        temporalDataType.setValue(value);
-        validate();
-        temporalValue = temporalDataType.getSingleTemporalValue(temporalDataType.getValue());
-    }
-
-    protected TInstant(Supplier<? extends T> tConstructor, V value, OffsetDateTime time) throws SQLException {
-        super(TemporalType.TEMPORAL_INSTANT);
-        temporalDataType = tConstructor.get();
         temporalValue = new TemporalValue<>(value, time);
-        temporalDataType.setValue(temporalValue.toString());
         validate();
     }
 
     @Override
-    protected void validateTemporalDataType() throws MobilityDBException {
+    protected void validateTemporalDataType() throws SQLException {
         // TODO: Implement
     }
 
     @Override
-    protected String buildValue() {
+    public String buildValue() {
         return temporalValue.toString();
     }
 
@@ -54,7 +39,7 @@ public abstract class TInstant<V, T extends DataType & TemporalDataType<V>> exte
         }
 
         if (getClass() == obj.getClass()) {
-            TInstant<V, T> otherTemporal = (TInstant<V, T>) convert(obj);
+            TInstant<V> otherTemporal = (TInstant<V>) convert(obj);
             return this.temporalValue.getValue().equals(otherTemporal.temporalValue.getValue()) &&
                     this.temporalValue.getTime().isEqual(otherTemporal.temporalValue.getTime());
         }

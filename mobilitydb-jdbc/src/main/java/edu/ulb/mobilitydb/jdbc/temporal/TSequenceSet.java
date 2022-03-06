@@ -1,16 +1,14 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
-import edu.ulb.mobilitydb.jdbc.core.DataType;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class TSequenceSet<V,T extends DataType & TemporalDataType<V>> extends Temporal<V,T> {
-    private List<List<TemporalValue<V>>> temporalValues; //int, bool
+public abstract class TSequenceSet<V> extends Temporal<V> {
+    private List<List<TemporalValue<V>>> temporalValues = new ArrayList<>(); //int, bool
     private final List<Boolean> lowerInclusive = new ArrayList<>();
     private final List<Boolean> upperInclusive = new ArrayList<>();
 
@@ -19,42 +17,27 @@ public abstract class TSequenceSet<V,T extends DataType & TemporalDataType<V>> e
     private static final String UPPER_INCLUSIVE = "]";
     private static final String UPPER_EXCLUSIVE = ")";
 
-    protected TSequenceSet(T temporalDataType) throws SQLException {
+    protected TSequenceSet(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE_SET);
-        this.temporalDataType = temporalDataType;
+        parseValue(value, getSingleTemporalValue);
         validate();
-        temporalValues = new ArrayList<>();
-        parseValue(temporalDataType.getValue());
     }
 
-    protected TSequenceSet(Supplier<? extends T> tConstructor, String value) throws SQLException {
+    protected TSequenceSet(String[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
+            throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE_SET);
-        temporalDataType = tConstructor.get();
-        temporalDataType.setValue(value);
-        temporalValues = new ArrayList<>();
-        validate();
-        parseValue(value);
-    }
-
-    protected TSequenceSet(Supplier<? extends T> tConstructor, String[] values) throws SQLException {
-        super(TemporalType.TEMPORAL_SEQUENCE_SET);
-        temporalDataType = tConstructor.get();
-        temporalValues = new ArrayList<>();
         for (String val : values) {
-            parseSequence(val);
+            parseSequence(val, getSingleTemporalValue);
         }
-        temporalDataType.setValue(buildValue());
         validate();
     }
 
-    protected TSequenceSet(Supplier<? extends T> tConstructor, TSequence<V, T>[] values) throws SQLException {
+    protected TSequenceSet(TSequence<V>[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
+            throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE_SET);
-        temporalDataType = tConstructor.get();
-        temporalValues = new ArrayList<>();
-        for (TSequence<V, T> val: values) {
-            parseSequence(val.toString());
+        for (TSequence<V> val: values) {
+            parseSequence(val.toString(), getSingleTemporalValue);
         }
-        temporalDataType.setValue(buildValue());
         validate();
     }
 
@@ -65,7 +48,7 @@ public abstract class TSequenceSet<V,T extends DataType & TemporalDataType<V>> e
     }
 
     @Override
-    protected String buildValue() {
+    public String buildValue() {
         StringJoiner sj = new StringJoiner(", ");
         for (int i = 0; i < temporalValues.size(); i++) {
             List<TemporalValue<V>> tempList = temporalValues.get(i);
@@ -81,7 +64,8 @@ public abstract class TSequenceSet<V,T extends DataType & TemporalDataType<V>> e
         return String.format("{%s}", sj.toString());
     }
 
-    private void parseValue(String value) throws SQLException {
+    private void parseValue(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
+            throws SQLException {
         String newValue = value.replace("{", "").replace("}", "").trim();
         Matcher m = Pattern.compile("[\\[|\\(].*?[^\\]\\)][\\]|\\)]")
                 .matcher(newValue);
@@ -90,11 +74,12 @@ public abstract class TSequenceSet<V,T extends DataType & TemporalDataType<V>> e
             seqValues.add(m.group());
         }
         for (String seq : seqValues) {
-            parseSequence(seq);
+            parseSequence(seq, getSingleTemporalValue);
         }
     }
 
-    private void parseSequence(String value) throws SQLException {
+    private void parseSequence(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
+            throws SQLException {
         String[] values = value.split(",");
 
         if (values[0].startsWith(LOWER_INCLUSIVE)) {
@@ -121,7 +106,7 @@ public abstract class TSequenceSet<V,T extends DataType & TemporalDataType<V>> e
             if (i == values.length - 1) {
                 val = val.substring(0, val.length() - 1);
             }
-            temp.add(temporalDataType.getSingleTemporalValue(val.trim()));
+            temp.add(getSingleTemporalValue.run(val.trim()));
         }
         temporalValues.add(temp);
     }
@@ -133,7 +118,7 @@ public abstract class TSequenceSet<V,T extends DataType & TemporalDataType<V>> e
         }
 
         if (getClass() == obj.getClass()) {
-            TSequenceSet<V, T> otherTemporal = (TSequenceSet<V, T>) convert(obj);
+            TSequenceSet<V> otherTemporal = (TSequenceSet<V>) convert(obj);
 
             if (this.temporalValues.size() != otherTemporal.temporalValues.size()) {
                 return false;

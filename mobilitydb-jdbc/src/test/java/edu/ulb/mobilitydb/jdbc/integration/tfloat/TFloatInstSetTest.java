@@ -16,23 +16,22 @@ class TFloatInstSetTest extends BaseIntegrationTest {
     @Test
     void testStringConstructor() throws Exception {
         String value = "{1.0@2001-01-01 08:00:00+03, 2.0@2001-01-03 08:00:00+03}";
-
-        TFloatInstSet tFloatInstSet = new TFloatInstSet(value);
+        TFloat tFloat = new TFloat(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tFloatInstSet.getDataType());
+        insertStatement.setObject(1, tFloat);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tFloatInstSet.getDataType());
+        readStatement.setObject(1, tFloat);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tFloatInstSet, new TFloatInstSet(retrievedTFloat));
+            assertEquals(tFloat.getTemporal(), retrievedTFloat.getTemporal());
         } else {
             fail("TFloat was not retrieved.");
         }
@@ -46,21 +45,22 @@ class TFloatInstSetTest extends BaseIntegrationTest {
                 "76.6@2001-01-03 20:20:00+03"};
 
         TFloatInstSet tFloatInstSet = new TFloatInstSet(values);
+        TFloat tFloat = new TFloat(tFloatInstSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tFloatInstSet.getDataType());
+        insertStatement.setObject(1, tFloat);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tFloatInstSet.getDataType());
+        readStatement.setObject(1, tFloat);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tFloatInstSet, new TFloatInstSet(retrievedTFloat));
+            assertEquals(tFloat.getTemporal(), retrievedTFloat.getTemporal());
         } else {
             fail("TFloat was not retrieved.");
         }
@@ -74,21 +74,22 @@ class TFloatInstSetTest extends BaseIntegrationTest {
                 new TFloatInst("48.9@2001-01-03 18:00:00+02"), new TFloatInst("76.4@2001-01-03 20:20:00+02")};
 
         TFloatInstSet tFloatInstSet = new TFloatInstSet(values);
+        TFloat tFloat = new TFloat(tFloatInstSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO tbl_tfloat (temporaltype) VALUES (?);");
-        insertStatement.setObject(1, tFloatInstSet.getDataType());
+        insertStatement.setObject(1, tFloat);
         insertStatement.execute();
         insertStatement.close();
 
         PreparedStatement readStatement = con.prepareStatement(
                 "SELECT temporaltype FROM tbl_tfloat WHERE temporaltype=?;");
-        readStatement.setObject(1, tFloatInstSet.getDataType());
+        readStatement.setObject(1, tFloat);
         ResultSet rs = readStatement.executeQuery();
 
         if (rs.next()) {
             TFloat retrievedTFloat = (TFloat) rs.getObject(1);
-            assertEquals(tFloatInstSet, new TFloatInstSet(retrievedTFloat));
+            assertEquals(tFloat.getTemporal(), retrievedTFloat.getTemporal());
         } else {
             fail("TFloat was not retrieved.");
         }

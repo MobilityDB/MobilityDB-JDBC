@@ -14,11 +14,11 @@ public enum TemporalType {
     /**
      * Gets the temporal type based on the string received.
      * @param value The string to be analyzed
-     * @param clazz The name of the calling class
+     * @param temporalDataTypeName The name of the calling class
      * @return TemporalType
      * @throws SQLException
      */
-    public static TemporalType getTemporalType(String value, String clazz) throws SQLException {
+    public static TemporalType getTemporalType(String value, String temporalDataTypeName) throws SQLException {
         if(value.startsWith("Interp=Stepwise;")) {
             if (value.startsWith("{", 16)){
                 return TemporalType.TEMPORAL_SEQUENCE_SET;
@@ -36,7 +36,7 @@ public enum TemporalType {
                 return TemporalType.TEMPORAL_INSTANT_SET;
             }
         } else {
-            throw new SQLException(String.format("Could not parse %s value.", clazz));
+            throw new SQLException(String.format("Could not parse %s value.", temporalDataTypeName));
         }
     }
 }

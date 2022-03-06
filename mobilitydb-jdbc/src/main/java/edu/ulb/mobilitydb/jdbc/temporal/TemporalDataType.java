@@ -4,9 +4,9 @@ import java.sql.SQLException;
 
 /**
  * Interface for Temporal Data Types (eg TInt, TFloat) common methods
- * @param <T>
+ * @param <V>
  */
-public interface TemporalDataType<T> {
+public interface TemporalDataType<V> {
+    Temporal<V> getTemporal();
     TemporalType getTemporalType();
-    TemporalValue<T> getSingleTemporalValue(String value) throws SQLException;
 }

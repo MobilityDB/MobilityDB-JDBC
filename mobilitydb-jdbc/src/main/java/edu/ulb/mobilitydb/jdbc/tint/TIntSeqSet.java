@@ -5,26 +5,21 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
-public class TIntSeqSet extends TSequenceSet<Integer, TInt> {
-
-    public TIntSeqSet(TInt temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
+public class TIntSeqSet extends TSequenceSet<Integer> {
     public TIntSeqSet(String value) throws SQLException {
-        super(TInt::new, value);
+        super(value, TInt::getSingleTemporalValue);
     }
 
     public TIntSeqSet(String[] values) throws SQLException {
-        super(TInt::new, values);
+        super(values, TInt::getSingleTemporalValue);
     }
 
     public TIntSeqSet(TIntSeq[] values) throws SQLException {
-        super(TInt::new, values);
+        super(values, TInt::getSingleTemporalValue);
     }
 
     @Override
-    protected Temporal<Integer, TInt> convert(Object obj) {
+    protected Temporal<Integer> convert(Object obj) {
         if (obj instanceof TIntSeqSet) {
             return (TIntSeqSet) obj;
         }

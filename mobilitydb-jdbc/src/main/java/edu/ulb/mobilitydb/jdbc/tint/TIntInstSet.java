@@ -5,31 +5,25 @@ import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
-public class TIntInstSet extends TInstantSet<Integer, TInt> {
+public class TIntInstSet extends TInstantSet<Integer> {
 
-    //READ
-    public TIntInstSet(TInt temporalDataType) throws SQLException {
-        super(temporalDataType);
-    }
-
-    //WRITE
     //String of "{10@2019-09-08, 20@2019-09-09, 20@2019-09-10}"
     public TIntInstSet(String value) throws SQLException {
-        super(TInt::new, value);
+        super(value, TInt::getSingleTemporalValue);
     }
 
     //Array of strings "10@2019-09-08"
     public TIntInstSet(String[] values) throws SQLException {
-        super(TInt::new, values);
+        super(values, TInt::getSingleTemporalValue);
     }
 
     //Array of TIntInst
     public TIntInstSet(TIntInst[] values) throws SQLException {
-        super(TInt::new, values);
+        super(values);
     }
 
     @Override
-    protected Temporal<Integer, TInt> convert(Object obj) {
+    protected Temporal<Integer> convert(Object obj) {
         if (obj instanceof TIntInstSet) {
             return (TIntInstSet) obj;
         }
