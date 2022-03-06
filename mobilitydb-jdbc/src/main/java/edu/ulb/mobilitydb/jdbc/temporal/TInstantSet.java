@@ -1,11 +1,12 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-public abstract class TInstantSet<V> extends Temporal<V> {
+public abstract class TInstantSet<V extends Serializable> extends Temporal<V> {
     private final List<TemporalValue<V>> temporalValues = new ArrayList<>(); //int, bool
 
     protected TInstantSet(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
@@ -59,16 +60,14 @@ public abstract class TInstantSet<V> extends Temporal<V> {
         }
 
         if (getClass() == obj.getClass()) {
-            TInstantSet<V> otherTemporal = (TInstantSet<V>) convert(obj);
+            TInstantSet<?> otherTemporal = (TInstantSet<?>) obj;
             if (this.temporalValues.size() != otherTemporal.temporalValues.size()) {
                 return false;
             }
             for (int i = 0; i < this.temporalValues.size(); i++) {
                 TemporalValue<V> thisVal = this.temporalValues.get(i);
-                TemporalValue<V> otherVal = otherTemporal.temporalValues.get(i);
-                boolean valueCheck = thisVal.getValue().equals(otherVal.getValue())
-                        && thisVal.getTime().isEqual(otherVal.getTime());
-                if (!valueCheck) {
+                TemporalValue<?> otherVal = otherTemporal.temporalValues.get(i);
+                if (!thisVal.equals(otherVal)) {
                     return false;
                 }
             }

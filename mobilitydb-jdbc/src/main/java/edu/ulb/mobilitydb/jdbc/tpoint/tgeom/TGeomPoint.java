@@ -1,6 +1,5 @@
 package edu.ulb.mobilitydb.jdbc.tpoint.tgeom;
 
-import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
@@ -15,24 +14,16 @@ import org.postgis.binary.BinaryParser;
 import java.sql.SQLException;
 
 @TypeName(name = "tgeompoint")
-public class TGeomPoint extends DataType implements TemporalDataType<Point> {
-    private Temporal<Point> temporal;
-
+public class TGeomPoint extends TemporalDataType<Point> {
     public TGeomPoint() { super(); }
 
     public TGeomPoint(String value) throws SQLException {
-        super();
-        setValue(value);
+        super(value);
     }
 
-    public TGeomPoint(Temporal<Point> temporal) throws SQLException {
+    public TGeomPoint(Temporal<Point> temporal) {
         super();
         this.temporal = temporal;
-    }
-
-    @Override
-    public String getValue() {
-        return temporal.buildValue();
     }
 
     @Override
@@ -53,16 +44,6 @@ public class TGeomPoint extends DataType implements TemporalDataType<Point> {
                 //temporal = new TGeomPointSeqSet(value);
                 break;
         }
-    }
-
-    @Override
-    public Temporal<Point> getTemporal() {
-        return temporal;
-    }
-
-    @Override
-    public TemporalType getTemporalType() {
-        return temporal.getTemporalType();
     }
 
     public static TemporalValue<Point> getSingleTemporalValue(String value) throws SQLException {

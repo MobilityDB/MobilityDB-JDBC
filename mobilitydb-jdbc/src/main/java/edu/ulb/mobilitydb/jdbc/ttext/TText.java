@@ -1,7 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.ttext;
 
 import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
-import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalDataType;
@@ -11,9 +10,7 @@ import edu.ulb.mobilitydb.jdbc.temporal.TemporalValue;
 import java.sql.SQLException;
 
 @TypeName(name = "ttext")
-public class TText extends DataType implements TemporalDataType<String> {
-    private Temporal<String> temporal;
-
+public class TText extends TemporalDataType<String> {
     public TText() {super();}
 
     public TText(final String value) throws SQLException {
@@ -21,14 +18,9 @@ public class TText extends DataType implements TemporalDataType<String> {
         setValue(value);
     }
 
-    public TText(Temporal<String> temporal) throws SQLException {
+    public TText(Temporal<String> temporal) {
         super();
         this.temporal = temporal;
-    }
-
-    @Override
-    public String getValue() {
-        return temporal.buildValue();
     }
 
     @Override
@@ -50,17 +42,7 @@ public class TText extends DataType implements TemporalDataType<String> {
         }
     }
 
-    @Override
-    public Temporal<String> getTemporal() {
-        return temporal;
-    }
-
-    @Override
-    public TemporalType getTemporalType() {
-        return temporal.getTemporalType();
-    }
-
-    public static TemporalValue<String> getSingleTemporalValue(String value) throws SQLException {
+    public static TemporalValue<String> getSingleTemporalValue(String value) {
         String[] values = value.trim().split("@");
         if(values[0].startsWith("\"") && values[0].endsWith("\"")) {
             values[0] = values[0].replace("\"", "");

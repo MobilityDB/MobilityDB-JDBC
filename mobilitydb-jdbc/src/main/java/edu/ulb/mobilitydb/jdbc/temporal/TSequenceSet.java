@@ -1,5 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class TSequenceSet<V> extends Temporal<V> {
+public abstract class TSequenceSet<V extends Serializable> extends Temporal<V> {
     private List<List<TemporalValue<V>>> temporalValues = new ArrayList<>(); //int, bool
     private final List<Boolean> lowerInclusive = new ArrayList<>();
     private final List<Boolean> upperInclusive = new ArrayList<>();
@@ -117,35 +118,34 @@ public abstract class TSequenceSet<V> extends Temporal<V> {
             return false;
         }
 
-        if (getClass() == obj.getClass()) {
-            TSequenceSet<V> otherTemporal = (TSequenceSet<V>) convert(obj);
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
 
-            if (this.temporalValues.size() != otherTemporal.temporalValues.size()) {
+        TSequenceSet<?> otherTemporal = (TSequenceSet<?>) obj;
+
+        if (this.temporalValues.size() != otherTemporal.temporalValues.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < this.temporalValues.size(); i++) {
+            boolean areEqual = lowerInclusive.get(i) == otherTemporal.lowerInclusive.get(i);
+            areEqual = areEqual && upperInclusive.get(i) == otherTemporal.upperInclusive.get(i);
+            areEqual = areEqual && temporalValues.get(i).size() == otherTemporal.temporalValues.get(i).size();
+
+            if (!areEqual) {
                 return false;
             }
 
-            for (int i = 0; i < this.temporalValues.size(); i++) {
-                boolean lowerAreEqual = lowerInclusive.get(i) == otherTemporal.lowerInclusive.get(i);
-                boolean upperAreEqual = upperInclusive.get(i) == otherTemporal.upperInclusive.get(i);
-
-                if ( this.temporalValues.get(i).size() != otherTemporal.temporalValues.get(i).size()
-                        || !lowerAreEqual || ! upperAreEqual) {
+            for (int j = 0; j < temporalValues.get(i).size(); j++) {
+                TemporalValue<V> thisVal = temporalValues.get(i).get(j);
+                TemporalValue<?> otherVal = otherTemporal.temporalValues.get(i).get(j);
+                if (!thisVal.equals(otherVal)) {
                     return false;
                 }
-
-                for (int j = 0; j < temporalValues.get(i).size(); j++) {
-                    TemporalValue<V> thisVal = this.temporalValues.get(i).get(j);
-                    TemporalValue<V> otherVal = otherTemporal.temporalValues.get(i).get(j);
-                    boolean valueCheck = thisVal.getValue().equals(otherVal.getValue())
-                            && thisVal.getTime().isEqual(otherVal.getTime());
-                    if (!valueCheck) {
-                        return false;
-                    }
-                }
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     @Override

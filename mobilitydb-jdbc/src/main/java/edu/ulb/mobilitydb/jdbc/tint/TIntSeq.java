@@ -1,7 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.tint;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TSequence;
-import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
@@ -24,13 +23,5 @@ public class TIntSeq extends TSequence<Integer> {
 
     public TIntSeq(TIntInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
         super(values, lowerInclusive, upperInclusive);
-    }
-
-    @Override
-    protected Temporal<Integer> convert(Object obj) {
-        if (obj instanceof TIntSeq) {
-            return (TIntSeq) obj;
-        }
-        return null;
     }
 }

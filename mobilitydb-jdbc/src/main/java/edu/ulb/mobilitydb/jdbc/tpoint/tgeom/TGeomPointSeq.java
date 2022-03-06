@@ -1,7 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.tpoint.tgeom;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TSequence;
-import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 import org.postgis.Point;
 
 import java.sql.SQLException;
@@ -25,13 +24,5 @@ public class TGeomPointSeq extends TSequence<Point> {
 
     public TGeomPointSeq(TGeomPointInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
         super(values, lowerInclusive, upperInclusive);
-    }
-
-    @Override
-    protected Temporal<Point> convert(Object obj) {
-        if (obj instanceof TGeomPointSeq) {
-            return (TGeomPointSeq) obj;
-        }
-        return null;
     }
 }

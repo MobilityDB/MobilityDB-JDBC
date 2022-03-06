@@ -1,27 +1,28 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
+import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
+
+import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Represents a temporal value that consists in the value and a timestamp
- * @param <T> Could be Integer, Boolean, Float, String, etc
+ * @param <V> Could be Integer, Boolean, Float, String, etc
  */
-public class TemporalValue<T> {
-    private T value;
+public class TemporalValue<V extends Serializable> implements Serializable {
+    private V value;
     private OffsetDateTime time;
-    private static final String FORMAT = "yyyy-MM-dd HH:mm:ssX";
 
-    public TemporalValue(T value, OffsetDateTime time) {
+    public TemporalValue(V value, OffsetDateTime time) {
         this.value = value;
         this.time = time;
     }
 
-    public T getValue() {
+    public V getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public void setValue(V value) {
         this.value = value;
     }
 
@@ -40,7 +41,26 @@ public class TemporalValue<T> {
      */
     @Override
     public String toString() {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
-        return String.format("%s@%s", value, format.format(time));
+        return String.format("%s@%s", value, DateTimeFormatHelper.getStringFormat(time));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj instanceof TemporalValue<?>) {
+            TemporalValue<?> other = (TemporalValue<?>)obj;
+            return value.equals(other.value) && time.isEqual(other.time);
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        String stringValue = toString();
+        return stringValue != null ? stringValue.hashCode() : 0;
     }
 }

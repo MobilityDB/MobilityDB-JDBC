@@ -63,6 +63,7 @@ class TIntInstSetTest extends BaseIntegrationTest {
         if (rs.next()) {
             TInt retrievedTInt = (TInt) rs.getObject(1);
             assertEquals(tInt.getTemporal(), retrievedTInt.getTemporal());
+            assertEquals(tInt, retrievedTInt);
         } else {
             fail("TInt was not retrieved.");
         }

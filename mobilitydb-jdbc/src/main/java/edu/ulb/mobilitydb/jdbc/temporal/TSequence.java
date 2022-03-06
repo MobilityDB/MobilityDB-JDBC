@@ -1,11 +1,12 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-public abstract class TSequence<V> extends Temporal<V> {
+public abstract class TSequence<V extends Serializable> extends Temporal<V> {
     private final List<TemporalValue<V>> temporalValues = new ArrayList<>(); //int, bool
     private boolean lowerInclusive;
     private boolean upperInclusive;
@@ -22,13 +23,7 @@ public abstract class TSequence<V> extends Temporal<V> {
     }
 
     protected TSequence(String[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
-        super(TemporalType.TEMPORAL_SEQUENCE);
-        for (String val : values) {
-            temporalValues.add(getSingleTemporalValue.run(val.trim()));
-        }
-        this.lowerInclusive = true;
-        this.upperInclusive = false;
-        validate();
+        this(values, true, false, getSingleTemporalValue);
     }
 
     protected TSequence(String[] values, boolean lowerInclusive, boolean upperInclusive,
@@ -43,13 +38,7 @@ public abstract class TSequence<V> extends Temporal<V> {
     }
 
     protected TSequence(TInstant<V>[] values) throws SQLException {
-        super(TemporalType.TEMPORAL_SEQUENCE);
-        for (TInstant<V> val : values) {
-            temporalValues.add(val.getTemporalValue());
-        }
-        this.lowerInclusive = true;
-        this.upperInclusive = false;
-        validate();
+        this(values, true, false);
     }
 
     protected TSequence(TInstant<V>[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
@@ -118,7 +107,7 @@ public abstract class TSequence<V> extends Temporal<V> {
         }
 
         if (getClass() == obj.getClass()) {
-            TSequence<V> otherTemporal = (TSequence<V>) convert(obj);
+            TSequence<?> otherTemporal = (TSequence<?>) obj;
             boolean lowerAreEqual = lowerInclusive == otherTemporal.lowerInclusive;
             boolean upperAreEqual = upperInclusive == otherTemporal.upperInclusive;
 
@@ -132,10 +121,8 @@ public abstract class TSequence<V> extends Temporal<V> {
 
             for (int i = 0; i < this.temporalValues.size(); i++) {
                 TemporalValue<V> thisVal = this.temporalValues.get(i);
-                TemporalValue<V> otherVal = otherTemporal.temporalValues.get(i);
-                boolean valueCheck = thisVal.getValue().equals(otherVal.getValue())
-                        && thisVal.getTime().isEqual(otherVal.getTime());
-                if (!valueCheck) {
+                TemporalValue<?> otherVal = otherTemporal.temporalValues.get(i);
+                if (!thisVal.equals(otherVal)) {
                     return false;
                 }
             }

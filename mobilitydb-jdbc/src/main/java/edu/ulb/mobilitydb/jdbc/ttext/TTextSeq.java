@@ -1,7 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.ttext;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TSequence;
-import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
@@ -24,13 +23,5 @@ public class TTextSeq extends TSequence<String> {
 
     public TTextSeq(TTextInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
         super(values, lowerInclusive, upperInclusive);
-    }
-
-    @Override
-    protected Temporal<String> convert(Object obj) {
-        if (obj instanceof TTextSeq) {
-            return (TTextSeq) obj;
-        }
-        return null;
     }
 }

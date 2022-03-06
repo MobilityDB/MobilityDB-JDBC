@@ -1,7 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.tbool;
 
 import edu.ulb.mobilitydb.jdbc.temporal.TSequence;
-import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 
 import java.sql.SQLException;
 
@@ -24,13 +23,5 @@ public class TBoolSeq extends TSequence<Boolean> {
 
     public TBoolSeq(TBoolInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
         super(values, lowerInclusive, upperInclusive);
-    }
-
-    @Override
-    protected Temporal<Boolean> convert(Object obj) {
-        if (obj instanceof TBoolSeq) {
-            return (TBoolSeq) obj;
-        }
-        return null;
     }
 }

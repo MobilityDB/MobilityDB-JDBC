@@ -1,7 +1,6 @@
 package edu.ulb.mobilitydb.jdbc.tbool;
 
 import edu.ulb.mobilitydb.jdbc.core.DateTimeFormatHelper;
-import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
 import edu.ulb.mobilitydb.jdbc.temporal.TemporalDataType;
@@ -11,26 +10,18 @@ import edu.ulb.mobilitydb.jdbc.temporal.TemporalValue;
 import java.sql.SQLException;
 
 @TypeName(name = "tbool")
-public class TBool extends DataType implements TemporalDataType<Boolean> {
-    private Temporal<Boolean> temporal;
-
+public class TBool extends TemporalDataType<Boolean> {
     public TBool() {
         super();
     }
 
     public TBool(final String value) throws SQLException {
-        super();
-        setValue(value);
+        super(value);
     }
 
-    public TBool(Temporal<Boolean> temporal) throws SQLException {
+    public TBool(Temporal<Boolean> temporal) {
         super();
         this.temporal = temporal;
-    }
-
-    @Override
-    public String getValue() {
-        return temporal.buildValue();
     }
 
     @Override
@@ -52,18 +43,8 @@ public class TBool extends DataType implements TemporalDataType<Boolean> {
         }
     }
 
-    @Override
-    public Temporal<Boolean> getTemporal() {
-        return temporal;
-    }
-
-    @Override
-    public TemporalType getTemporalType() {
-        return temporal.getTemporalType();
-    }
-
-    public static TemporalValue<Boolean> getSingleTemporalValue(String value) throws SQLException {
-        Boolean b;
+    public static TemporalValue<Boolean> getSingleTemporalValue(String value) {
+        boolean b;
         String[] values = value.trim().split("@");
         if(values[0].length() == 1) {
             b = values[0].equals("t");

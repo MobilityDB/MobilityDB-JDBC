@@ -1,9 +1,10 @@
 package edu.ulb.mobilitydb.jdbc.temporal;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 
-public abstract class TInstant<V> extends Temporal<V> {
+public abstract class TInstant<V extends Serializable> extends Temporal<V> {
     private final TemporalValue<V> temporalValue; //int, bool
 
     protected TInstant(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
@@ -39,9 +40,8 @@ public abstract class TInstant<V> extends Temporal<V> {
         }
 
         if (getClass() == obj.getClass()) {
-            TInstant<V> otherTemporal = (TInstant<V>) convert(obj);
-            return this.temporalValue.getValue().equals(otherTemporal.temporalValue.getValue()) &&
-                    this.temporalValue.getTime().isEqual(otherTemporal.temporalValue.getTime());
+            TInstant<?> otherTemporal = (TInstant<?>) obj;
+            return this.temporalValue.equals(otherTemporal.temporalValue);
         }
         return false;
     }
