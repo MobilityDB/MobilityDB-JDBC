@@ -6,6 +6,7 @@ import edu.ulb.mobilitydb.jdbc.core.DataType;
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 import edu.ulb.mobilitydb.jdbc.tbool.TBool;
 import edu.ulb.mobilitydb.jdbc.tfloat.TFloat;
+import edu.ulb.mobilitydb.jdbc.tpoint.tgeog.TGeogPoint;
 import edu.ulb.mobilitydb.jdbc.tpoint.tgeom.TGeomPoint;
 import edu.ulb.mobilitydb.jdbc.time.Period;
 import edu.ulb.mobilitydb.jdbc.time.PeriodSet;
@@ -34,6 +35,7 @@ public enum DataTypeHandler {
         types.add(TFloat.class);
         types.add(TText.class);
         types.add(TGeomPoint.class);
+        types.add(TGeogPoint.class);
     }
 
     public void registerTypes(PGConnection connection) throws SQLException {

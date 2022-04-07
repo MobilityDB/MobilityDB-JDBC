@@ -19,7 +19,7 @@ public abstract class Temporal<V> implements Serializable {
     }
 
     /**
-     * Throws an MobilityDBException if Temporal data type is not valid
+     * Throws an SQLException if Temporal data type is not valid
      * @throws SQLException
      */
     protected abstract void validateTemporalDataType() throws SQLException;

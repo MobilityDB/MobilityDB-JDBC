@@ -19,7 +19,8 @@ public abstract class BaseIntegrationTest {
 
     private static final String[] timeTypes = new String[] { "period", "periodset", "timestampset" };
     private static final String[] boxTypes = new String[] { "tbox", "stbox" };
-    private static final String[] temporalTypes = new String[] { "tint", "tbool", "tfloat", "ttext", "tgeompoint" };
+    private static final String[] temporalTypes = new String[] { "tint", "tbool", "tfloat", "ttext", "tgeompoint",
+            "tgeogpoint"};
 
     @BeforeAll
     static void connectionSetup() throws SQLException {

@@ -1,4 +1,4 @@
-package edu.ulb.mobilitydb.jdbc.tpoint.tgeom;
+package edu.ulb.mobilitydb.jdbc.tpoint.tgeog;
 
 import edu.ulb.mobilitydb.jdbc.core.TypeName;
 import edu.ulb.mobilitydb.jdbc.temporal.Temporal;
@@ -6,18 +6,17 @@ import edu.ulb.mobilitydb.jdbc.temporal.TemporalType;
 import edu.ulb.mobilitydb.jdbc.tpoint.TPoint;
 import org.postgis.Point;
 
-
 import java.sql.SQLException;
 
-@TypeName(name = "tgeompoint")
-public class TGeomPoint extends TPoint {
-    public TGeomPoint() { super(); }
+@TypeName(name = "tgeogpoint")
+public class TGeogPoint extends TPoint {
+    public TGeogPoint() { super(); }
 
-    public TGeomPoint(String value) throws SQLException {
+    public TGeogPoint(String value) throws SQLException {
         super(value);
     }
 
-    public TGeomPoint(Temporal<Point> temporal) {
+    public TGeogPoint(Temporal<Point> temporal) {
         super(temporal);
     }
 
@@ -26,17 +25,17 @@ public class TGeomPoint extends TPoint {
         TemporalType temporalType = TemporalType.getTemporalType(value, this.getClass().getSimpleName());
         switch (temporalType) {
             case TEMPORAL_INSTANT:
-                temporal = new TGeomPointInst(value);
+                temporal = new TGeogPointInst(value);
                 break;
             case TEMPORAL_INSTANT_SET:
-                temporal = new TGeomPointInstSet(value);
+                temporal = new TGeogPointInstSet(value);
                 break;
             case TEMPORAL_SEQUENCE:
-                temporal = new TGeomPointSeq(value);
+                temporal = new TGeogPointSeq(value);
                 break;
             case TEMPORAL_SEQUENCE_SET:
                 // TODO
-                //temporal = new TGeomPointSeqSet(value);
+                //temporal = new TGeogPointSeqSet(value);
                 break;
         }
     }
