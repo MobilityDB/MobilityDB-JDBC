@@ -23,7 +23,7 @@ test {
     useJUnitPlatform()
 
     filter {
-        includeTestsMatching("edu.ulb.mobilitydb.jdbc.unit.*")
+        includeTestsMatching("com.mobilitydb.jdbc.unit.*")
     }
     finalizedBy jacocoTestReport
 }
@@ -39,7 +39,7 @@ task integrationTests(type: Test) {
     useJUnitPlatform()
 
     filter {
-        includeTestsMatching("edu.ulb.mobilitydb.jdbc.integration.*")
+        includeTestsMatching("com.mobilitydb.jdbc.integration.*")
     }
 }
 

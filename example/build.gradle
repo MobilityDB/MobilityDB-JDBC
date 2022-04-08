@@ -2,10 +2,10 @@ plugins {
     id 'application'
 }
 
-group 'edu.ulb.mobilitydb'
+group 'com.mobilitydb'
 version '1.0-SNAPSHOT'
 
-mainClassName = 'edu.ulb.mobilitydb.example.Main'
+mainClassName = 'com.mobilitydb.example.Main'
 
 repositories {
     mavenCentral()
