@@ -13,13 +13,13 @@ import java.sql.SQLException;
 
 public abstract class TPoint extends TemporalDataType<Point> {
 
-    public TPoint() { super(); }
+    protected TPoint() { super(); }
 
-    public TPoint(String value) throws SQLException {
+    protected TPoint(String value) throws SQLException {
         super(value);
     }
 
-    public TPoint(Temporal<Point> temporal) {
+    protected TPoint(Temporal<Point> temporal) {
         super();
         this.temporal = temporal;
     }

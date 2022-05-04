@@ -35,8 +35,7 @@ public class TGeomPoint extends TPoint {
                 temporal = new TGeomPointSeq(value);
                 break;
             case TEMPORAL_SEQUENCE_SET:
-                // TODO
-                //temporal = new TGeomPointSeqSet(value);
+                temporal = new TGeomPointSeqSet(value);
                 break;
         }
     }
