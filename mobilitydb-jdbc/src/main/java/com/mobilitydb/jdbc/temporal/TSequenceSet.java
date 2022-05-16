@@ -113,6 +113,17 @@ public abstract class TSequenceSet<V extends Serializable> extends Temporal<V> {
     }
 
     @Override
+    public List<V> getValues() {
+        List<V> values = new ArrayList<>();
+        for (List<TemporalValue<V>> tempList : temporalValues) {
+            for (TemporalValue<V> temp : tempList) {
+                values.add(temp.getValue());
+            }
+        }
+        return values;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;

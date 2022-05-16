@@ -2,12 +2,13 @@ package com.mobilitydb.jdbc.temporal;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Wraps a Temporal data type
  * @param <V> - Base type of the temporal data type eg. Integer, Boolean
  */
-public abstract class Temporal<V> implements Serializable {
+public abstract class Temporal<V extends Serializable> implements Serializable {
     protected TemporalType temporalType;
 
     protected Temporal(TemporalType temporalType) {
@@ -25,6 +26,8 @@ public abstract class Temporal<V> implements Serializable {
     protected abstract void validateTemporalDataType() throws SQLException;
 
     public abstract String buildValue();
+
+    public abstract List<V> getValues();
 
     public TemporalType getTemporalType() {
         return temporalType;

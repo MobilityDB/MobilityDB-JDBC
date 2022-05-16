@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TGeogPointInstTest extends BaseIntegrationTest {
+class TGeogPointInstTest extends BaseIntegrationTest {
     //TODO Fix tests (SRID)
     /*@Test
     void testIntConstructor() throws Exception {

@@ -2,7 +2,6 @@ package com.mobilitydb.jdbc.tpoint.tgeom;
 
 import com.mobilitydb.jdbc.temporal.TSequenceSet;
 import com.mobilitydb.jdbc.tpoint.TPoint;
-import com.mobilitydb.jdbc.tpoint.tgeog.TGeogPointSeq;
 import org.postgis.Point;
 
 import java.sql.SQLException;
