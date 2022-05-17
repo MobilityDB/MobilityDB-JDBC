@@ -10,19 +10,21 @@ public class TGeomPointSeq extends TSequence<Point> {
         super(value, TGeomPoint::getSingleTemporalValue);
     }
 
-    public TGeomPointSeq(String[] values) throws SQLException {
-        super(values, TGeomPoint::getSingleTemporalValue);
+    public TGeomPointSeq(boolean isStepwise, String[] values) throws SQLException {
+        super(isStepwise, values, TGeomPoint::getSingleTemporalValue);
     }
 
-    public TGeomPointSeq(String[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(values, lowerInclusive, upperInclusive, TGeomPoint::getSingleTemporalValue);
+    public TGeomPointSeq(boolean isStepwise, String[] values, boolean lowerInclusive, boolean upperInclusive)
+            throws SQLException {
+        super(isStepwise, values, lowerInclusive, upperInclusive, TGeomPoint::getSingleTemporalValue);
     }
 
-    public TGeomPointSeq(TGeomPointInst[] values) throws SQLException {
-        super(values);
+    public TGeomPointSeq(boolean isStepwise, TGeomPointInst[] values) throws SQLException {
+        super(isStepwise, values);
     }
 
-    public TGeomPointSeq(TGeomPointInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(values, lowerInclusive, upperInclusive);
+    public TGeomPointSeq(boolean isStepwise, TGeomPointInst[] values, boolean lowerInclusive, boolean upperInclusive)
+            throws SQLException {
+        super(isStepwise, values, lowerInclusive, upperInclusive);
     }
 }

@@ -10,11 +10,13 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
     private final List<TemporalValue<V>> temporalValues = new ArrayList<>(); //int, bool
     private boolean lowerInclusive;
     private boolean upperInclusive;
+    protected boolean isStepwise;
 
     private static final String LOWER_INCLUSIVE = "[";
     private static final String LOWER_EXCLUSIVE = "(";
     private static final String UPPER_INCLUSIVE = "]";
     private static final String UPPER_EXCLUSIVE = ")";
+    private static final String STEPWISE = "Interp=Stepwise;";
 
     protected TSequence(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
@@ -22,11 +24,12 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         validate();
     }
 
-    protected TSequence(String[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
-        this(values, true, false, getSingleTemporalValue);
+    protected TSequence(boolean isStepwise, String[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
+            throws SQLException {
+        this(isStepwise, values, true, false, getSingleTemporalValue);
     }
 
-    protected TSequence(String[] values, boolean lowerInclusive, boolean upperInclusive,
+    protected TSequence(boolean isStepwise, String[] values, boolean lowerInclusive, boolean upperInclusive,
                         GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         for (String val : values) {
@@ -34,26 +37,35 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         }
         this.lowerInclusive = lowerInclusive;
         this.upperInclusive = upperInclusive;
+        this.isStepwise = isStepwise;
         validate();
     }
 
-    protected TSequence(TInstant<V>[] values) throws SQLException {
-        this(values, true, false);
+    protected TSequence(boolean isStepwise, TInstant<V>[] values) throws SQLException {
+        this(isStepwise, values, true, false);
     }
 
-    protected TSequence(TInstant<V>[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
+    protected TSequence(boolean isStepwise, TInstant<V>[] values, boolean lowerInclusive, boolean upperInclusive)
+            throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         for (TInstant<V> val : values) {
             temporalValues.add(val.getTemporalValue());
         }
         this.lowerInclusive = lowerInclusive;
         this.upperInclusive = upperInclusive;
+        this.isStepwise = isStepwise;
         validate();
     }
 
     private void parseValue(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
             throws SQLException {
         String[] values = value.split(",");
+
+        // TODO: Investigate if case insensitive comparison is required
+        if (values[0].startsWith(STEPWISE)) {
+            isStepwise = true;
+            values[0] = values[0].substring(STEPWISE.length());
+        }
 
         if (values[0].startsWith(LOWER_INCLUSIVE)) {
             this.lowerInclusive = true;
@@ -88,13 +100,20 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         // TODO: Implement
     }
 
+    protected boolean explicitInterpolation() {
+        return true;
+    }
+
     @Override
     public String buildValue() {
         StringJoiner sj = new StringJoiner(", ");
+
         for (TemporalValue<V> temp : temporalValues) {
             sj.add(temp.toString());
         }
-        return String.format("%s%s%s",
+
+        return String.format("%s%s%s%s",
+                isStepwise && explicitInterpolation() ? STEPWISE: "",
                 lowerInclusive ? LOWER_INCLUSIVE : LOWER_EXCLUSIVE,
                 sj.toString(),
                 upperInclusive ? UPPER_INCLUSIVE : UPPER_EXCLUSIVE);
@@ -117,6 +136,11 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
 
         if (getClass() == obj.getClass()) {
             TSequence<?> otherTemporal = (TSequence<?>) obj;
+
+            if (isStepwise != otherTemporal.isStepwise) {
+                return false;
+            }
+
             boolean lowerAreEqual = lowerInclusive == otherTemporal.lowerInclusive;
             boolean upperAreEqual = upperInclusive == otherTemporal.upperInclusive;
 

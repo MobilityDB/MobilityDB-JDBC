@@ -11,19 +11,21 @@ public class TGeogPointSeq extends TSequence<Point> {
         super(value, TGeogPoint::getSingleTemporalValue);
     }
 
-    public TGeogPointSeq(String[] values) throws SQLException {
-        super(values, TGeogPoint::getSingleTemporalValue);
+    public TGeogPointSeq(boolean isStepwise, String[] values) throws SQLException {
+        super(isStepwise, values, TGeogPoint::getSingleTemporalValue);
     }
 
-    public TGeogPointSeq(String[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(values, lowerInclusive, upperInclusive, TPoint::getSingleTemporalValue);
+    public TGeogPointSeq(boolean isStepwise, String[] values, boolean lowerInclusive, boolean upperInclusive)
+            throws SQLException {
+        super(isStepwise, values, lowerInclusive, upperInclusive, TPoint::getSingleTemporalValue);
     }
 
-    public TGeogPointSeq(TGeogPointInst[] values) throws SQLException {
-        super(values);
+    public TGeogPointSeq(boolean isStepwise, TGeogPointInst[] values) throws SQLException {
+        super(isStepwise, values);
     }
 
-    public TGeogPointSeq(TGeogPointInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(values, lowerInclusive, upperInclusive);
+    public TGeogPointSeq(boolean isStepwise, TGeogPointInst[] values, boolean lowerInclusive, boolean upperInclusive)
+            throws SQLException {
+        super(isStepwise, values, lowerInclusive, upperInclusive);
     }
 }

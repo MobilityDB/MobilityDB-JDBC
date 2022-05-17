@@ -6,6 +6,8 @@ import com.mobilitydb.jdbc.tpoint.tgeog.TGeogPointSeq;
 import com.mobilitydb.jdbc.integration.BaseIntegrationTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,11 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class TGeogPointSeqTest extends BaseIntegrationTest {
-    @Test
-    void testStringConstructor() throws Exception {
-        String value = "[SRID=4326;Point(10 10)@2019-09-08 09:07:32+04, SRID=4326;Point(10 20)@2019-09-09 09:07:32+04," +
-                "SRID=4326;Point(20 20)@2019-09-10 09:07:32+04]";
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "[SRID=4326;Point(10 10)@2019-09-08 09:07:32+04, SRID=4326;Point(10 20)@2019-09-09 09:07:32+04," +
+                    "SRID=4326;Point(20 20)@2019-09-10 09:07:32+04]",
+            "Interp=Stepwise;[SRID=4326;Point(10 10)@2019-09-08 09:07:32+04, " +
+                    "SRID=4326;Point(10 20)@2019-09-09 09:07:32+04," +
+                    "SRID=4326;Point(20 20)@2019-09-10 09:07:32+04]"
+    })
+    void testStringConstructor(String value) throws Exception {
         TGeogPoint tGeogPoint = new TGeogPoint(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
@@ -47,7 +53,7 @@ class TGeogPointSeqTest extends BaseIntegrationTest {
         String[] values = new String[] {"SRID=4326;Point(10 10)@2019-09-08 09:07:32+04",
                 "SRID=4326;Point(10 20)@2019-09-09 09:07:32+04", "SRID=4326;Point(20 20)@2019-09-10 09:07:32+04"};
 
-        TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(values);
+        TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(false, values);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeq);
 
         PreparedStatement insertStatement = con.prepareStatement(
@@ -76,7 +82,7 @@ class TGeogPointSeqTest extends BaseIntegrationTest {
         String[] values = new String[] {"SRID=4326;Point(10 10)@2019-09-08 09:07:32+04",
                 "SRID=4326;Point(10 20)@2019-09-09 09:07:32+04"};
 
-        TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(values, true, true);
+        TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(false, values, true, true);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeq);
 
         PreparedStatement insertStatement = con.prepareStatement(
@@ -107,7 +113,7 @@ class TGeogPointSeqTest extends BaseIntegrationTest {
                 new TGeogPointInst("SRID=4326;Point(10 20)@2019-09-09 09:07:32+04"),
                 new TGeogPointInst("SRID=4326;Point(20 20)@2019-09-10 09:07:32+04")};
 
-        TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(values);
+        TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(false, values);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeq);
 
         PreparedStatement insertStatement = con.prepareStatement(
@@ -138,7 +144,7 @@ class TGeogPointSeqTest extends BaseIntegrationTest {
                 new TGeogPointInst("SRID=4326;Point(10 20)@2001-01-03 18:00:00+02"),
                 new TGeogPointInst("SRID=4326;Point(12 20)@2001-01-03 20:20:00+02")};
 
-        TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(values, true, true);
+        TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(false, values, true, true);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeq);
 
         PreparedStatement insertStatement = con.prepareStatement(

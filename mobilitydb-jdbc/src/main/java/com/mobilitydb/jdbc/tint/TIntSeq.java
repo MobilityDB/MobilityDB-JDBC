@@ -4,24 +4,33 @@ import com.mobilitydb.jdbc.temporal.TSequence;
 
 import java.sql.SQLException;
 
+/**
+ * By Default Interpolation is stepwise
+ */
 public class TIntSeq extends TSequence<Integer> {
     public TIntSeq(String value) throws SQLException {
         super(value, TInt::getSingleTemporalValue);
+        isStepwise = true;
     }
 
     public TIntSeq(String[] values) throws SQLException {
-        super(values, TInt::getSingleTemporalValue);
+        super(true, values, TInt::getSingleTemporalValue);
     }
 
     public TIntSeq(String[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(values, lowerInclusive, upperInclusive, TInt::getSingleTemporalValue);
+        super(true, values, lowerInclusive, upperInclusive, TInt::getSingleTemporalValue);
     }
 
     public TIntSeq(TIntInst[] values) throws SQLException {
-        super(values);
+        super(true, values);
     }
 
     public TIntSeq(TIntInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(values, lowerInclusive, upperInclusive);
+        super(true, values, lowerInclusive, upperInclusive);
+    }
+
+    @Override
+    protected boolean explicitInterpolation() {
+        return false;
     }
 }
