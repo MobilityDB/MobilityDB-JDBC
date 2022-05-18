@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class TIntSeq extends TSequence<Integer> {
     public TIntSeq(String value) throws SQLException {
         super(value, TInt::getSingleTemporalValue);
-        isStepwise = true;
+        stepwise = true;
     }
 
     public TIntSeq(String[] values) throws SQLException {

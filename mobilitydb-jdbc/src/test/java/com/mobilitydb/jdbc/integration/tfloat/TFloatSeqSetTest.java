@@ -5,6 +5,8 @@ import com.mobilitydb.jdbc.integration.BaseIntegrationTest;
 import com.mobilitydb.jdbc.tfloat.TFloatSeq;
 import com.mobilitydb.jdbc.tfloat.TFloatSeqSet;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,11 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class TFloatSeqSetTest extends BaseIntegrationTest {
-    @Test
-    void testStringConstructor() throws Exception {
-        String value = "{[100.2@2019-09-08 08:00:00+02, 20.9@2019-09-09 08:00:00+02,20.4@2019-09-10 08:00:00+02]," +
-                "[15.6@2019-09-11 08:00:00+02, 30.7@2019-09-12 08:00:00+02]}";
-        
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{[100.2@2019-09-08 08:00:00+02, 20.9@2019-09-09 08:00:00+02,20.4@2019-09-10 08:00:00+02]," +
+                    "[15.6@2019-09-11 08:00:00+02, 30.7@2019-09-12 08:00:00+02]}",
+            "Interp=Stepwise;{[100.2@2019-09-08 08:00:00+02, " +
+                    "20.9@2019-09-09 08:00:00+02,20.4@2019-09-10 08:00:00+02]," +
+                    "[15.6@2019-09-11 08:00:00+02, 30.7@2019-09-12 08:00:00+02]}"
+    })
+    void testStringConstructor(String value) throws Exception {
         TFloat tFloat = new TFloat(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
@@ -46,7 +52,7 @@ class TFloatSeqSetTest extends BaseIntegrationTest {
         String[] values = new String[] {"[100.2@2019-09-08 08:00:00+02, 20.9@2019-09-09 08:00:00+02]",
                 "[15.6@2019-09-11 08:00:00+02, 30.7@2019-09-12 08:00:00+02]"};
 
-        TFloatSeqSet tFloatSeqSet = new TFloatSeqSet(values);
+        TFloatSeqSet tFloatSeqSet = new TFloatSeqSet(false, values);
         TFloat tFloat = new TFloat(tFloatSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
@@ -76,7 +82,7 @@ class TFloatSeqSetTest extends BaseIntegrationTest {
                 "20.9@2019-09-09 08:00:00+02,20.4@2019-09-10 08:00:00+02]"),
                 new TFloatSeq("[15.6@2019-09-11 08:00:00+02, 30.7@2019-09-12 08:00:00+02]")};
 
-        TFloatSeqSet tFloatSeqSet = new TFloatSeqSet(values);
+        TFloatSeqSet tFloatSeqSet = new TFloatSeqSet(false, values);
         TFloat tFloat = new TFloat(tFloatSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(

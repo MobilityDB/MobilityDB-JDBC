@@ -11,11 +11,11 @@ public class TGeomPointSeqSet extends TSequenceSet<Point> {
         super(value, TPoint::getSingleTemporalValue);
     }
 
-    public TGeomPointSeqSet(String[] values) throws SQLException {
-        super(values, TPoint::getSingleTemporalValue);
+    public TGeomPointSeqSet(boolean stepwise, String[] values) throws SQLException {
+        super(stepwise, values, TPoint::getSingleTemporalValue);
     }
 
-    public TGeomPointSeqSet(TGeomPointSeq[] values) throws SQLException {
-        super(values, TPoint::getSingleTemporalValue);
+    public TGeomPointSeqSet(boolean stepwise, TGeomPointSeq[] values) throws SQLException {
+        super(stepwise, values, TPoint::getSingleTemporalValue);
     }
 }

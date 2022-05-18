@@ -6,6 +6,8 @@ import com.mobilitydb.jdbc.tpoint.tgeog.TGeogPointSeq;
 import com.mobilitydb.jdbc.tpoint.tgeog.TGeogPointSeqSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,13 +18,18 @@ class TGeogPointSeqSetTest extends BaseIntegrationTest {
     // TODO: Fix test without SRID
     // TODO: Fix pars of non binary string value eg POINT(1 1)
     // TODO: Review sequence with more than 2 instances
-    @Test
-    void testStringConstructor() throws Exception {
-        String value = "{[SRID=4326;010100000000000000000000000000000000000000@2001-01-01 08:00:00+02, " +
-                "SRID=4326;010100000000000000000000000000000000000000@2001-01-03 08:00:00+02), " +
-                "[SRID=4326;010100000000000000000000000000000000000000@2001-01-04 08:00:00+02, " +
-                "SRID=4326;010100000000000000000000000000000000000000@2001-01-06 08:00:00+02]}";
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{[SRID=4326;010100000000000000000000000000000000000000@2001-01-01 08:00:00+02, " +
+                    "SRID=4326;010100000000000000000000000000000000000000@2001-01-03 08:00:00+02), " +
+                    "[SRID=4326;010100000000000000000000000000000000000000@2001-01-04 08:00:00+02, " +
+                    "SRID=4326;010100000000000000000000000000000000000000@2001-01-06 08:00:00+02]}",
+            "Interp=Stepwise;{[SRID=4326;010100000000000000000000000000000000000000@2001-01-01 08:00:00+02, " +
+                    "SRID=4326;010100000000000000000000000000000000000000@2001-01-03 08:00:00+02), " +
+                    "[SRID=4326;010100000000000000000000000000000000000000@2001-01-04 08:00:00+02, " +
+                    "SRID=4326;010100000000000000000000000000000000000000@2001-01-06 08:00:00+02]}"
+    })
+    void testStringConstructor(String value) throws Exception {
         TGeogPoint tGeogPoint = new TGeogPoint(value);
 
         PreparedStatement insertStatement = con.prepareStatement(
@@ -53,7 +60,7 @@ class TGeogPointSeqSetTest extends BaseIntegrationTest {
             "[SRID=4326;Point(20 10)@2001-01-04 08:00:00+02, SRID=4326;Point(20 20)@2001-01-06 08:00:00+02]"
         };
 
-        TGeogPointSeqSet tGeogPointSeqSet = new TGeogPointSeqSet(values);
+        TGeogPointSeqSet tGeogPointSeqSet = new TGeogPointSeqSet(false, values);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(
@@ -84,7 +91,7 @@ class TGeogPointSeqSetTest extends BaseIntegrationTest {
             new TGeogPointSeq("[SRID=4326;Point(20 10)@2001-01-04 08:00:00+02, SRID=4326;Point(20 20)@2001-01-06 08:00:00+02]")
         };
 
-        TGeogPointSeqSet tGeogPointSeqSet = new TGeogPointSeqSet(values);
+        TGeogPointSeqSet tGeogPointSeqSet = new TGeogPointSeqSet(false, values);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeqSet);
 
         PreparedStatement insertStatement = con.prepareStatement(

@@ -7,13 +7,19 @@ import java.sql.SQLException;
 public class TTextSeqSet extends TSequenceSet<String> {
     public TTextSeqSet(String value) throws SQLException {
         super(value, TText::getSingleTemporalValue);
+        stepwise = true;
     }
 
     public TTextSeqSet(String[] values) throws SQLException {
-        super(values, TText::getSingleTemporalValue);
+        super(true, values, TText::getSingleTemporalValue);
     }
 
     public TTextSeqSet(TTextSeq[] values) throws SQLException {
-        super(values, TText::getSingleTemporalValue);
+        super(true, values, TText::getSingleTemporalValue);
+    }
+
+    @Override
+    protected boolean explicitInterpolation() {
+        return false;
     }
 }

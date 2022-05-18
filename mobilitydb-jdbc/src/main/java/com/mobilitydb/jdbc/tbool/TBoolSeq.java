@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class TBoolSeq extends TSequence<Boolean> {
     public TBoolSeq(String value) throws SQLException {
         super(value, TBool::getSingleTemporalValue);
-        isStepwise = true;
+        stepwise = true;
     }
 
     public TBoolSeq(String[] values) throws SQLException {

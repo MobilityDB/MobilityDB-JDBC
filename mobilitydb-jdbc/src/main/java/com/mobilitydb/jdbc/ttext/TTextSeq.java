@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class TTextSeq extends TSequence<String> {
     public TTextSeq(String value) throws SQLException {
         super(value, TText::getSingleTemporalValue);
-        isStepwise = true;
+        stepwise = true;
     }
 
     public TTextSeq(String[] values) throws SQLException {

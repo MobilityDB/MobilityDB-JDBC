@@ -10,13 +10,7 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
     private final List<TemporalValue<V>> temporalValues = new ArrayList<>(); //int, bool
     private boolean lowerInclusive;
     private boolean upperInclusive;
-    protected boolean isStepwise;
-
-    private static final String LOWER_INCLUSIVE = "[";
-    private static final String LOWER_EXCLUSIVE = "(";
-    private static final String UPPER_INCLUSIVE = "]";
-    private static final String UPPER_EXCLUSIVE = ")";
-    private static final String STEPWISE = "Interp=Stepwise;";
+    protected boolean stepwise;
 
     protected TSequence(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
@@ -24,12 +18,12 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         validate();
     }
 
-    protected TSequence(boolean isStepwise, String[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
+    protected TSequence(boolean stepwise, String[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
             throws SQLException {
-        this(isStepwise, values, true, false, getSingleTemporalValue);
+        this(stepwise, values, true, false, getSingleTemporalValue);
     }
 
-    protected TSequence(boolean isStepwise, String[] values, boolean lowerInclusive, boolean upperInclusive,
+    protected TSequence(boolean stepwise, String[] values, boolean lowerInclusive, boolean upperInclusive,
                         GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         for (String val : values) {
@@ -37,15 +31,15 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         }
         this.lowerInclusive = lowerInclusive;
         this.upperInclusive = upperInclusive;
-        this.isStepwise = isStepwise;
+        this.stepwise = stepwise;
         validate();
     }
 
-    protected TSequence(boolean isStepwise, TInstant<V>[] values) throws SQLException {
-        this(isStepwise, values, true, false);
+    protected TSequence(boolean stepwise, TInstant<V>[] values) throws SQLException {
+        this(stepwise, values, true, false);
     }
 
-    protected TSequence(boolean isStepwise, TInstant<V>[] values, boolean lowerInclusive, boolean upperInclusive)
+    protected TSequence(boolean stepwise, TInstant<V>[] values, boolean lowerInclusive, boolean upperInclusive)
             throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);
         for (TInstant<V> val : values) {
@@ -53,7 +47,7 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         }
         this.lowerInclusive = lowerInclusive;
         this.upperInclusive = upperInclusive;
-        this.isStepwise = isStepwise;
+        this.stepwise = stepwise;
         validate();
     }
 
@@ -62,22 +56,22 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         String[] values = value.split(",");
 
         // TODO: Investigate if case insensitive comparison is required
-        if (values[0].startsWith(STEPWISE)) {
-            isStepwise = true;
-            values[0] = values[0].substring(STEPWISE.length());
+        if (values[0].startsWith(TemporalConstants.STEPWISE)) {
+            stepwise = true;
+            values[0] = values[0].substring(TemporalConstants.STEPWISE.length());
         }
 
-        if (values[0].startsWith(LOWER_INCLUSIVE)) {
+        if (values[0].startsWith(TemporalConstants.LOWER_INCLUSIVE)) {
             this.lowerInclusive = true;
-        } else if (values[0].startsWith(LOWER_EXCLUSIVE)) {
+        } else if (values[0].startsWith(TemporalConstants.LOWER_EXCLUSIVE)) {
             this.lowerInclusive = false;
         } else {
             throw new SQLException("Lower bound flag must be either '[' or '('.");
         }
 
-        if (values[values.length - 1].endsWith(UPPER_INCLUSIVE)) {
+        if (values[values.length - 1].endsWith(TemporalConstants.UPPER_INCLUSIVE)) {
             this.upperInclusive = true;
-        } else if (values[values.length - 1].endsWith(UPPER_EXCLUSIVE)) {
+        } else if (values[values.length - 1].endsWith(TemporalConstants.UPPER_EXCLUSIVE)) {
             this.upperInclusive = false;
         } else {
             throw new SQLException("Upper bound flag must be either ']' or ')'.");
@@ -106,6 +100,10 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
 
     @Override
     public String buildValue() {
+        return buildValue(false);
+    }
+
+    String buildValue(boolean skipInterpolation) {
         StringJoiner sj = new StringJoiner(", ");
 
         for (TemporalValue<V> temp : temporalValues) {
@@ -113,10 +111,10 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         }
 
         return String.format("%s%s%s%s",
-                isStepwise && explicitInterpolation() ? STEPWISE: "",
-                lowerInclusive ? LOWER_INCLUSIVE : LOWER_EXCLUSIVE,
+                !skipInterpolation && stepwise && explicitInterpolation() ? TemporalConstants.STEPWISE: "",
+                lowerInclusive ? TemporalConstants.LOWER_INCLUSIVE : TemporalConstants.LOWER_EXCLUSIVE,
                 sj.toString(),
-                upperInclusive ? UPPER_INCLUSIVE : UPPER_EXCLUSIVE);
+                upperInclusive ? TemporalConstants.UPPER_INCLUSIVE : TemporalConstants.UPPER_EXCLUSIVE);
     }
 
     @Override
@@ -137,7 +135,7 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         if (getClass() == obj.getClass()) {
             TSequence<?> otherTemporal = (TSequence<?>) obj;
 
-            if (isStepwise != otherTemporal.isStepwise) {
+            if (stepwise != otherTemporal.stepwise) {
                 return false;
             }
 
@@ -168,5 +166,9 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
     public int hashCode() {
         String value = toString();
         return value != null ? value.hashCode() : 0;
+    }
+
+    public boolean isStepwise() {
+        return stepwise;
     }
 }
