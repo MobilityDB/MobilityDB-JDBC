@@ -11,7 +11,8 @@ import java.sql.SQLException;
 
 @TypeName(name = "tgeogpoint")
 public class TGeogPoint extends TPoint {
-    public final static int DEFAULT_SRID = 4326;
+    public static final int DEFAULT_SRID = 4326;
+    public static final int EMPTY_SRID = 0;
 
     public TGeogPoint() { super(); }
 
@@ -27,7 +28,7 @@ public class TGeogPoint extends TPoint {
     public static TemporalValue<Point> getSingleTemporalValue(String value) throws SQLException {
         TemporalValue<Point> temporalValue = TPoint.getSingleTemporalValue(value);
 
-        if (temporalValue.getValue().getSrid() == Point.UNKNOWN_SRID) {
+        if (temporalValue.getValue().getSrid() == EMPTY_SRID) {
             temporalValue.getValue().setSrid(DEFAULT_SRID);
         }
 

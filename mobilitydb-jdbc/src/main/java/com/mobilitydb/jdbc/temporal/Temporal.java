@@ -2,6 +2,7 @@ package com.mobilitydb.jdbc.temporal;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -17,6 +18,10 @@ public abstract class Temporal<V extends Serializable> implements Serializable {
 
     protected void validate() throws SQLException {
         validateTemporalDataType();
+    }
+
+    protected TemporalValue<V> buildTemporalValue(V value, OffsetDateTime time) {
+        return new TemporalValue<>(value, time);
     }
 
     /**

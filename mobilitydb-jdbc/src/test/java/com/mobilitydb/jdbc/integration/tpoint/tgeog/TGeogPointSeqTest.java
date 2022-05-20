@@ -50,8 +50,11 @@ class TGeogPointSeqTest extends BaseIntegrationTest {
 
     @Test
     void testStringsIncUppDefaultConstructor() throws Exception {
-        String[] values = new String[] {"SRID=4326;Point(10 10)@2019-09-08 09:07:32+04",
-                "SRID=4326;Point(10 20)@2019-09-09 09:07:32+04", "SRID=4326;Point(20 20)@2019-09-10 09:07:32+04"};
+        String[] values = new String[] {
+            "SRID=4326;Point(10 10)@2019-09-08 09:07:32+04",
+            "SRID=4326;Point(10 20)@2019-09-09 09:07:32+04",
+            "SRID=4326;Point(20 20)@2019-09-10 09:07:32+04"
+        };
 
         TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(false, values);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeq);
@@ -79,8 +82,10 @@ class TGeogPointSeqTest extends BaseIntegrationTest {
 
     @Test
     void testStringsIncUppConstructor() throws Exception {
-        String[] values = new String[] {"SRID=4326;Point(10 10)@2019-09-08 09:07:32+04",
-                "SRID=4326;Point(10 20)@2019-09-09 09:07:32+04"};
+        String[] values = new String[] {
+            "SRID=4326;Point(10 10)@2019-09-08 09:07:32+04",
+            "SRID=4326;Point(10 20)@2019-09-09 09:07:32+04"
+        };
 
         TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(false, values, true, true);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeq);
@@ -108,10 +113,11 @@ class TGeogPointSeqTest extends BaseIntegrationTest {
 
     @Test
     void testInstantsIncUppDefaultConstructor() throws Exception {
-        TGeogPointInst[] values = new TGeogPointInst[] {new TGeogPointInst(
-                "SRID=4326;Point(10 10)@2019-09-08 09:07:32+04"),
-                new TGeogPointInst("SRID=4326;Point(10 20)@2019-09-09 09:07:32+04"),
-                new TGeogPointInst("SRID=4326;Point(20 20)@2019-09-10 09:07:32+04")};
+        TGeogPointInst[] values = new TGeogPointInst[] {
+            new TGeogPointInst("SRID=4326;Point(10 10)@2019-09-08 09:07:32+04"),
+            new TGeogPointInst("SRID=4326;Point(10 20)@2019-09-09 09:07:32+04"),
+            new TGeogPointInst("SRID=4326;Point(20 20)@2019-09-10 09:07:32+04")
+        };
 
         TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(false, values);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeq);
@@ -139,10 +145,11 @@ class TGeogPointSeqTest extends BaseIntegrationTest {
 
     @Test
     void testInstantsIncUppConstructor() throws Exception {
-        TGeogPointInst[] values = new TGeogPointInst[] {new TGeogPointInst(
-                "SRID=4326;Point(10 10)@2001-01-01 08:30:00+02"),
-                new TGeogPointInst("SRID=4326;Point(10 20)@2001-01-03 18:00:00+02"),
-                new TGeogPointInst("SRID=4326;Point(12 20)@2001-01-03 20:20:00+02")};
+        TGeogPointInst[] values = new TGeogPointInst[] {
+            new TGeogPointInst("SRID=4326;Point(10 10)@2001-01-01 08:30:00+02"),
+            new TGeogPointInst("SRID=4326;Point(10 20)@2001-01-03 18:00:00+02"),
+            new TGeogPointInst("SRID=4326;Point(12 20)@2001-01-03 20:20:00+02")
+        };
 
         TGeogPointSeq tGeogPointSeq = new TGeogPointSeq(false, values, true, true);
         TGeogPoint tGeogPoint = new TGeogPoint(tGeogPointSeq);

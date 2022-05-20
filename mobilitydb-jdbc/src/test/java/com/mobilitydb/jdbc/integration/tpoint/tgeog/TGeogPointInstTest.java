@@ -2,17 +2,20 @@ package com.mobilitydb.jdbc.integration.tpoint.tgeog;
 
 import com.mobilitydb.jdbc.integration.BaseIntegrationTest;
 import com.mobilitydb.jdbc.tpoint.tgeog.TGeogPoint;
+import com.mobilitydb.jdbc.tpoint.tgeog.TGeogPointInst;
 import org.junit.jupiter.api.Test;
+import org.postgis.Point;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class TGeogPointInstTest extends BaseIntegrationTest {
-    //TODO Fix tests (SRID)
-    /*@Test
+    @Test
     void testIntConstructor() throws Exception {
         ZoneOffset tz = ZoneOffset.of("+02:00");
         OffsetDateTime time = OffsetDateTime.of(2021,4, 8,
@@ -40,7 +43,7 @@ class TGeogPointInstTest extends BaseIntegrationTest {
         }
 
         readStatement.close();
-    }*/
+    }
 
     @Test
     void testStringBinaryConstructor() throws Exception {

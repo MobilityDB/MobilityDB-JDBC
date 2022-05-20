@@ -17,7 +17,7 @@ public abstract class TInstant<V extends Serializable> extends Temporal<V> {
 
     protected TInstant(V value, OffsetDateTime time) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT);
-        temporalValue = new TemporalValue<>(value, time);
+        temporalValue = buildTemporalValue(value, time);
         validate();
     }
 
