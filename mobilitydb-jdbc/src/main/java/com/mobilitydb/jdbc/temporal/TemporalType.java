@@ -19,7 +19,9 @@ public enum TemporalType {
      * @throws SQLException
      */
     public static TemporalType getTemporalType(String value, String temporalDataTypeName) throws SQLException {
-        if(value.startsWith("Interp=Stepwise;")) {
+        if (value.startsWith("SRID=")) {
+            return TemporalType.TEMPORAL_INSTANT_SET;
+        } else if (value.startsWith("Interp=Stepwise;")) {
             if (value.startsWith("{", 16)){
                 return TemporalType.TEMPORAL_SEQUENCE_SET;
             } else {

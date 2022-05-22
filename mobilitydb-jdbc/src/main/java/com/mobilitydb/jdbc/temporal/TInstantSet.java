@@ -46,7 +46,8 @@ public abstract class TInstantSet<V extends Serializable> extends Temporal<V> {
     }
 
     private void parseValue(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
-        String newValue = value.replace("{", "").replace("}", "");
+        String newValue = preprocessValue(value);
+        newValue = newValue.replace("{", "").replace("}", "");
         String[] values = newValue.split(",", -1);
         for (String val : values) {
             temporalValues.add(getSingleTemporalValue.run(val.trim()));

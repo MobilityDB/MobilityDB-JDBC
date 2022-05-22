@@ -53,7 +53,7 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
 
     private void parseValue(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
             throws SQLException {
-        String[] values = value.split(",");
+        String[] values = preprocessValue(value).split(",");
 
         // TODO: Investigate if case insensitive comparison is required
         if (values[0].startsWith(TemporalConstants.STEPWISE)) {

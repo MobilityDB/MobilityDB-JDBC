@@ -24,6 +24,14 @@ public abstract class Temporal<V extends Serializable> implements Serializable {
         return new TemporalValue<>(value, time);
     }
 
+    protected String preprocessValue(String value) throws SQLException {
+        if (value == null || value.isEmpty()) {
+            throw new SQLException("Value cannot be empty.");
+        }
+
+        return value;
+    }
+
     /**
      * Throws an SQLException if Temporal data type is not valid
      * @throws SQLException

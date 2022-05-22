@@ -20,7 +20,12 @@ class TGeogPointInstSetTest extends BaseIntegrationTest {
             "{SRID=4326;Point(10 10)@2019-09-08 05:04:45+01, SRID=4326;Point(20 20)@2019-09-09 05:04:45+01, " +
                     "SRID=4326;Point(20 20)@2019-09-10 05:04:45+01}",
             "{Point(10 10)@2019-09-08 05:04:45+01, Point(20 20)@2019-09-09 05:04:45+01, " +
-                    "Point(20 20)@2019-09-10 05:04:45+01}"
+                    "Point(20 20)@2019-09-10 05:04:45+01}",
+            "SRID=4326;{Point(10 10)@2019-09-08 05:04:45+01, Point(20 20)@2019-09-09 05:04:45+01, " +
+                    "Point(20 20)@2019-09-10 05:04:45+01}",
+            "SRID=7844;{SRID=7844;Point(10 10)@2019-09-08 05:04:45+01, " +
+                    "SRID=7844;Point(20 20)@2019-09-09 05:04:45+01, " +
+                    "SRID=7844;Point(20 20)@2019-09-10 05:04:45+01}"
     })
     void testStringConstructor(String value) throws Exception {
         TGeogPoint tGeogPoint = new TGeogPoint(value);

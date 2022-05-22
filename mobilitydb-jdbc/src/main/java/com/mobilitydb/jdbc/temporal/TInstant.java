@@ -11,7 +11,7 @@ public abstract class TInstant<V extends Serializable> extends Temporal<V> {
 
     protected TInstant(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT);
-        temporalValue = getSingleTemporalValue.run(value);
+        temporalValue = getSingleTemporalValue.run(preprocessValue(value));
         validate();
     }
 
