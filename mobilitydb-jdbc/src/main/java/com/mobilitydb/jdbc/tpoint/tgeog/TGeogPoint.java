@@ -5,15 +5,13 @@ import com.mobilitydb.jdbc.temporal.TemporalType;
 import com.mobilitydb.jdbc.temporal.TemporalValue;
 import com.mobilitydb.jdbc.tpoint.TPoint;
 import com.mobilitydb.jdbc.core.TypeName;
+import com.mobilitydb.jdbc.tpoint.TPointConstants;
 import org.postgis.Point;
 
 import java.sql.SQLException;
 
 @TypeName(name = "tgeogpoint")
 public class TGeogPoint extends TPoint {
-    public static final int DEFAULT_SRID = 4326;
-    public static final int EMPTY_SRID = 0;
-
     public TGeogPoint() { super(); }
 
     public TGeogPoint(String value) throws SQLException {
@@ -28,8 +26,8 @@ public class TGeogPoint extends TPoint {
     public static TemporalValue<Point> getSingleTemporalValue(String value) throws SQLException {
         TemporalValue<Point> temporalValue = TPoint.getSingleTemporalValue(value);
 
-        if (temporalValue.getValue().getSrid() == EMPTY_SRID) {
-            temporalValue.getValue().setSrid(DEFAULT_SRID);
+        if (temporalValue.getValue().getSrid() == TPointConstants.EMPTY_SRID) {
+            temporalValue.getValue().setSrid(TPointConstants.DEFAULT_SRID);
         }
 
         return temporalValue;

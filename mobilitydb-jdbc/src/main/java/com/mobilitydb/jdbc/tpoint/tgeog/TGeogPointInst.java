@@ -2,6 +2,7 @@ package com.mobilitydb.jdbc.tpoint.tgeog;
 
 import com.mobilitydb.jdbc.temporal.TInstant;
 import com.mobilitydb.jdbc.temporal.TemporalValue;
+import com.mobilitydb.jdbc.tpoint.TPointConstants;
 import org.postgis.Point;
 
 import java.sql.SQLException;
@@ -18,8 +19,8 @@ public class TGeogPointInst extends TInstant<Point> {
 
     @Override
     protected TemporalValue<Point> buildTemporalValue(Point value, OffsetDateTime time) {
-        if (value.getSrid() == TGeogPoint.EMPTY_SRID) {
-            value.setSrid(TGeogPoint.DEFAULT_SRID);
+        if (value.getSrid() == TPointConstants.EMPTY_SRID) {
+            value.setSrid(TPointConstants.DEFAULT_SRID);
         }
 
         return super.buildTemporalValue(value, time);

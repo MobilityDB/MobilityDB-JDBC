@@ -1,5 +1,6 @@
 package com.mobilitydb.jdbc.tpoint.tgeog;
 
+import com.mobilitydb.jdbc.tpoint.TPointConstants;
 import com.mobilitydb.jdbc.tpoint.TPointInstSet;
 
 import java.sql.SQLException;
@@ -10,7 +11,7 @@ public class TGeogPointInstSet extends TPointInstSet {
     }
 
     public TGeogPointInstSet(String[] values) throws SQLException {
-        super(TGeogPoint.DEFAULT_SRID, values, TGeogPoint::getSingleTemporalValue);
+        super(TPointConstants.DEFAULT_SRID, values, TGeogPoint::getSingleTemporalValue);
     }
 
     public TGeogPointInstSet(int srid, String[] values) throws SQLException {
@@ -18,7 +19,7 @@ public class TGeogPointInstSet extends TPointInstSet {
     }
 
     public TGeogPointInstSet(TGeogPointInst[] values) throws SQLException {
-        super(TGeogPoint.DEFAULT_SRID, values);
+        super(TPointConstants.DEFAULT_SRID, values);
     }
 
     public TGeogPointInstSet(int srid, TGeogPointInst[] values) throws SQLException {

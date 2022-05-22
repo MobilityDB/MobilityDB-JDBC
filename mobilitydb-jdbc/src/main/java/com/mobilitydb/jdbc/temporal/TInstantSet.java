@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public abstract class TInstantSet<V extends Serializable> extends Temporal<V> {
-    private final List<TemporalValue<V>> temporalValues = new ArrayList<>();
+    protected final ArrayList<TemporalValue<V>> temporalValues = new ArrayList<>();
 
     protected TInstantSet(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_INSTANT_SET);
