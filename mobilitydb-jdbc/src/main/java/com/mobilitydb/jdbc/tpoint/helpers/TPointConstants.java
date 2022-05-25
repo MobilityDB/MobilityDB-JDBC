@@ -1,4 +1,4 @@
-package com.mobilitydb.jdbc.tpoint;
+package com.mobilitydb.jdbc.tpoint.helpers;
 
 public class TPointConstants {
     private TPointConstants() {}

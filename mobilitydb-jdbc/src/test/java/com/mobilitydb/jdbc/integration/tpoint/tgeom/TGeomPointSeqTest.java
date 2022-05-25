@@ -12,19 +12,22 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class TGeomPointSeqTest extends BaseIntegrationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "[Point(10 10)@2019-09-08 09:07:32+04, Point(10 20)@2019-09-09 09:07:32+04," +
-                    "Point(20 20)@2019-09-10 09:07:32+04]",
-            "Interp=Stepwise;[Point(10 10)@2019-09-08 09:07:32+04, Point(10 20)@2019-09-09 09:07:32+04," +
-                    "Point(20 20)@2019-09-10 09:07:32+04]"
+        "[Point(10 10)@2019-09-08 09:07:32+04, Point(10 20)@2019-09-09 09:07:32+04," +
+                "Point(20 20)@2019-09-10 09:07:32+04]",
+        "Interp=Stepwise;[Point(10 10)@2019-09-08 09:07:32+04, Point(10 20)@2019-09-09 09:07:32+04," +
+                "Point(20 20)@2019-09-10 09:07:32+04]",
+        "SRID=7844;[Point(10 10)@2019-09-08 09:07:32+04, Point(10 20)@2019-09-09 09:07:32+04," +
+                "Point(20 20)@2019-09-10 09:07:32+04]",
+        "SRID=7844;Interp=Stepwise;[Point(10 10)@2019-09-08 09:07:32+04, Point(10 20)@2019-09-09 09:07:32+04," +
+                "Point(20 20)@2019-09-10 09:07:32+04]"
     })
-    void testStringConstructor(String value ) throws Exception {
+    void testStringConstructor(String value) throws Exception {
         TGeomPoint tGeomPoint = new TGeomPoint(value);
 
         PreparedStatement insertStatement = con.prepareStatement(

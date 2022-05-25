@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public abstract class TSequence<V extends Serializable> extends Temporal<V> {
-    private final List<TemporalValue<V>> temporalValues = new ArrayList<>(); //int, bool
+    protected final ArrayList<TemporalValue<V>> temporalValues = new ArrayList<>();
+    protected boolean stepwise;
     private boolean lowerInclusive;
     private boolean upperInclusive;
-    protected boolean stepwise;
 
     protected TSequence(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
         super(TemporalType.TEMPORAL_SEQUENCE);

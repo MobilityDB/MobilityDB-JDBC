@@ -5,7 +5,7 @@ import com.mobilitydb.jdbc.temporal.TemporalType;
 import com.mobilitydb.jdbc.temporal.TemporalValue;
 import com.mobilitydb.jdbc.tpoint.TPoint;
 import com.mobilitydb.jdbc.core.TypeName;
-import com.mobilitydb.jdbc.tpoint.TPointConstants;
+import com.mobilitydb.jdbc.tpoint.helpers.TPointConstants;
 import org.postgis.Point;
 
 import java.sql.SQLException;
@@ -35,7 +35,7 @@ public class TGeogPoint extends TPoint {
 
     @Override
     public void setValue(String value) throws SQLException {
-        TemporalType temporalType = TemporalType.getTemporalType(value, this.getClass().getSimpleName());
+        TemporalType temporalType = getTemporalType(value);
         switch (temporalType) {
             case TEMPORAL_INSTANT:
                 temporal = new TGeogPointInst(value);

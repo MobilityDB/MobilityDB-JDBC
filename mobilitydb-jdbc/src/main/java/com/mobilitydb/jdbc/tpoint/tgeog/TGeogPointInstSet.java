@@ -1,6 +1,6 @@
 package com.mobilitydb.jdbc.tpoint.tgeog;
 
-import com.mobilitydb.jdbc.tpoint.TPointConstants;
+import com.mobilitydb.jdbc.tpoint.helpers.TPointConstants;
 import com.mobilitydb.jdbc.tpoint.TPointInstSet;
 
 import java.sql.SQLException;

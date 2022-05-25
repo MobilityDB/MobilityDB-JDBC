@@ -3,7 +3,9 @@ package com.mobilitydb.jdbc.tpoint;
 import com.mobilitydb.jdbc.core.DateTimeFormatHelper;
 import com.mobilitydb.jdbc.temporal.Temporal;
 import com.mobilitydb.jdbc.temporal.TemporalDataType;
+import com.mobilitydb.jdbc.temporal.TemporalType;
 import com.mobilitydb.jdbc.temporal.TemporalValue;
+import com.mobilitydb.jdbc.tpoint.helpers.TPointConstants;
 import org.postgis.Geometry;
 import org.postgis.GeometryBuilder;
 import org.postgis.Point;
@@ -22,6 +24,17 @@ public abstract class TPoint extends TemporalDataType<Point> {
     protected TPoint(Temporal<Point> temporal) {
         super();
         this.temporal = temporal;
+    }
+
+    protected TemporalType getTemporalType(String value) throws SQLException {
+        String newValue = value;
+
+        if (value.startsWith(TPointConstants.SRID_PREFIX)) {
+            int idx = value.indexOf(";");
+            newValue = value.substring(idx + 1);
+        }
+
+        return TemporalType.getTemporalType(newValue, this.getClass().getSimpleName());
     }
 
     public static TemporalValue<Point> getSingleTemporalValue(String value) throws SQLException {

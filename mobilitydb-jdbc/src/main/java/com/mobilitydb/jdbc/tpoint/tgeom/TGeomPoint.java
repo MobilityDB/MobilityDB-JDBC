@@ -23,7 +23,7 @@ public class TGeomPoint extends TPoint {
 
     @Override
     public void setValue(String value) throws SQLException {
-        TemporalType temporalType = TemporalType.getTemporalType(value, this.getClass().getSimpleName());
+        TemporalType temporalType = getTemporalType(value);
         switch (temporalType) {
             case TEMPORAL_INSTANT:
                 temporal = new TGeomPointInst(value);

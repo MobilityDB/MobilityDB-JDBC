@@ -2,7 +2,7 @@ package com.mobilitydb.jdbc.tpoint.tgeog;
 
 import com.mobilitydb.jdbc.temporal.TInstant;
 import com.mobilitydb.jdbc.temporal.TemporalValue;
-import com.mobilitydb.jdbc.tpoint.TPointConstants;
+import com.mobilitydb.jdbc.tpoint.helpers.TPointConstants;
 import org.postgis.Point;
 
 import java.sql.SQLException;
