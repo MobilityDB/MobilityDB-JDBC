@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class TSequenceSet<V extends Serializable> extends Temporal<V> {
-    private List<List<TemporalValue<V>>> temporalValues = new ArrayList<>();
+    protected ArrayList<ArrayList<TemporalValue<V>>> temporalValues = new ArrayList<>();
     private final List<Boolean> lowerInclusive = new ArrayList<>();
     private final List<Boolean> upperInclusive = new ArrayList<>();
     protected boolean stepwise;
@@ -122,7 +122,7 @@ public abstract class TSequenceSet<V extends Serializable> extends Temporal<V> {
         } else {
             throw new SQLException("Upper bound flag must be either ']' or ')'.");
         }
-        List<TemporalValue<V>> temp = new ArrayList<>();
+        ArrayList<TemporalValue<V>> temp = new ArrayList<>();
         for (int i = 0; i < values.length; i++) {
             String val = values[i];
             if (i == 0) {
