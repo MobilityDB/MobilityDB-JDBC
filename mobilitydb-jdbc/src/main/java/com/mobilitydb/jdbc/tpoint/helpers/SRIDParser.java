@@ -21,9 +21,19 @@ public class SRIDParser {
 
         if (newString.startsWith(TPointConstants.SRID_PREFIX)) {
             int idx = newString.indexOf(";");
+
+            if (idx < 0) {
+                throw new SQLException("Incorrect format for SRID");
+            }
+
             String sridString = newString.substring(TPointConstants.SRID_PREFIX.length(), idx);
             newString = newString.substring(idx + 1);
-            srid = Integer.parseInt(sridString);
+
+            try {
+                srid = Integer.parseInt(sridString);
+            } catch (NumberFormatException ex) {
+                throw new SQLException("Invalid SRID", ex);
+            }
 
             if (srid < 0) {
                 throw new SQLException("Invalid SRID");
