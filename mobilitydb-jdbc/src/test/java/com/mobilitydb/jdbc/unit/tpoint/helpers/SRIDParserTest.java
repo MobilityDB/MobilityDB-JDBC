@@ -80,7 +80,36 @@ class SRIDParserTest {
         firstPoint.setSrid(srid);
         values.add(new TemporalValue<>(firstPoint, OffsetDateTime.now()));
         values.add(new TemporalValue<>(secondPoint, OffsetDateTime.now()));
-        int parsedSRID = SRIDParser.applySRID(srid, values);
+        int parsedSRID = SRIDParser.applySRID(TPointConstants.EMPTY_SRID, values);
+
+        assertEquals(srid, parsedSRID);
+        assertEquals(srid, values.get(0).getValue().getSrid());
+        assertEquals(srid, values.get(1).getValue().getSrid());
+    }
+
+    @Test
+    void applySRID_shouldUseFirstFoundSRIDIfNotProvided() throws SQLException {
+        List<TemporalValue<Point>> values = new ArrayList<>();
+        Point firstPoint = new Point(1, 1);
+        Point secondPoint = new Point(2, 2);
+        int srid = 1234;
+        secondPoint.setSrid(srid);
+        values.add(new TemporalValue<>(firstPoint, OffsetDateTime.now()));
+        values.add(new TemporalValue<>(secondPoint, OffsetDateTime.now()));
+        int parsedSRID = SRIDParser.applySRID(TPointConstants.EMPTY_SRID, values);
+
+        assertEquals(srid, parsedSRID);
+        assertEquals(srid, values.get(0).getValue().getSrid());
+        assertEquals(srid, values.get(1).getValue().getSrid());
+    }
+
+    @Test
+    void applySRID_shouldReturnEmptySRIDIfNotProvided() throws SQLException {
+        List<TemporalValue<Point>> values = new ArrayList<>();
+        int srid = TPointConstants.EMPTY_SRID;
+        values.add(new TemporalValue<>(new Point(1, 1), OffsetDateTime.now()));
+        values.add(new TemporalValue<>(new Point(2, 2), OffsetDateTime.now()));
+        int parsedSRID = SRIDParser.applySRID(TPointConstants.EMPTY_SRID, values);
 
         assertEquals(srid, parsedSRID);
         assertEquals(srid, values.get(0).getValue().getSrid());

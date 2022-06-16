@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TIntInstTest {
     @Test
-    void testConstructor() throws SQLException {
+    void testConstructors() throws SQLException {
         String value = "10@2019-09-08 06:04:32+02";
         ZoneOffset tz = ZoneOffset.of("+02:00");
         OffsetDateTime otherDate = OffsetDateTime.of(2019,9, 8,
@@ -43,8 +43,6 @@ class TIntInstTest {
         assertEquals(first, second);
         assertNotEquals(first, third);
         assertNotEquals(second, third);
-        assertNotEquals(null, first);
-        assertNotEquals(first, null);
         assertNotEquals(first, new Object());
     }
 
