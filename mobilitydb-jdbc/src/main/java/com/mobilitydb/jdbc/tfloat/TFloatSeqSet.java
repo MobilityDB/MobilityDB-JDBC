@@ -10,8 +10,16 @@ public class TFloatSeqSet extends TSequenceSet<Float> {
         super(value, TFloat::getSingleTemporalValue);
     }
 
+    public TFloatSeqSet(String[] values) throws SQLException {
+        super(false, values, TFloat::getSingleTemporalValue);
+    }
+
     public TFloatSeqSet(boolean stepwise, String[] values) throws SQLException {
         super(stepwise, values, TFloat::getSingleTemporalValue);
+    }
+
+    public TFloatSeqSet(TFloatSeq[] values) throws SQLException {
+        super(false, values, TFloat::getSingleTemporalValue);
     }
 
     public TFloatSeqSet(boolean stepwise, TFloatSeq[] values) throws SQLException {

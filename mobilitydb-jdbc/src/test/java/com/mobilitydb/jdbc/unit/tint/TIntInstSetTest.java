@@ -65,7 +65,7 @@ class TIntInstSetTest {
 
     @Test
     void testInstSetType() throws SQLException {
-        String value = "{{1@2001-01-01 08:00:00+02, 2@2001-01-03 08:00:00+02}";
+        String value = "{1@2001-01-01 08:00:00+02, 2@2001-01-03 08:00:00+02}";
         TIntInstSet tIntInstSet = new TIntInstSet(value);
 
         assertEquals(TemporalType.TEMPORAL_INSTANT_SET, tIntInstSet.getTemporalType());

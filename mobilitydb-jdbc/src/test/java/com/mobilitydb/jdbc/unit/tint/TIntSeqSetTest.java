@@ -1,7 +1,6 @@
 package com.mobilitydb.jdbc.unit.tint;
 
 import com.mobilitydb.jdbc.temporal.TemporalType;
-import com.mobilitydb.jdbc.tint.TIntInst;
 import com.mobilitydb.jdbc.tint.TIntSeq;
 import com.mobilitydb.jdbc.tint.TIntSeqSet;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ class TIntSeqSetTest {
     }
 
     @Test
-    void testIntSeqSetType() throws SQLException {
+    void testSeqSetType() throws SQLException {
         String value = "{[1@2001-01-01 08:00:00+02, 1@2001-01-03 08:00:00+02), " +
                 "[2@2001-01-04 08:00:00+02, 3@2001-01-05 08:00:00+02, 3@2001-01-06 08:00:00+02]}";
         TIntSeqSet temporal = new TIntSeqSet(value);
