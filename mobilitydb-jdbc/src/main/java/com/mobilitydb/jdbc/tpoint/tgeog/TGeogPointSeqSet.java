@@ -10,16 +10,32 @@ public class TGeogPointSeqSet extends TPointSeqSet {
         super(value, TGeogPoint::getSingleTemporalValue);
     }
 
+    public TGeogPointSeqSet(String[] values) throws SQLException {
+        super(TPointConstants.DEFAULT_SRID, false, values, TGeogPoint::getSingleTemporalValue);
+    }
+
     public TGeogPointSeqSet(boolean stepwise, String[] values) throws SQLException {
         super(TPointConstants.DEFAULT_SRID, stepwise, values, TGeogPoint::getSingleTemporalValue);
+    }
+
+    public TGeogPointSeqSet(TGeogPointSeq[] values) throws SQLException {
+        super(TPointConstants.DEFAULT_SRID, false, values, TGeogPoint::getSingleTemporalValue);
     }
 
     public TGeogPointSeqSet(boolean stepwise, TGeogPointSeq[] values) throws SQLException {
         super(TPointConstants.DEFAULT_SRID, stepwise, values, TGeogPoint::getSingleTemporalValue);
     }
 
+    public TGeogPointSeqSet(int srid, String[] values) throws SQLException {
+        super(srid, false, values, TGeogPoint::getSingleTemporalValue);
+    }
+
     public TGeogPointSeqSet(int srid, boolean stepwise, String[] values) throws SQLException {
         super(srid, stepwise, values, TGeogPoint::getSingleTemporalValue);
+    }
+
+    public TGeogPointSeqSet(int srid, TGeogPointSeq[] values) throws SQLException {
+        super(srid, false, values, TGeogPoint::getSingleTemporalValue);
     }
 
     public TGeogPointSeqSet(int srid, boolean stepwise, TGeogPointSeq[] values) throws SQLException {
