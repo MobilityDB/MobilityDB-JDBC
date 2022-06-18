@@ -1,4 +1,4 @@
-group 'edu.ulb'
+group 'com'
 version '1.0-SNAPSHOT'
 
 allprojects {
