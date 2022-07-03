@@ -40,6 +40,19 @@ class PeriodTest {
         );
     }
 
+    static Stream<Arguments> notEqualsPeriodProvider() {
+        return Stream.of(
+                arguments("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]",
+                        "(2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]"),
+                arguments("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]",
+                        "[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)"),
+                arguments("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]",
+                        "[2021-09-09 00:00:00+01, 2021-09-10 00:00:00+01]"),
+                arguments("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01]",
+                        "[2021-09-08 00:00:00+01, 2021-09-14 00:00:00+01]")
+        );
+    }
+
     @Test
     void testConstructor() throws SQLException {
         String value = "[2021-04-08 05:04:45+01, 2021-09-10 10:00:00+01]";
@@ -94,6 +107,18 @@ class PeriodTest {
         assertTrue(thrown.getMessage().contains("The lower bound must be less than or equal to the upper bound"));
     }
 
+    @Test
+    void testConstructorInstantPeriod() throws SQLException {
+        String value = "[2021-04-08 05:04:45+01, 2021-04-08 05:04:45+01]";
+        ZoneOffset tz = ZoneOffset.of("+01:00");
+        OffsetDateTime instant = OffsetDateTime.of(2021,4, 8,
+                5, 4, 45, 0, tz);
+        Period period = new Period(value);
+        Period other = new Period(instant, instant, true, true);
+
+        assertEquals(period, other);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {
             "[2021-09-08 00:00:00+01, 2021-09-08 00:00:00+01)",
@@ -106,6 +131,30 @@ class PeriodTest {
                 () -> new Period(value)
         );
         assertTrue(thrown.getMessage().contains("The lower and upper bounds must be inclusive for an instant period"));
+    }
+
+    @Test
+    void testConstructorMissingLowerBound() {
+        SQLException thrown = assertThrows(
+                SQLException.class,
+                () -> new Period(null, OffsetDateTime.now())
+        );
+        assertTrue(thrown.getMessage().contains("The lower and upper bounds must be defined."));
+    }
+
+    @Test
+    void testConstructorMissingUpperBound() {
+        SQLException thrown = assertThrows(
+                SQLException.class,
+                () -> new Period(OffsetDateTime.now(), null)
+        );
+        assertTrue(thrown.getMessage().contains("The lower and upper bounds must be defined."));
+    }
+
+    @Test
+    void testGetValueIsNullForMissingBounds() {
+        Period period = new Period();
+        assertNull(period.getValue());
     }
 
     @ParameterizedTest
@@ -202,15 +251,10 @@ class PeriodTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)",
-            "(2021-09-07 00:00:00+01, 2021-09-12 00:00:00+01]",
-            "(2021-09-06 00:00:00+01, 2021-09-14 00:00:00+01)"
-    })
-    void testNotEquals(String value) throws SQLException {
-        Period periodA = new Period(value);
-        Period periodB = new Period(periodA.getLower(), periodA.getUpper().plusSeconds(1),
-                periodA.isLowerInclusive(), periodA.isUpperInclusive());
+    @MethodSource("notEqualsPeriodProvider")
+    void testNotEquals(String first, String second) throws SQLException {
+        Period periodA = new Period(first);
+        Period periodB = new Period(second);
         assertNotEquals(periodA, periodB);
     }
 
@@ -222,6 +266,12 @@ class PeriodTest {
         Period periodC = new Period(periodB.getLower(), periodB.getUpper().plusSeconds(1),
                 periodB.isLowerInclusive(), periodB.isUpperInclusive());
         assertNotEquals(periodA, periodC);
+    }
+
+    @Test
+    void testNotEqualsDifferentType() throws SQLException {
+        Period period = new Period("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)");
+        assertNotEquals(period, new Object());
     }
 
     @Test
@@ -244,25 +294,40 @@ class PeriodTest {
         assertEquals(expected, period.shift(Duration.ofDays(3)));
     }
 
-    @Test
-    void testContains() throws SQLException {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)",
+            "[2021-09-09 00:00:00+01, 2021-09-10 00:00:00+01)",
+            "(2021-09-08 00:00:00+01, 2021-09-09 00:00:00+01]"
+    })
+    void testContains(String value) throws SQLException {
         OffsetDateTime dateTime = OffsetDateTime.of(2021,9, 9,
-                5, 4, 45, 0, ZoneOffset.of("+01:00"));
-        Period period = new Period("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)");
+                0, 0, 0, 0, ZoneOffset.of("+01:00"));
+        Period period = new Period(value);
         assertTrue(period.contains(dateTime));
     }
 
-    @Test
-    void testNotContains() throws SQLException {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)",
+            "[2021-09-05 00:00:00+01, 2021-09-06 00:00:00+01)",
+            "(2021-09-07 00:00:00+01, 2021-09-09 00:00:00+01]",
+            "[2021-09-05 00:00:00+01, 2021-09-07 00:00:00+01)"
+    })
+    void testNotContains(String value) throws SQLException {
         OffsetDateTime dateTime = OffsetDateTime.of(2021,9, 7,
-                5, 4, 45, 0, ZoneOffset.of("+01:00"));
-        Period period = new Period("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)");
+                0, 0, 0, 0, ZoneOffset.of("+01:00"));
+        Period period = new Period(value);
         assertFalse(period.contains(dateTime));
     }
 
-    @Test
-    void testOverlaps() throws SQLException {
-        Period periodA = new Period("[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)");
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "[2021-09-08 00:00:00+01, 2021-09-10 00:00:00+01)",
+            "[2021-09-10 00:00:00+01, 2021-09-12 00:00:00+01)"
+    })
+    void testOverlaps(String value) throws SQLException {
+        Period periodA = new Period(value);
         Period periodB = new Period("[2021-09-09 00:00:00+01, 2021-09-11 00:00:00+01)");
         assertTrue(periodA.overlap(periodB));
     }
