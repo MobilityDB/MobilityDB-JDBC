@@ -43,15 +43,19 @@ public class TimestampSet extends DataType {
     public void setValue(String value) throws SQLException {
         String trimmed = value.trim();
 
-        if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
-            String[] values = trimmed.substring(1, trimmed.length() - 1).split(",");
+        if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
+            throw new SQLException("Could not parse timestamp set value.");
+        }
+
+        trimmed = trimmed.substring(1, trimmed.length() - 1);
+
+        if (!trimmed.isEmpty()) {
+            String[] values = trimmed.split(",");
 
             for (String v : values) {
                 OffsetDateTime date = DateTimeFormatHelper.getDateTimeFormat(v.trim());
                 dateTimeList.add(date);
             }
-        } else {
-            throw new SQLException("Could not parse timestamp set value.");
         }
 
         validate();
@@ -141,20 +145,28 @@ public class TimestampSet extends DataType {
     }
 
     private void validate() throws SQLException {
+        if (dateTimeList == null || dateTimeList.isEmpty()) {
+            throw new SQLException("Timestamp set must contain at least one element.");
+        }
+
         for (int i = 0; i < dateTimeList.size(); i++) {
             OffsetDateTime x = dateTimeList.get(i);
-
-            if (x == null) {
-                throw new SQLException("All timestamps should have a value.");
-            }
+            validateTimestamp(x);
 
             if (i + 1 < dateTimeList.size()) {
                 OffsetDateTime y = dateTimeList.get(i + 1);
+                validateTimestamp(y);
 
                 if (x.isAfter(y) || x.isEqual(y)) {
                     throw new SQLException("The timestamps of a timestamp set must be increasing.");
                 }
             }
+        }
+    }
+
+    private void validateTimestamp(OffsetDateTime timestamp) throws SQLException {
+        if (timestamp == null) {
+            throw new SQLException("All timestamps should have a value.");
         }
     }
 }
