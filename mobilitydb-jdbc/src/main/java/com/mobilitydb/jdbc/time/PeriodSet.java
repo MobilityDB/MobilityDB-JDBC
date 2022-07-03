@@ -107,7 +107,7 @@ public class PeriodSet extends DataType {
     }
 
     public OffsetDateTime[] getTimestamps() {
-        HashSet<OffsetDateTime> timestamps = new HashSet<>();
+        LinkedHashSet<OffsetDateTime> timestamps = new LinkedHashSet<>();
 
         for (Period period : periodList) {
             timestamps.add(period.getLower());
@@ -145,7 +145,7 @@ public class PeriodSet extends DataType {
         return periodList.size();
     }
 
-    public Period startPeriod() {
+    public Period getStartPeriod() {
         if (periodList.isEmpty()) {
             return null;
         }
@@ -153,7 +153,7 @@ public class PeriodSet extends DataType {
         return periodList.get(0);
     }
 
-    public Period endPeriod() {
+    public Period getEndPeriod() {
         if (periodList.isEmpty()) {
             return null;
         }
