@@ -56,7 +56,7 @@ class TBoxTest {
         TBox tbox = new TBox(value);
         TBox other = new TBox(expectedTmin, expectedTmax);
 
-        assertAll("Constructor with only x coordinates",
+        assertAll("Constructor with only times",
                 () -> assertEquals(expectedTmin, tbox.getTmin()),
                 () -> assertEquals(expectedTmax, tbox.getTmax()),
                 () -> assertEquals(other.getValue(), tbox.getValue())
@@ -200,9 +200,41 @@ class TBoxTest {
         TBox tBoxB = new TBox(tmin, tmax);
 
         assertAll("Equals on time dimension",
-                () -> assertEquals(tBoxA.getXmin(), tBoxB.getXmin()),
-                () -> assertEquals(tBoxA.getXmax(), tBoxB.getXmax()),
+                () -> assertEquals(tBoxA.getTmin(), tBoxB.getTmin()),
+                () -> assertEquals(tBoxA.getTmax(), tBoxB.getTmax()),
                 () -> assertEquals(tBoxA.getValue(), tBoxB.getValue())
         );
+    }
+
+    @Test
+    void testNotEquals() throws SQLException {
+        TBox tBoxA = new TBox(3.0, 7.0);
+        ZoneOffset tz = ZoneOffset.of("+02:00");
+        OffsetDateTime tmin = OffsetDateTime.of(2021,7, 8,
+                6, 4, 32, 0, tz);
+        OffsetDateTime tmax = OffsetDateTime.of(2021, 7, 9,
+                11, 2, 0, 0, tz);
+        TBox tBoxB = new TBox(6.0,tmin, 1.0, tmax);
+
+        assertAll("Not equals",
+                () -> assertNotEquals(tBoxA.getXmin(), tBoxB.getXmin()),
+                () -> assertNotEquals(tBoxA.getXmax(), tBoxB.getXmax()),
+                () -> assertNotEquals(tBoxA.getTmin(), tBoxB.getTmin()),
+                () -> assertNotEquals(tBoxA.getTmax(), tBoxB.getTmax()),
+                () -> assertNotEquals(tBoxA.getValue(), tBoxB.getValue())
+        );
+    }
+
+    @Test
+    void testNullEquals() {
+        TBox tBox = new TBox();
+        assertNull(tBox.getValue());
+    }
+
+    @Test
+    void testNotEqualsDifferentType() throws SQLException {
+        String value = "TBOX((30.0, 2021-07-13 06:04:32+02), (98.0, 2021-07-16 11:02:00+02))";
+        TBox tBox = new TBox(value);
+        assertNotEquals(tBox, new Object());
     }
 }
