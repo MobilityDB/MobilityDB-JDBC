@@ -54,6 +54,12 @@ class TimestampSetTest {
     }
 
     @Test
+    void testNotEqualsDifferentType() throws SQLException {
+        TimestampSet ts = new TimestampSet("{2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01, 2019-09-11 00:00:00+01}");
+        assertNotEquals(ts, new Object());
+    }
+
+    @Test
     void testEmptyEquals() {
         TimestampSet setA = new TimestampSet();
         TimestampSet setB = new TimestampSet();
@@ -96,6 +102,15 @@ class TimestampSetTest {
     }
 
     @Test
+    void testConstructorEmptyList() {
+        SQLException thrown = assertThrows(
+                SQLException.class,
+                () -> new TimestampSet("{}")
+        );
+        assertEquals("Timestamp set must contain at least one element.", thrown.getMessage());
+    }
+
+    @Test
     void testListConstructor() throws SQLException {
         OffsetDateTime now = OffsetDateTime.now();
         TimestampSet set = new TimestampSet(
@@ -110,6 +125,21 @@ class TimestampSetTest {
     }
 
     @Test
+    void testConstructorNullTimestamp() {
+        String message = "All timestamps should have a value.";
+        SQLException firstThrown = assertThrows(
+                SQLException.class,
+                () -> new TimestampSet(OffsetDateTime.now(), null)
+        );
+        SQLException secondThrown = assertThrows(
+                SQLException.class,
+                () -> new TimestampSet(null, OffsetDateTime.now())
+        );
+        assertEquals(message, firstThrown.getMessage());
+        assertEquals(message, secondThrown.getMessage());
+    }
+
+    @Test
     void testGetTimeSpan() throws SQLException {
         OffsetDateTime now = OffsetDateTime.now();
         TimestampSet set = new TimestampSet(
@@ -121,6 +151,15 @@ class TimestampSetTest {
     }
 
     @Test
+    void testEmptyTimestampSet() throws SQLException {
+        TimestampSet set = new TimestampSet();
+        assertEquals(Duration.ZERO, set.getTimeSpan());
+        assertEquals(new Period(), set.getPeriod());
+        assertNull(set.startTimestamp());
+        assertNull(set.endTimestamp());
+    }
+
+    @Test
     void testGetPeriod() throws SQLException {
         OffsetDateTime now = OffsetDateTime.now();
         TimestampSet set = new TimestampSet(
@@ -129,6 +168,13 @@ class TimestampSetTest {
                 now.plusDays(2)
         );
         Period expected = new Period(now, now.plusDays(2), true, true);
+        assertEquals(expected, set.getPeriod());
+    }
+
+    @Test
+    void testGetPeriodEmpty() throws SQLException {
+        TimestampSet set = new TimestampSet();
+        Period expected = new Period();
         assertEquals(expected, set.getPeriod());
     }
 
@@ -145,5 +191,30 @@ class TimestampSetTest {
         assertEquals(now.plusDays(1), set.startTimestamp());
         assertEquals(now.plusDays(2), set.timestampN(1));
         assertEquals(now.plusDays(3), set.endTimestamp());
+    }
+
+    @Test
+    void testGetTimestamps() throws SQLException {
+        OffsetDateTime now = OffsetDateTime.now();
+        TimestampSet set = new TimestampSet(
+                now,
+                now.plusDays(1),
+                now.plusDays(2)
+        );
+        OffsetDateTime[] values = set.timestamps();
+        assertEquals(set.numTimestamps(), values.length);
+        assertEquals(set.timestampN(0), values[0]);
+    }
+
+    @Test
+    void testTimestampNInvalidIndex() throws SQLException {
+        TimestampSet set = new TimestampSet(OffsetDateTime.now());
+        SQLException thrown = assertThrows(
+                SQLException.class,
+                () -> {
+                    OffsetDateTime v = set.timestampN(4);
+                }
+        );
+        assertEquals("There is no value at this index.", thrown.getMessage());
     }
 }

@@ -9,6 +9,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +30,17 @@ class PeriodSetTest {
         );
     }
 
+    static Stream<Arguments> periodSetNotEqualsProvider() {
+        return Stream.of(
+                arguments("{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}",
+                        "{[2019-09-07 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}"),
+                arguments("{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}",
+                        "{[2019-09-07 00:00:00+01, 2019-09-10 00:00:00+01]}"),
+                arguments("{(2021-09-08 00:00:00+01, 2021-09-10 01:00:00+01]}",
+                        "{(2021-09-07 22:00:00-01, 2021-09-09 21:00:00-02]}")
+        );
+    }
+
     @Test
     void testEquals() throws SQLException {
         String value = "{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}";
@@ -44,12 +57,11 @@ class PeriodSetTest {
         assertEquals(periodSetA, periodSetB);
     }
 
-    @Test
-    void testNotEquals() throws SQLException {
-        String valueA = "{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}";
-        String valueB = "{[2019-09-07 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}";
-        PeriodSet periodSetA = new PeriodSet(valueA);
-        PeriodSet periodSetB = new PeriodSet(valueB);
+    @ParameterizedTest
+    @MethodSource("periodSetNotEqualsProvider")
+    void testNotEquals(String first, String second) throws SQLException {
+        PeriodSet periodSetA = new PeriodSet(first);
+        PeriodSet periodSetB = new PeriodSet(second);
         assertNotEquals(periodSetA, periodSetB);
     }
 
@@ -61,6 +73,14 @@ class PeriodSetTest {
         PeriodSet periodSetB = new PeriodSet(valueB);
         assertNotEquals(periodSetA, periodSetB);
     }
+
+    @Test
+    void testNotEqualsDifferentType() throws SQLException {
+        String value = "{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}";
+        PeriodSet periodSet = new PeriodSet(value);
+        assertNotEquals(periodSet, new Object());
+    }
+
 
     @Test
     void testEmptyEquals() {
@@ -105,6 +125,7 @@ class PeriodSetTest {
     void testPeriodWithoutValue() throws SQLException {
         Period[][] tests = {
                 new Period[]{new Period()},
+                new Period[]{null},
                 new Period[]{new Period("[2019-09-08 00:00:00+01, 2019-09-12 00:00:00+01]"), new Period()}
         };
 
@@ -115,6 +136,15 @@ class PeriodSetTest {
             );
             assertEquals("All periods should have a value.", thrown.getMessage());
         }
+    }
+
+    @Test
+    void testPeriodSetEmpty() {
+        SQLException thrown = assertThrows(
+                SQLException.class,
+                () -> new PeriodSet("{}")
+        );
+        assertEquals("Period set must contain at least one element.", thrown.getMessage());
     }
 
     @ParameterizedTest
@@ -138,5 +168,79 @@ class PeriodSetTest {
     void testValidPeriods(String value) throws SQLException {
         PeriodSet periodSet = new PeriodSet(value);
         assertEquals(value, periodSet.getValue());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{[2019-09-08 00:00:00+01, 2019-09-11 00:00:00+01], (2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}",
+            "{[2019-09-08 00:00:00+01, 2019-09-11 00:00:00+01), [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}",
+            "{[2019-09-08 00:00:00+01, 2019-09-11 00:00:00+01]}",
+            "{[2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}"
+    })
+    void testsGetPeriods(String value) throws SQLException {
+        PeriodSet periodSet = new PeriodSet(value);
+        Period[] periods = periodSet.getPeriods();
+        assertEquals(periodSet.numPeriods(), periods.length);
+        assertEquals(periodSet.getStartPeriod(), periods[0]);
+        assertEquals(periodSet.getEndPeriod(), periods[periods.length - 1]);
+        assertEquals(periodSet.periodN(0), periods[0]);
+    }
+
+    @Test
+    void testEmptyPeriodSet() throws SQLException {
+        PeriodSet periodSet = new PeriodSet();
+        assertEquals(Duration.ZERO, periodSet.getDuration());
+        assertEquals(Duration.ZERO, periodSet.getTimespan());
+        assertNull(periodSet.getPeriod());
+        assertNull(periodSet.getStartTimestamp());
+        assertNull(periodSet.getEndTimestamp());
+        assertNull(periodSet.getStartPeriod());
+        assertNull(periodSet.getEndPeriod());
+    }
+
+    @Test
+    void testDuration() throws SQLException {
+        Period periodA = new Period("[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01]");
+        Period periodB = new Period("[2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]");
+        PeriodSet periodSet = new PeriodSet(periodA, periodB);
+        assertEquals(Duration.ofDays(3), periodSet.getDuration());
+        assertEquals(periodA.duration().plus(periodB.duration()), periodSet.getDuration());
+        assertEquals(Duration.ofDays(4), periodSet.getTimespan());
+    }
+
+    @Test
+    void testTimespan() throws SQLException {
+        String value = "{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01]}";
+        PeriodSet periodSet = new PeriodSet(value);
+        assertEquals(Duration.ofDays(4), periodSet.getTimespan());
+    }
+
+    @Test
+    void testGetPeriod() throws SQLException {
+        Period expected = new Period("[2019-09-08 00:00:00+01, 2019-09-12 00:00:00+01)");
+        String value = "{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01)}";
+        PeriodSet periodSet = new PeriodSet(value);
+        assertEquals(expected, periodSet.getPeriod());
+    }
+
+    @Test
+    void testGetTimestamps() throws SQLException {
+        String value = "{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01), [2019-09-10 00:00:00+01, 2019-09-12 00:00:00+01)}";
+        PeriodSet periodSet = new PeriodSet(value);
+        OffsetDateTime[] timestamps = periodSet.getTimestamps();
+        assertEquals(3, timestamps.length);
+        assertEquals(periodSet.numTimestamps(), timestamps.length);
+        assertEquals(periodSet.getStartTimestamp(), timestamps[0]);
+        assertEquals(periodSet.timestampN(1), timestamps[1]);
+        assertEquals(periodSet.getEndTimestamp(), timestamps[2]);
+    }
+
+    @Test
+    void testShiftPeriod() throws SQLException {
+        String expectedValue = "{[2019-09-09 00:00:00+01, 2019-09-11 00:00:00+01], [2019-09-12 00:00:00+01, 2019-09-13 00:00:00+01)}";
+        PeriodSet expectedPeriodSet = new PeriodSet(expectedValue);
+        String value = "{[2019-09-08 00:00:00+01, 2019-09-10 00:00:00+01], [2019-09-11 00:00:00+01, 2019-09-12 00:00:00+01)}";
+        PeriodSet periodSet = new PeriodSet(value);
+        assertEquals(expectedPeriodSet, periodSet.shift(Duration.ofDays(1)));
     }
 }

@@ -4,9 +4,9 @@ import com.mobilitydb.jdbc.core.DataType;
 import com.mobilitydb.jdbc.core.TypeName;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -55,10 +55,6 @@ public class PeriodSet extends DataType {
         validate();
     }
 
-    public Period[] getPeriods() {
-        return periodList.toArray(new Period[0]);
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof PeriodSet) {
@@ -77,18 +73,124 @@ public class PeriodSet extends DataType {
         return value != null ? value.hashCode() : 0;
     }
 
+    public Period[] getPeriods() {
+        return periodList.toArray(new Period[0]);
+    }
+
+    public Duration getDuration() {
+        Duration d = Duration.ZERO;
+
+        for (Period p : periodList) {
+            d = d.plus(p.duration());
+        }
+
+        return d;
+    }
+
+    public Duration getTimespan() {
+        if (periodList.isEmpty()) {
+            return Duration.ZERO;
+        }
+
+        return Duration.between(getStartTimestamp(), getEndTimestamp());
+    }
+
+    public Period getPeriod() throws SQLException {
+        if (periodList.isEmpty()) {
+            return null;
+        }
+
+        Period first = periodList.get(0);
+        Period last = periodList.get(periodList.size() - 1);
+
+        return new Period(first.getLower(), last.getUpper(), first.isLowerInclusive(), last.isUpperInclusive());
+    }
+
+    public OffsetDateTime[] getTimestamps() {
+        LinkedHashSet<OffsetDateTime> timestamps = new LinkedHashSet<>();
+
+        for (Period period : periodList) {
+            timestamps.add(period.getLower());
+            timestamps.add(period.getUpper());
+        }
+
+        return timestamps.toArray(new OffsetDateTime[0]);
+    }
+
+    public int numTimestamps() {
+        return getTimestamps().length;
+    }
+
+    public OffsetDateTime getStartTimestamp() {
+        if (periodList.isEmpty()) {
+            return null;
+        }
+
+        return periodList.get(0).getLower();
+    }
+
+    public OffsetDateTime getEndTimestamp() {
+        if (periodList.isEmpty()) {
+            return null;
+        }
+
+        return periodList.get(periodList.size() - 1).getUpper();
+    }
+
+    public OffsetDateTime timestampN(int n) {
+        return getTimestamps()[n];
+    }
+
+    public int numPeriods() {
+        return periodList.size();
+    }
+
+    public Period getStartPeriod() {
+        if (periodList.isEmpty()) {
+            return null;
+        }
+
+        return periodList.get(0);
+    }
+
+    public Period getEndPeriod() {
+        if (periodList.isEmpty()) {
+            return null;
+        }
+
+        return periodList.get(periodList.size() - 1);
+    }
+
+    public Period periodN(int n) {
+        return periodList.get(n);
+    }
+
+    public PeriodSet shift(Duration duration) throws SQLException {
+        ArrayList<Period> periods = new ArrayList<>();
+
+        for (Period period : periodList) {
+            periods.add(period.shift(duration));
+        }
+
+        return new PeriodSet(periods.toArray(new Period[0]));
+    }
+
     private void validate() throws SQLException {
+        if (periodList == null || periodList.isEmpty()) {
+            throw new SQLException("Period set must contain at least one element.");
+        }
+
         for (int i = 0; i < periodList.size(); i++) {
             Period x = periodList.get(i);
 
-            if (periodIsInValid(x)) {
+            if (periodIsInvalid(x)) {
                 throw new SQLException("All periods should have a value.");
             }
 
             if (i + 1 < periodList.size()) {
                 Period y = periodList.get(i + 1);
 
-                if (periodIsInValid(y)) {
+                if (periodIsInvalid(y)) {
                     throw new SQLException("All periods should have a value.");
                 }
 
@@ -100,7 +202,7 @@ public class PeriodSet extends DataType {
         }
     }
 
-    private boolean periodIsInValid(Period period) {
+    private boolean periodIsInvalid(Period period) {
         return period == null || period.getValue() == null;
     }
 }

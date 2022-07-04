@@ -38,7 +38,8 @@ public class Period extends DataType {
         validate();
     }
 
-    public Period(OffsetDateTime lower, OffsetDateTime upper, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
+    public Period(OffsetDateTime lower, OffsetDateTime upper, boolean lowerInclusive, boolean upperInclusive)
+            throws SQLException {
         super();
         this.lower = lower;
         this.upper = upper;
@@ -110,19 +111,30 @@ public class Period extends DataType {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Period) {
-            Period fobj = (Period) obj;
+            Period other = (Period) obj;
 
-            boolean lowerAreEqual = lowerInclusive == fobj.isLowerInclusive();
-            boolean upperAreEqual = upperInclusive == fobj.isUpperInclusive();
-
-            if (lower != null && fobj.getLower() != null) {
-                lowerAreEqual = lowerAreEqual && lower.isEqual(fobj.getLower());
-            } else {
-                lowerAreEqual = lowerAreEqual && lower == fobj.getLower();
+            if (lowerInclusive != other.isLowerInclusive()) {
+                return false;
             }
 
-            if (upper != null && fobj.getUpper() != null) {
-                upperAreEqual = upperAreEqual && upper.isEqual(fobj.getUpper());
+            if (upperInclusive != other.isUpperInclusive()) {
+                return false;
+            }
+
+            boolean lowerAreEqual;
+            boolean upperAreEqual;
+
+            if (lower != null && other.getLower() != null) {
+                lowerAreEqual = lower.isEqual(other.getLower());
+            } else {
+                lowerAreEqual = lower == other.getLower();
+            }
+
+
+            if (upper != null && other.getUpper() != null) {
+                upperAreEqual = upper.isEqual(other.getUpper());
+            } else {
+                upperAreEqual = upper == other.getUpper();
             }
 
             return lowerAreEqual && upperAreEqual;
