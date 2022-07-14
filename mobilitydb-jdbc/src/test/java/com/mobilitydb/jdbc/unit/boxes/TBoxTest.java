@@ -1,18 +1,36 @@
 package com.mobilitydb.jdbc.unit.boxes;
 
 import com.mobilitydb.jdbc.boxes.TBox;
+import com.mobilitydb.jdbc.time.Period;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class TBoxTest {
+
+    static Stream<Arguments> notEqualsTBoxProvider() {
+        return Stream.of(
+                arguments("TBOX((30.0, 2021-07-08 06:04:32+02), (40.0, 2021-07-09 11:02:00+02))",
+                        "TBOX((50.0, 2021-07-08 06:04:32+02), (40.0, 2021-07-09 11:02:00+02))"),
+                arguments("TBOX((30.0, 2021-07-08 06:04:32+02), (90.0, 2021-07-09 11:02:00+02))",
+                        "TBOX((30.0, 2021-07-08 06:04:32+02), (40.0, 2021-07-09 11:02:00+02))"),
+                arguments("TBOX((60.0, 2021-07-10 06:04:32+02), (70.0, 2021-07-09 11:02:00+02))",
+                        "TBOX((60.0, 2021-07-08 06:04:32+02), (70.0, 2021-07-09 11:02:00+02))"),
+                arguments("TBOX((80.0, 2021-07-08 06:04:32+02), (40.0, 2021-07-09 11:02:00+02))",
+                        "TBOX((80.0, 2021-07-08 06:04:32+02), (40.0, 2021-07-11 11:02:00+02))")
+        );
+    }
 
     @Test
     void testConstructor() throws SQLException {
@@ -28,7 +46,8 @@ class TBoxTest {
         assertAll("Constructor with all arguments",
                 () -> assertEquals(expectedTmin, tbox.getTmin()),
                 () -> assertEquals(expectedTmax, tbox.getTmax()),
-                () -> assertEquals(other.getValue(), tbox.getValue())
+                () -> assertEquals(other.getValue(), tbox.getValue()),
+                () -> assertEquals(other, tbox)
         );
     }
 
@@ -41,7 +60,8 @@ class TBoxTest {
         assertAll("Constructor with only x coordinates",
                 () -> assertEquals(other.getXmin(), tbox.getXmin()),
                 () -> assertEquals(other.getXmax(), tbox.getXmax()),
-                () -> assertEquals(other.getValue(), tbox.getValue())
+                () -> assertEquals(other.getValue(), tbox.getValue()),
+                () -> assertEquals(other, tbox)
         );
     }
 
@@ -59,7 +79,8 @@ class TBoxTest {
         assertAll("Constructor with only times",
                 () -> assertEquals(expectedTmin, tbox.getTmin()),
                 () -> assertEquals(expectedTmax, tbox.getTmax()),
-                () -> assertEquals(other.getValue(), tbox.getValue())
+                () -> assertEquals(other.getValue(), tbox.getValue()),
+                () -> assertEquals(other, tbox)
         );
     }
 
@@ -70,7 +91,7 @@ class TBoxTest {
             "(20, 2021-09-08 00:00:00+01, 40)",
             "( 2021-09-08 00:00:00+01, 60, 2021-09-08 00:00:00+01)",
     })
-    void testSetValueInvalidValue(String value) throws SQLException {
+    void testSetValueInvalidValue(String value) {
         TBox tBox = new TBox();
         SQLException thrown = assertThrows(
                 SQLException.class,
@@ -86,7 +107,7 @@ class TBoxTest {
             "((10.0,), (,))",
             "TBOX((8.0,), (,))"
     })
-    void testSetValueMissingXmax(String value) throws SQLException {
+    void testSetValueMissingXmax(String value) {
         TBox tBox = new TBox();
         SQLException thrown = assertThrows(
                 SQLException.class,
@@ -102,7 +123,7 @@ class TBoxTest {
             "((,), (33.0, ))",
             "TBOX((,), (87, ))"
     })
-    void testSetValueMissingXmin(String value) throws SQLException {
+    void testSetValueMissingXmin(String value) {
         TBox tBox = new TBox();
         SQLException thrown = assertThrows(
                 SQLException.class,
@@ -118,7 +139,7 @@ class TBoxTest {
             "((10.0,2019-04-18 00:11:02+02), (18,))",
             "TBOX((8.0,2019-04-19 00:03:15+02), (28,))"
     })
-    void testSetValueMissingTmax(String value) throws SQLException {
+    void testSetValueMissingTmax(String value) {
         TBox tBox = new TBox();
         SQLException thrown = assertThrows(
                 SQLException.class,
@@ -134,7 +155,7 @@ class TBoxTest {
             "((10.0,), (18, 2019-04-18 00:11:02+02))",
             "TBOX((8.0,), (28,2019-04-19 00:03:15+02))"
     })
-    void testSetValueMissingTmin(String value) throws SQLException {
+    void testSetValueMissingTmin(String value) {
         TBox tBox = new TBox();
         SQLException thrown = assertThrows(
                 SQLException.class,
@@ -149,7 +170,7 @@ class TBoxTest {
             "TBOX((4, 2021-07-09 11:02:00+02), (9, 2021-09-08))",
             "((4, 2021-07-0912:02:00+02), (9, 2021-07-09 12:09:08+02))"
     })
-    void testSetValueInvalidDateFormat(String value) throws SQLException {
+    void testSetValueInvalidDateFormat(String value) {
         TBox tBox = new TBox();
         DateTimeParseException thrown = assertThrows(
                 DateTimeParseException.class,
@@ -178,7 +199,7 @@ class TBoxTest {
     }
 
     @Test
-    void testEqualsOnlyX() throws SQLException {
+    void testEqualsOnlyX() {
         TBox tBoxA = new TBox(3.0, 7.0);
         TBox tBoxB = new TBox(3.0, 7.0);
 
@@ -190,7 +211,7 @@ class TBoxTest {
     }
 
     @Test
-    void testEqualsOnlyT() throws SQLException {
+    void testEqualsOnlyT() {
         ZoneOffset tz = ZoneOffset.of("+02:00");
         OffsetDateTime tmin = OffsetDateTime.of(2021,7, 8,
                 6, 4, 32, 0, tz);
@@ -202,26 +223,8 @@ class TBoxTest {
         assertAll("Equals on time dimension",
                 () -> assertEquals(tBoxA.getTmin(), tBoxB.getTmin()),
                 () -> assertEquals(tBoxA.getTmax(), tBoxB.getTmax()),
-                () -> assertEquals(tBoxA.getValue(), tBoxB.getValue())
-        );
-    }
-
-    @Test
-    void testNotEquals() throws SQLException {
-        TBox tBoxA = new TBox(3.0, 7.0);
-        ZoneOffset tz = ZoneOffset.of("+02:00");
-        OffsetDateTime tmin = OffsetDateTime.of(2021,7, 8,
-                6, 4, 32, 0, tz);
-        OffsetDateTime tmax = OffsetDateTime.of(2021, 7, 9,
-                11, 2, 0, 0, tz);
-        TBox tBoxB = new TBox(6.0,tmin, 1.0, tmax);
-
-        assertAll("Not equals",
-                () -> assertNotEquals(tBoxA.getXmin(), tBoxB.getXmin()),
-                () -> assertNotEquals(tBoxA.getXmax(), tBoxB.getXmax()),
-                () -> assertNotEquals(tBoxA.getTmin(), tBoxB.getTmin()),
-                () -> assertNotEquals(tBoxA.getTmax(), tBoxB.getTmax()),
-                () -> assertNotEquals(tBoxA.getValue(), tBoxB.getValue())
+                () -> assertEquals(tBoxA.getValue(), tBoxB.getValue()),
+                () -> assertEquals(tBoxA, tBoxB)
         );
     }
 
@@ -236,5 +239,13 @@ class TBoxTest {
         String value = "TBOX((30.0, 2021-07-13 06:04:32+02), (98.0, 2021-07-16 11:02:00+02))";
         TBox tBox = new TBox(value);
         assertNotEquals(tBox, new Object());
+    }
+
+    @ParameterizedTest
+    @MethodSource("notEqualsTBoxProvider")
+    void testNotEquals(String first, String second) throws SQLException {
+        TBox tBoxA = new TBox(first);
+        TBox tBoxB = new TBox(second);
+        assertNotEquals(tBoxA, tBoxB);
     }
 }

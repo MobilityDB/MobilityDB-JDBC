@@ -100,17 +100,27 @@ public class TBox extends DataType {
         if (obj instanceof TBox) {
             TBox other = (TBox) obj;
 
-            boolean xminIsEqual = xmin == other.getXmin();
-            boolean xmaxIsEqual = xmax == other.getXmax();
+            if (xmin != other.getXmin()) {
+                return false;
+            }
+
+            if (xmax != other.getXmax()) {
+                return false;
+            }
+
+            boolean xminIsEqual;
+            boolean xmaxIsEqual;
 
             if (tmin != null && other.getTmin() != null) {
-                xminIsEqual = xminIsEqual && tmin.isEqual(other.getTmin());
+                xminIsEqual = tmin.isEqual(other.getTmin());
             } else {
-                xminIsEqual = xminIsEqual && tmin == other.getTmin();
+                xminIsEqual = tmin == other.getTmin();
             }
 
             if (tmax != null && other.getTmax() != null) {
-                xmaxIsEqual = xmaxIsEqual && tmax.isEqual(other.getTmax());
+                xmaxIsEqual = tmax.isEqual(other.getTmax());
+            } else {
+                xmaxIsEqual = tmax == other.getTmax();
             }
 
             return xminIsEqual && xmaxIsEqual;
