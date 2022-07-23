@@ -58,12 +58,7 @@ class STBoxTest {
         STBox stbox = new STBox(value);
         STBox other = new STBox(ttmin,ttmax);
 
-        assertAll("Constructor with time dimension",
-                () -> assertEquals(other.getTMin(), stbox.getTMin()),
-                () -> assertEquals(other.getTMax(), stbox.getTMax()),
-                () -> assertEquals(other.isGeodetic(), stbox.isGeodetic()),
-                () -> assertEquals(other.getValue(), stbox.getValue())
-        );
+        assertEquals(other, stbox);
     }
 
     @Test
@@ -78,14 +73,8 @@ class STBoxTest {
         STBox other = new STBox(new Point(1.0,2.0),ttmin, new Point(1.0,2.0), ttmax, 5676);
 
         assertAll("Constructor with XY coordinates and time dimension",
-                () -> assertEquals(other.getXmin(), stbox.getXmin()),
-                () -> assertEquals(other.getXmax(), stbox.getXmax()),
-                () -> assertEquals(other.getYmin(), stbox.getYmin()),
-                () -> assertEquals(other.getYmax(), stbox.getYmax()),
-                () -> assertEquals(other.getTMin(), stbox.getTMin()),
-                () -> assertEquals(other.getTMax(), stbox.getTMax()),
-                () -> assertEquals(other.getSrid(), stbox.getSrid()),
-                () -> assertEquals(other.getValue(), stbox.getValue())
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
         );
     }
 
@@ -96,11 +85,8 @@ class STBoxTest {
         STBox other = new STBox(new Point(1.0,2.0), new Point(1.0,2.0));
 
         assertAll("Constructor with XY coordinates",
-            () -> assertEquals(other.getXmin(), stbox.getXmin()),
-            () -> assertEquals(other.getXmax(), stbox.getXmax()),
-            () -> assertEquals(other.getYmin(), stbox.getYmin()),
-            () -> assertEquals(other.getYmax(), stbox.getYmax()),
-            () -> assertEquals(other.getValue(), stbox.getValue())
+            () -> assertEquals(other.getValue(), stbox.getValue()),
+            () -> assertEquals(other, stbox)
         );
     }
 
@@ -111,13 +97,8 @@ class STBoxTest {
         STBox other = new STBox(new Point(1.0,2.0,3.0), new Point(1.0,2.0,3.0));
 
         assertAll("Constructor with XYZ coordinates",
-            () -> assertEquals(other.getXmin(), stbox.getXmin()),
-            () -> assertEquals(other.getXmax(), stbox.getXmax()),
-            () -> assertEquals(other.getYmin(), stbox.getYmin()),
-            () -> assertEquals(other.getYmax(), stbox.getYmax()),
-            () -> assertEquals(other.getZmin(), stbox.getZmin()),
-            () -> assertEquals(other.getZmax(), stbox.getZmax()),
-            () -> assertEquals(other.getValue(), stbox.getValue())
+            () -> assertEquals(other.getValue(), stbox.getValue()),
+            () -> assertEquals(other, stbox)
         );
     }
 
@@ -133,15 +114,8 @@ class STBoxTest {
         STBox other = new STBox(new Point(1.0,2.0,3.0), ttmin, new Point(1.0,2.0,3.0), ttmax);
 
         assertAll("Constructor with XY coordinates and time dimension",
-            () -> assertEquals(other.getXmin(), stbox.getXmin()),
-            () -> assertEquals(other.getXmax(), stbox.getXmax()),
-            () -> assertEquals(other.getYmin(), stbox.getYmin()),
-            () -> assertEquals(other.getYmax(), stbox.getYmax()),
-            () -> assertEquals(other.getTMin(), stbox.getTMin()),
-            () -> assertEquals(other.getTMax(), stbox.getTMax()),
-            () -> assertEquals(other.getZmin(), stbox.getZmin()),
-            () -> assertEquals(other.getZmax(), stbox.getZmax()),
-            () -> assertEquals(other.getValue(), stbox.getValue())
+            () -> assertEquals(other.getValue(), stbox.getValue()),
+            () -> assertEquals(other, stbox)
         );
     }
 
@@ -157,33 +131,48 @@ class STBoxTest {
         STBox other = new STBox(ttmin,ttmax, true);
 
         assertAll("Constructor with time dimension and geodetic",
-                () -> assertEquals(other.getTMin(), stbox.getTMin()),
-                () -> assertEquals(other.getTMax(), stbox.getTMax()),
-                () -> assertEquals(other.isGeodetic(), stbox.isGeodetic()),
-                () -> assertEquals(other.getValue(), stbox.getValue())
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
         );
     }
 
     @Test
-    void testConstructorXYZGeodetic() throws SQLException {
+    void testConstructorXYSRID() throws SQLException {
+        String value = "SRID=4326;STBOX((11.0, 12.0), (11.0, 12.0))";
+        STBox stbox = new STBox(value);
+        STBox other = new STBox(new Point(11.0,12.0), new Point(11.0,12.0), 4326);
+
+        assertAll("Constructor with XY coordinates and SRID",
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
+        );
+    }
+
+    @Test
+    void testConstructorXYZGeodeticSRID() throws SQLException {
         String value = "SRID=4326;GEODSTBOX((11.0, 12.0, 13.0), (11.0, 12.0, 13.0))";
         STBox stbox = new STBox(value);
         STBox other = new STBox(new Point(11.0,12.0,13.0), new Point(11.0,12.0,13.0),
                 true, 4326);
 
         assertAll("Constructor with XYZ coordinates and geodetic",
-            () -> assertEquals(other.getXmin(), stbox.getXmin()),
-            () -> assertEquals(other.getXmax(), stbox.getXmax()),
-            () -> assertEquals(other.getYmin(), stbox.getYmin()),
-            () -> assertEquals(other.getYmax(), stbox.getYmax()),
-            () -> assertEquals(other.getZmin(), stbox.getZmin()),
-            () -> assertEquals(other.getZmax(), stbox.getZmax()),
-            () -> assertEquals(other.isGeodetic(), stbox.isGeodetic()),
-            () -> assertEquals(other.getSrid(), stbox.getSrid()),
-            () -> assertEquals(other.getValue(), stbox.getValue())
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
         );
     }
 
+    @Test
+    void testConstructorXYZGeodetic() throws SQLException {
+        String value = "GEODSTBOX((11.0, 12.0, 13.0), (11.0, 12.0, 13.0))";
+        STBox stbox = new STBox(value);
+        STBox other = new STBox(new Point(11.0,12.0,13.0), new Point(11.0,12.0,13.0),
+                true);
+
+        assertAll("Constructor with XYZ coordinates and geodetic",
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
+        );
+    }
 
     @Test
     void testConstructorXYZAndTimeDimensionGeodetic() throws SQLException {
@@ -198,16 +187,26 @@ class STBoxTest {
                 true);
 
         assertAll("Constructor with XY coordinates and time dimension and geodetic",
-                () -> assertEquals(other.getXmin(), stbox.getXmin()),
-                () -> assertEquals(other.getXmax(), stbox.getXmax()),
-                () -> assertEquals(other.getYmin(), stbox.getYmin()),
-                () -> assertEquals(other.getYmax(), stbox.getYmax()),
-                () -> assertEquals(other.getTMin(), stbox.getTMin()),
-                () -> assertEquals(other.getTMax(), stbox.getTMax()),
-                () -> assertEquals(other.getZmin(), stbox.getZmin()),
-                () -> assertEquals(other.getZmax(), stbox.getZmax()),
-                () -> assertEquals(other.isGeodetic(), stbox.isGeodetic()),
-                () -> assertEquals(other.getValue(), stbox.getValue())
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
+        );
+    }
+
+    @Test
+    void testConstructorXYZAndTimeDimensionGeodeticSRID() throws SQLException {
+        String value = "SRID=4326;GEODSTBOX T((1.0, 2.0, 3.0, 2001-01-03 00:00:00+01), (1.0, 2.0, 3.0, 2001-01-04 00:00:00+01))";
+        ZoneOffset tz = ZoneOffset.of("+01:00");
+        OffsetDateTime ttmin = OffsetDateTime.of(2001,1, 3,
+                0, 0, 0, 0, tz);
+        OffsetDateTime ttmax = OffsetDateTime.of(2001, 1, 4,
+                0, 0, 0, 0, tz);
+        STBox stbox = new STBox(value);
+        STBox other = new STBox(new Point(1.0,2.0,3.0), ttmin, new Point(1.0,2.0,3.0), ttmax,
+                true,4326);
+
+        assertAll("Constructor with XY coordinates and time dimension and geodetic",
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
         );
     }
 
@@ -223,10 +222,8 @@ class STBoxTest {
         STBox other = new STBox(ttmin,ttmax,5676);
 
         assertAll("Constructor with time dimension and SRID",
-                () -> assertEquals(other.getTMin(), stbox.getTMin()),
-                () -> assertEquals(other.getTMax(), stbox.getTMax()),
-                () -> assertEquals(other.getSrid(), stbox.getSrid()),
-                () -> assertEquals(other.getValue(), stbox.getValue())
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
         );
     }
 
@@ -242,85 +239,8 @@ class STBoxTest {
         STBox other = new STBox(ttmin,ttmax, true,5676);
 
         assertAll("Constructor with time dimension and SRID",
-                () -> assertEquals(other.getTMin(), stbox.getTMin()),
-                () -> assertEquals(other.getTMax(), stbox.getTMax()),
-                () -> assertEquals(other.isGeodetic(), stbox.isGeodetic()),
-                () -> assertEquals(other.getSrid(), stbox.getSrid()),
-                () -> assertEquals(other.getValue(), stbox.getValue())
-        );
-    }
-
-    @Test
-    void testBuilderXY() throws SQLException {
-        STBox other = new STBox(new Point(1.0,2.0), new Point(3.0,4.0));
-
-        assertEquals(1.0, other.getXmin());
-        assertEquals(3.0, other.getXmax());
-        assertEquals(2.0, other.getYmin());
-        assertEquals(4.0, other.getYmax());
-    }
-
-    @Test
-    void testBuilderXYAndSrid() throws SQLException {
-        STBox stBox = new STBox(new Point(1.0,2.0), new Point(3.0,4.0), 12345);
-
-        assertEquals(1.0, stBox.getXmin());
-        assertEquals(3.0, stBox.getXmax());
-        assertEquals(2.0, stBox.getYmin());
-        assertEquals(4.0, stBox.getYmax());
-        assertEquals(12345, stBox.getSrid());
-    }
-
-    @Test
-    void testBuilderXYZAndSrid() throws SQLException {
-        STBox stBox = new STBox(new Point(1.0,2.0, 3.0), new Point(4.0,5.0,6.0), 12345);
-
-        assertEquals(1.0, stBox.getXmin());
-        assertEquals(4.0, stBox.getXmax());
-        assertEquals(2.0, stBox.getYmin());
-        assertEquals(5.0, stBox.getYmax());
-        assertEquals(3.0, stBox.getZmin());
-        assertEquals(6.0, stBox.getZmax());
-        assertEquals(false, stBox.isGeodetic());
-        assertEquals(12345, stBox.getSrid());
-    }
-
-    @Test
-    void testBuilderXYAndTime() throws SQLException {
-        ZoneOffset tz = ZoneOffset.of("+04:00");
-        OffsetDateTime tmin = OffsetDateTime.of(2021,4, 8,
-                5, 32, 10, 0, tz);
-        OffsetDateTime tmax = OffsetDateTime.of(2021, 4, 9,
-                10, 17, 21, 0, tz);
-        STBox stBox = new STBox(new Point(1.0,2.0), tmin, new Point(3.0,4.0), tmax, 12345);
-
-        assertEquals(1.0, stBox.getXmin());
-        assertEquals(3.0, stBox.getXmax());
-        assertEquals(2.0, stBox.getYmin());
-        assertEquals(4.0, stBox.getYmax());
-        assertEquals(tmin, stBox.getTMin());
-        assertEquals(tmax, stBox.getTMax());
-    }
-
-    @Test
-    void testBuilderXYZAndTime() throws SQLException {
-        ZoneOffset tz = ZoneOffset.of("+04:00");
-        OffsetDateTime tmin = OffsetDateTime.of(2021,4, 8,
-                5, 32, 10, 0, tz);
-        OffsetDateTime tmax = OffsetDateTime.of(2021, 4, 9,
-                10, 17, 21, 0, tz);
-        STBox stBox = new STBox(new Point(1.0,2.0,3.0), tmin, new Point(4.0, 5.0, 6.0), tmax,
-                true);
-        assertAll("Testing builder with XYZ coordinates and geodetic",
-                () -> assertEquals(1.0, stBox.getXmin()),
-                () -> assertEquals(4.0, stBox.getXmax()),
-                () -> assertEquals(2.0, stBox.getYmin()),
-                () -> assertEquals(5.0, stBox.getYmax()),
-                () -> assertEquals(3.0, stBox.getZmin()),
-                () -> assertEquals(6.0, stBox.getZmax()),
-                () -> assertEquals(tmin, stBox.getTMin()),
-                () -> assertEquals(tmax, stBox.getTMax()),
-                () -> assertTrue(stBox.isGeodetic())
+                () -> assertEquals(other.getValue(), stbox.getValue()),
+                () -> assertEquals(other, stbox)
         );
     }
 
@@ -329,6 +249,8 @@ class STBoxTest {
         STBox stBoxA = new STBox();
         STBox stBoxB = new STBox();
         assertEquals(stBoxA, stBoxB);
+        assertNull(stBoxA.getValue());
+        assertNull(stBoxB.getValue());
     }
 
     @ParameterizedTest
@@ -344,12 +266,9 @@ class STBoxTest {
         "SRID=5676;STBOX T((1.0, 2.0, 2001-01-04 00:00:00+01), (1.0, 2.0, 2001-01-04 00:00:00+01))",
         "SRID=4326;GEODSTBOX((1.0, 2.0, 3.0), (1.0, 2.0, 3.0))"
     })
-    void testEquals(String value) throws SQLException {
-        STBox stBoxA = new STBox();
-        STBox stBoxB = new STBox();
-        assertEquals(stBoxA, stBoxB);
-        assertNull(stBoxA.getValue());
-        assertNull(stBoxB.getValue());
+    void testStringConstructor(String value) throws SQLException {
+        STBox stBoxA = new STBox(value);
+        assertNotNull(stBoxA.getValue());
     }
 
     @ParameterizedTest
@@ -408,6 +327,21 @@ class STBoxTest {
             new STBox("STBX ((1.0, 2.0), (1.0, 2.0))");
         });
         assertTrue(exceptionThrown.getMessage().contains("Could not parse STBox value"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "STBOX ((1.0, ), (1.0, 2.0))",
+        "STBOX ((1.0, 3.0), (, 2.0))",
+        "STBOX ((, 5.0), (1.0, 2.0))",
+        "STBOX ((1.0, 3.0), (, 8.0))",
+        "STBOX ((1.0, 3.0), (, 8.0))",
+    })
+    void testInvalidNumberOfParameters(String value) {
+        Throwable exceptionThrown = assertThrows(SQLException.class, () -> {
+            new STBox(value);
+        });
+        assertTrue(exceptionThrown.getMessage().contains("Could not parse STBox value, invalid number of parameters."));
     }
 
     @Test

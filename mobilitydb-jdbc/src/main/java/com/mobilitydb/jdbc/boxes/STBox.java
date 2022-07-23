@@ -7,7 +7,6 @@ import com.mobilitydb.jdbc.core.TypeName;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.Objects;
 
 @TypeName(name = "stbox")
 public class STBox extends DataType {
@@ -29,6 +28,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for only value dimension (x,y) or (x,y,z)
+     *
      * @param pMin coordinates for minimum bound
      * @param pMax coordinates for maximum bound
      * @throws SQLException
@@ -42,6 +42,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for value dimension (x,y) or (x,y,z) and time dimension
+     *
      * @param pMin coordinates for minimum bound
      * @param tMin minimum time dimension
      * @param pMax coordinates for maximum bound
@@ -59,6 +60,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for only time dimension
+     *
      * @param tMin minimum time dimension
      * @param tMax maximum time dimension
      * @throws SQLException
@@ -72,6 +74,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for value dimension (x,y,z) with geodetic coordinates
+     *
      * @param pMin coordinates for minimum bound
      * @param pMax coordinates for maximum bound
      * @throws SQLException
@@ -86,6 +89,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for value dimension (x,y,z) with geodetic coordinates and time dimension
+     *
      * @param pMin coordinates for minimum bound
      * @param tMin minimum time dimension
      * @param pMax coordinates for maximum bound
@@ -105,6 +109,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for geodetic box with only time dimension
+     *
      * @param tMin minimum time dimension
      * @param tMax maximum time dimension
      * @throws SQLException
@@ -119,6 +124,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for only value dimension (x,y) or (x,y,z) and SRID
+     *
      * @param pMin coordinates for minimum bound
      * @param pMax coordinates for maximum bound
      * @param srid spatial reference identifier
@@ -134,6 +140,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for value dimension (x,y) or (x,y,z), time dimension and SRID
+     *
      * @param pMin coordinates for minimum bound
      * @param tMin minimum time dimension
      * @param pMax coordinates for maximum bound
@@ -153,6 +160,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for only time dimension and SRID
+     *
      * @param tMin minimum time dimension
      * @param tMax maximum time dimension
      * @param srid spatial reference identifier
@@ -168,6 +176,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for value dimension (x,y,z) with geodetic coordinates and SRID
+     *
      * @param pMin coordinates for minimum bound
      * @param pMax coordinates for maximum bound
      * @param srid spatial reference identifier
@@ -184,6 +193,7 @@ public class STBox extends DataType {
 
     /**
      * CConstructor for value dimension (x,y,z) with geodetic coordinates, time dimension and SRID
+     *
      * @param pMin coordinates for minimum bound
      * @param tMin minimum time dimension
      * @param pMax coordinates for maximum bound
@@ -205,6 +215,7 @@ public class STBox extends DataType {
 
     /**
      * Constructor for geodetic box with only time dimension and SRID
+     *
      * @param tMin minimum time dimension
      * @param tMax maximum time dimension
      * @param srid spatial reference identifier
@@ -222,7 +233,7 @@ public class STBox extends DataType {
     @Override
     public String getValue() {
         String sridPrefix = "";
-        if(srid != 0) {
+        if (srid != 0) {
             sridPrefix = String.format("SRID=%s;", srid);
         }
         if (isGeodetic) {
@@ -236,19 +247,19 @@ public class STBox extends DataType {
     public void setValue(String value) throws SQLException {
         boolean hasZ = false;
         boolean hasT = false;
-        if(value.startsWith("SRID")) {
+        if (value.startsWith("SRID")) {
             String[] initialValues = value.split(";");
             srid = Integer.parseInt(initialValues[0].split("=")[1]);
             value = initialValues[1];
         }
 
-        if(value.contains("GEODSTBOX")) {
+        if (value.contains("GEODSTBOX")) {
             isGeodetic = true;
-            value = value.replace("GEODSTBOX","");
+            value = value.replace("GEODSTBOX", "");
             hasZ = true;
             hasT = value.contains("T");
         } else if (value.startsWith("STBOX")) {
-            value = value.replace("STBOX","");
+            value = value.replace("STBOX", "");
             hasZ = value.contains("Z");
             hasT = value.contains("T");
         } else {
@@ -256,8 +267,8 @@ public class STBox extends DataType {
         }
         value = value.replace("Z", "")
                 .replace("T", "")
-                .replace("(","")
-                .replace(")","");
+                .replace("(", "")
+                .replace(")", "");
         String[] values = value.split(",");
         int nonEmpty = (int) Arrays.stream(values).filter(x -> !x.isBlank()).count();
         if (nonEmpty == 2) {
@@ -269,19 +280,21 @@ public class STBox extends DataType {
         } else {
             this.pMin = new Point();
             this.pMax = new Point();
-            if ( nonEmpty >= 4) {
+            if (nonEmpty >= 4) {
                 this.pMin.setX(Double.parseDouble(values[0]));
-                this.pMax.setX(Double.parseDouble(values[nonEmpty/2]));
+                this.pMax.setX(Double.parseDouble(values[nonEmpty / 2]));
                 this.pMin.setY(Double.parseDouble(values[1]));
-                this.pMax.setY(Double.parseDouble(values[1 + nonEmpty/2]));
+                this.pMax.setY(Double.parseDouble(values[1 + nonEmpty / 2]));
+            } else {
+                throw new SQLException("Could not parse STBox value, invalid number of parameters.");
             }
             if (hasZ) {
                 this.pMin.setZ(Double.parseDouble(values[2]));
-                this.pMax.setZ(Double.parseDouble(values[2 + nonEmpty/2]));
+                this.pMax.setZ(Double.parseDouble(values[2 + nonEmpty / 2]));
             }
             if (hasT) {
-                this.tMin = DateTimeFormatHelper.getDateTimeFormat(values[nonEmpty/2 - 1].trim());
-                this.tMax = DateTimeFormatHelper.getDateTimeFormat(values[(nonEmpty/2 - 1) + nonEmpty/2].trim());
+                this.tMin = DateTimeFormatHelper.getDateTimeFormat(values[nonEmpty / 2 - 1].trim());
+                this.tMax = DateTimeFormatHelper.getDateTimeFormat(values[(nonEmpty / 2 - 1) + nonEmpty / 2].trim());
             }
         }
         validate();
@@ -291,28 +304,44 @@ public class STBox extends DataType {
     public boolean equals(Object obj) {
         if (obj instanceof STBox) {
             STBox other = (STBox) obj;
-            boolean tIsEqual;
 
-            if (tMin != null && tMax != null) {
-                tIsEqual = tMax.isEqual(other.tMax) && tMin.isEqual(other.tMin);
+            boolean pMinIsEqual;
+            boolean pMaxIsEqual;
+
+            if (pMin != null && other.pMin != null) {
+                pMinIsEqual = pMin.equals(other.pMin);
             } else {
-                tIsEqual = tMax == other.tMax && tMin == other.tMin;
-            }
-            boolean xIsEqual = true;
-            boolean yIsEqual = true;
-            boolean zIsEqual = true;
-            if (pMin != null && other.pMin != null && pMax != null && other.pMax != null) {
-                xIsEqual = Objects.equals(pMin.getX(), other.pMin.getX()) &&
-                        Objects.equals(pMax.getX(), other.pMax.getX());
-                yIsEqual = Objects.equals(pMin.getY(), other.pMin.getY()) &&
-                        Objects.equals(pMax.getY(), other.pMax.getY());
-                zIsEqual = Objects.equals(pMin.getZ(), other.pMin.getZ()) &&
-                        Objects.equals(pMax.getZ(), other.pMax.getZ());
+                pMinIsEqual = pMin == other.pMin;
             }
 
-            return xIsEqual && yIsEqual && zIsEqual && tIsEqual && isGeodetic == other.isGeodetic();
+            if (pMax != null && other.pMax != null) {
+                pMaxIsEqual = pMax.equals(other.pMax);
+            } else {
+                pMaxIsEqual = pMax == other.pMax;
+            }
+
+            return  tIsEqual(other) && pMinIsEqual && pMaxIsEqual && isGeodetic == other.isGeodetic();
         }
         return false;
+    }
+
+    public boolean tIsEqual(STBox other){
+        boolean tMinIsEqual;
+        boolean tMaxIsEqual;
+
+        if (tMin != null && other.getTMin() != null) {
+            tMinIsEqual = tMin.isEqual(other.getTMin());
+        } else {
+            tMinIsEqual = tMin == other.getTMin();
+        }
+
+        if (tMax != null && other.getTMax() != null) {
+            tMaxIsEqual = tMax.isEqual(other.getTMax());
+        } else {
+            tMaxIsEqual = tMax == other.getTMax();
+        }
+
+        return tMinIsEqual && tMaxIsEqual;
     }
 
     @Override
