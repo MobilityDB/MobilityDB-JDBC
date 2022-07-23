@@ -98,23 +98,32 @@ public class TBox extends DataType {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof TBox) {
-            TBox fobj = (TBox) obj;
+            TBox other = (TBox) obj;
 
-            boolean xminIsEqual = xmin == fobj.getXmin();
-            boolean xmaxIsEqual = xmax == fobj.getXmax();
-
-            if (tmin != null && fobj.getTmin() != null) {
-                xminIsEqual = xminIsEqual && tmin.isEqual(fobj.getTmin());
-            } else {
-                xminIsEqual = xminIsEqual && tmin == fobj.getTmin();
+            if (xmin != other.getXmin()) {
+                return false;
             }
 
-            if (tmax != null && fobj.getTmax() != null) {
-                xmaxIsEqual = xmaxIsEqual && tmax.isEqual(fobj.getTmax());
+            if (xmax != other.getXmax()) {
+                return false;
+            }
+
+            boolean xminIsEqual;
+            boolean xmaxIsEqual;
+
+            if (tmin != null && other.getTmin() != null) {
+                xminIsEqual = tmin.isEqual(other.getTmin());
+            } else {
+                xminIsEqual = tmin == other.getTmin();
+            }
+
+            if (tmax != null && other.getTmax() != null) {
+                xmaxIsEqual = tmax.isEqual(other.getTmax());
+            } else {
+                xmaxIsEqual = tmax == other.getTmax();
             }
 
             return xminIsEqual && xmaxIsEqual;
-
         }
         return false;
     }
