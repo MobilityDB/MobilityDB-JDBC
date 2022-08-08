@@ -6,43 +6,43 @@ import java.sql.SQLException;
 
 public class TFloatSeq extends TSequence<Float> {
     public TFloatSeq(String value) throws SQLException {
-        super(value, TFloat::getSingleTemporalValue);
+        super(value, TFloatInst::new, TFloat::compareValue);
     }
 
     public TFloatSeq(String[] values) throws SQLException {
-        super(false, values, TFloat::getSingleTemporalValue);
+        super(false, values, TFloatInst::new, TFloat::compareValue);
     }
 
     public TFloatSeq(boolean isStepwise, String[] values) throws SQLException {
-        super(isStepwise, values, TFloat::getSingleTemporalValue);
+        super(isStepwise, values, TFloatInst::new, TFloat::compareValue);
     }
 
     public TFloatSeq(String[] values, boolean lowerInclusive, boolean upperInclusive)
             throws SQLException {
-        super(false, values, lowerInclusive, upperInclusive, TFloat::getSingleTemporalValue);
+        super(false, values, lowerInclusive, upperInclusive, TFloatInst::new, TFloat::compareValue);
     }
 
     public TFloatSeq(boolean isStepwise, String[] values, boolean lowerInclusive, boolean upperInclusive)
             throws SQLException {
-        super(isStepwise, values, lowerInclusive, upperInclusive, TFloat::getSingleTemporalValue);
+        super(isStepwise, values, lowerInclusive, upperInclusive, TFloatInst::new, TFloat::compareValue);
     }
 
     public TFloatSeq(TFloatInst[] values) throws SQLException {
-        super(false, values);
+        super(false, values, TFloat::compareValue);
     }
 
     public TFloatSeq(boolean isStepwise, TFloatInst[] values) throws SQLException {
-        super(isStepwise, values);
+        super(isStepwise, values, TFloat::compareValue);
     }
 
     public TFloatSeq(TFloatInst[] values, boolean lowerInclusive, boolean upperInclusive)
             throws SQLException {
-        super(false, values, lowerInclusive, upperInclusive);
+        super(false, values, lowerInclusive, upperInclusive, TFloat::compareValue);
     }
 
     public TFloatSeq(boolean isStepwise, TFloatInst[] values, boolean lowerInclusive, boolean upperInclusive)
             throws SQLException {
-        super(isStepwise, values, lowerInclusive, upperInclusive);
+        super(isStepwise, values, lowerInclusive, upperInclusive, TFloat::compareValue);
     }
 
 }

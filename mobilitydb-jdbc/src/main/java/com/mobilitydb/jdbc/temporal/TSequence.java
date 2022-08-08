@@ -1,33 +1,55 @@
 package com.mobilitydb.jdbc.temporal;
 
+import com.mobilitydb.jdbc.temporal.delegates.CompareValueFunction;
+import com.mobilitydb.jdbc.temporal.delegates.GetTemporalInstantFunction;
+import com.mobilitydb.jdbc.time.Period;
+import com.mobilitydb.jdbc.time.PeriodSet;
+
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
-public abstract class TSequence<V extends Serializable> extends Temporal<V> {
-    protected final ArrayList<TemporalValue<V>> temporalValues = new ArrayList<>();
+public abstract class TSequence<V extends Serializable> extends TemporalInstants<V> implements TemporalSequences<V> {
     protected boolean stepwise;
     private boolean lowerInclusive;
     private boolean upperInclusive;
 
-    protected TSequence(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
-        super(TemporalType.TEMPORAL_SEQUENCE);
-        parseValue(value, getSingleTemporalValue);
+    protected TSequence(String value,
+                        GetTemporalInstantFunction<V> getTemporalInstantFunction,
+                        CompareValueFunction<V> compareValueFunction) throws SQLException {
+        super(TemporalType.TEMPORAL_SEQUENCE, compareValueFunction);
+        parseValue(value, getTemporalInstantFunction);
         validate();
     }
 
-    protected TSequence(boolean stepwise, String[] values, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
-            throws SQLException {
-        this(stepwise, values, true, false, getSingleTemporalValue);
+    protected TSequence(boolean stepwise,
+                        String value,
+                        GetTemporalInstantFunction<V> getTemporalInstantFunction,
+                        CompareValueFunction<V> compareValueFunction) throws SQLException {
+        super(TemporalType.TEMPORAL_SEQUENCE, compareValueFunction);
+        parseValue(value, getTemporalInstantFunction);
+        this.stepwise = stepwise;
+        validate();
+    }
+
+    protected TSequence(boolean stepwise,
+                        String[] values,
+                        GetTemporalInstantFunction<V> getTemporalInstantFunction,
+                        CompareValueFunction<V> compareValueFunction) throws SQLException {
+        this(stepwise, values, true, false, getTemporalInstantFunction, compareValueFunction);
     }
 
     protected TSequence(boolean stepwise, String[] values, boolean lowerInclusive, boolean upperInclusive,
-                        GetSingleTemporalValueFunction<V> getSingleTemporalValue) throws SQLException {
-        super(TemporalType.TEMPORAL_SEQUENCE);
+                        GetTemporalInstantFunction<V> getTemporalInstantFunction,
+                        CompareValueFunction<V> compareValueFunction) throws SQLException {
+        super(TemporalType.TEMPORAL_SEQUENCE, compareValueFunction);
         for (String val : values) {
-            temporalValues.add(getSingleTemporalValue.run(val.trim()));
+            instantList.add(getTemporalInstantFunction.run(val.trim()));
         }
         this.lowerInclusive = lowerInclusive;
         this.upperInclusive = upperInclusive;
@@ -35,27 +57,25 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
         validate();
     }
 
-    protected TSequence(boolean stepwise, TInstant<V>[] values) throws SQLException {
-        this(stepwise, values, true, false);
-    }
-
-    protected TSequence(boolean stepwise, TInstant<V>[] values, boolean lowerInclusive, boolean upperInclusive)
+    protected TSequence(boolean stepwise, TInstant<V>[] values, CompareValueFunction<V> compareValueFunction)
             throws SQLException {
-        super(TemporalType.TEMPORAL_SEQUENCE);
-        for (TInstant<V> val : values) {
-            temporalValues.add(val.getTemporalValue());
-        }
+        this(stepwise, values, true, false, compareValueFunction);
+    }
+
+    protected TSequence(boolean stepwise, TInstant<V>[] values, boolean lowerInclusive, boolean upperInclusive,
+                        CompareValueFunction<V> compareValueFunction) throws SQLException {
+        super(TemporalType.TEMPORAL_SEQUENCE, compareValueFunction);
+        instantList.addAll(Arrays.asList(values));
         this.lowerInclusive = lowerInclusive;
         this.upperInclusive = upperInclusive;
         this.stepwise = stepwise;
         validate();
     }
 
-    private void parseValue(String value, GetSingleTemporalValueFunction<V> getSingleTemporalValue)
+    private void parseValue(String value, GetTemporalInstantFunction<V> getTemporalInstantFunction)
             throws SQLException {
         String[] values = preprocessValue(value).split(",");
 
-        // TODO: Investigate if case insensitive comparison is required
         if (values[0].startsWith(TemporalConstants.STEPWISE)) {
             stepwise = true;
             values[0] = values[0].substring(TemporalConstants.STEPWISE.length());
@@ -85,13 +105,22 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
             if (i == values.length - 1 ) {
                 val = val.substring(0, val.length() - 1);
             }
-            temporalValues.add(getSingleTemporalValue.run(val.trim()));
+            instantList.add(getTemporalInstantFunction.run(val.trim()));
         }
     }
 
     @Override
     protected void validateTemporalDataType() throws SQLException {
-        // TODO: Implement
+        validateInstantList("Temporal sequence");
+
+        if (instantList.size() == 1 && (!lowerInclusive || !upperInclusive)) {
+            throw new SQLException("The lower and upper bounds must be inclusive for an instant temporal sequence.");
+        }
+
+        if (stepwise && instantList.size() > 1 && !upperInclusive &&
+            !instantList.get(instantList.size() - 1).getValue().equals(instantList.get(instantList.size() - 2).getValue())) {
+            throw new SQLException("The last two values of a temporal sequence with exclusive upper bound and stepwise interpolation must be equal.");
+        }
     }
 
     protected boolean explicitInterpolation() {
@@ -106,7 +135,7 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
     String buildValue(boolean skipInterpolation) {
         StringJoiner sj = new StringJoiner(", ");
 
-        for (TemporalValue<V> temp : temporalValues) {
+        for (TInstant<V> temp : instantList) {
             sj.add(temp.toString());
         }
 
@@ -118,12 +147,51 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
     }
 
     @Override
-    public List<V> getValues() {
-        List<V> values = new ArrayList<>();
-        for (TemporalValue<V> temp : temporalValues) {
-            values.add(temp.getValue());
+    public Period period() throws SQLException  {
+        return new Period(instantList.get(0).getTimestamp(),
+                instantList.get(instantList.size() - 1).getTimestamp(),
+                lowerInclusive, upperInclusive);
+    }
+
+    @Override
+    public PeriodSet getTime() throws SQLException {
+        return new PeriodSet(period());
+    }
+
+    @Override
+    public Duration duration() {
+        try {
+            return period().duration();
+        } catch (SQLException ex) {
+            return Duration.ZERO;
         }
-        return values;
+    }
+
+    @Override
+    public Duration timespan() {
+        try {
+            return period().duration();
+        } catch (SQLException ex) {
+            return Duration.ZERO;
+        }
+    }
+
+    @Override
+    public boolean intersectsTimestamp(OffsetDateTime dateTime) {
+        try {
+            return period().contains(dateTime);
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean intersectsPeriod(Period period) {
+        try {
+            return period().overlap(period);
+        } catch (SQLException ex) {
+            return false;
+        }
     }
 
     @Override
@@ -139,25 +207,15 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
                 return false;
             }
 
-            boolean lowerAreEqual = lowerInclusive == otherTemporal.lowerInclusive;
-            boolean upperAreEqual = upperInclusive == otherTemporal.upperInclusive;
-
-            if (!lowerAreEqual || ! upperAreEqual) {
+            if (lowerInclusive != otherTemporal.lowerInclusive) {
                 return false;
             }
 
-            if (this.temporalValues.size() != otherTemporal.temporalValues.size()) {
+            if (upperInclusive != otherTemporal.upperInclusive) {
                 return false;
             }
 
-            for (int i = 0; i < this.temporalValues.size(); i++) {
-                TemporalValue<V> thisVal = this.temporalValues.get(i);
-                TemporalValue<?> otherVal = otherTemporal.temporalValues.get(i);
-                if (!thisVal.equals(otherVal)) {
-                    return false;
-                }
-            }
-            return true;
+            return super.equals(obj);
         }
         return false;
     }
@@ -170,5 +228,44 @@ public abstract class TSequence<V extends Serializable> extends Temporal<V> {
 
     public boolean isStepwise() {
         return stepwise;
+    }
+
+    public boolean isLowerInclusive() {
+        return lowerInclusive;
+    }
+
+    public boolean isUpperInclusive() {
+        return upperInclusive;
+    }
+
+    @Override
+    public int numSequences() {
+        return 1;
+    }
+
+    @Override
+    public TSequence<V> startSequence() {
+        return this;
+    }
+
+    @Override
+    public TSequence<V> endSequence() {
+        return this;
+    }
+
+    @Override
+    public TSequence<V> sequenceN(int n) throws SQLException {
+        if (n == 0) {
+            return this;
+        }
+
+        throw new SQLException("There is no sequence at this index.");
+    }
+
+    @Override
+    public List<TSequence<V>> sequences() {
+        ArrayList<TSequence<V>> list = new ArrayList<>();
+        list.add(this);
+        return list;
     }
 }

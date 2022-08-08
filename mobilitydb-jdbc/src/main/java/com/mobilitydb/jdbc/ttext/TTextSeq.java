@@ -9,24 +9,23 @@ import java.sql.SQLException;
  */
 public class TTextSeq extends TSequence<String> {
     public TTextSeq(String value) throws SQLException {
-        super(value, TText::getSingleTemporalValue);
-        stepwise = true;
+        super(true, value, TTextInst::new, TText::compareValue);
     }
 
     public TTextSeq(String[] values) throws SQLException {
-        super(true, values, TText::getSingleTemporalValue);
+        super(true, values, TTextInst::new, TText::compareValue);
     }
 
     public TTextSeq(String[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(true, values, lowerInclusive, upperInclusive, TText::getSingleTemporalValue);
+        super(true, values, lowerInclusive, upperInclusive, TTextInst::new, TText::compareValue);
     }
 
     public TTextSeq(TTextInst[] values) throws SQLException {
-        super(true, values);
+        super(true, values, TText::compareValue);
     }
 
     public TTextSeq(TTextInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(true, values, lowerInclusive, upperInclusive);
+        super(true, values, lowerInclusive, upperInclusive, TText::compareValue);
     }
 
     @Override

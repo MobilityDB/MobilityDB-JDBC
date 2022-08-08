@@ -9,24 +9,23 @@ import java.sql.SQLException;
  */
 public class TIntSeq extends TSequence<Integer> {
     public TIntSeq(String value) throws SQLException {
-        super(value, TInt::getSingleTemporalValue);
-        stepwise = true;
+        super(true, value, TIntInst::new, TInt::compareValue);
     }
 
     public TIntSeq(String[] values) throws SQLException {
-        super(true, values, TInt::getSingleTemporalValue);
+        super(true, values, TIntInst::new, TInt::compareValue);
     }
 
     public TIntSeq(String[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(true, values, lowerInclusive, upperInclusive, TInt::getSingleTemporalValue);
+        super(true, values, lowerInclusive, upperInclusive, TIntInst::new, TInt::compareValue);
     }
 
     public TIntSeq(TIntInst[] values) throws SQLException {
-        super(true, values);
+        super(true, values, TInt::compareValue);
     }
 
     public TIntSeq(TIntInst[] values, boolean lowerInclusive, boolean upperInclusive) throws SQLException {
-        super(true, values, lowerInclusive, upperInclusive);
+        super(true, values, lowerInclusive, upperInclusive, TInt::compareValue);
     }
 
     @Override
