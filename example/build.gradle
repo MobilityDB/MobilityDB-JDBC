@@ -5,7 +5,9 @@ plugins {
 group 'com.mobilitydb'
 version '1.0-SNAPSHOT'
 
-mainClassName = 'com.mobilitydb.example.Main'
+application {
+    mainClassName = project.hasProperty("mainClass") ? project.getProperty("mainClass") : "NULL"
+}
 
 repositories {
     mavenCentral()
@@ -14,5 +16,6 @@ repositories {
 dependencies {
     implementation 'org.postgresql:postgresql:42.3.3'
     implementation 'net.postgis:postgis-jdbc:2.5.1'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

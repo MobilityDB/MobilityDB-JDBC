@@ -26,7 +26,7 @@ public final class DateTimeFormatHelper {
      * @param value OffsetDateTime
      * @return String
      */
-    public static String getStringFormat(OffsetDateTime value){
+    public static String getStringFormat(OffsetDateTime value) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern(FORMAT);
         return format.format(value);
     }
