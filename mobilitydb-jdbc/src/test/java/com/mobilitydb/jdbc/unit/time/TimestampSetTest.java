@@ -98,7 +98,7 @@ class TimestampSetTest {
                 SQLException.class,
                 () -> new TimestampSet(value)
         );
-        assertEquals("The timestamps of a timestamp set must be increasing.", thrown.getMessage());
+        assertEquals("The timestamps of a timestamp set must be in increasing order.", thrown.getMessage());
     }
 
     @Test
@@ -147,14 +147,14 @@ class TimestampSetTest {
                 now.plusDays(1),
                 now.plusDays(2)
         );
-        assertEquals(Duration.ofDays(2), set.getTimeSpan());
+        assertEquals(Duration.ofDays(2), set.timeSpan());
     }
 
     @Test
     void testEmptyTimestampSet() throws SQLException {
         TimestampSet set = new TimestampSet();
-        assertEquals(Duration.ZERO, set.getTimeSpan());
-        assertEquals(new Period(), set.getPeriod());
+        assertEquals(Duration.ZERO, set.timeSpan());
+        assertEquals(new Period(), set.period());
         assertNull(set.startTimestamp());
         assertNull(set.endTimestamp());
     }
@@ -168,14 +168,14 @@ class TimestampSetTest {
                 now.plusDays(2)
         );
         Period expected = new Period(now, now.plusDays(2), true, true);
-        assertEquals(expected, set.getPeriod());
+        assertEquals(expected, set.period());
     }
 
     @Test
     void testGetPeriodEmpty() throws SQLException {
         TimestampSet set = new TimestampSet();
         Period expected = new Period();
-        assertEquals(expected, set.getPeriod());
+        assertEquals(expected, set.period());
     }
 
     @Test
