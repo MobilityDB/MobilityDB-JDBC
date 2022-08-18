@@ -88,7 +88,7 @@ public class TimestampSet extends DataType {
         return value != null ? value.hashCode() : 0;
     }
 
-    public Duration getTimeSpan() {
+    public Duration timeSpan() {
         if (dateTimeList.isEmpty()) {
             return Duration.ZERO;
         }
@@ -96,7 +96,7 @@ public class TimestampSet extends DataType {
         return Duration.between(dateTimeList.get(0), dateTimeList.get(dateTimeList.size() - 1));
     }
 
-    public Period getPeriod() throws SQLException {
+    public Period period() throws SQLException {
         if (dateTimeList.isEmpty()) {
             return new Period();
         }
@@ -158,7 +158,7 @@ public class TimestampSet extends DataType {
                 validateTimestamp(y);
 
                 if (x.isAfter(y) || x.isEqual(y)) {
-                    throw new SQLException("The timestamps of a timestamp set must be increasing.");
+                    throw new SQLException("The timestamps of a timestamp set must be in increasing order.");
                 }
             }
         }

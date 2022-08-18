@@ -73,11 +73,11 @@ public class PeriodSet extends DataType {
         return value != null ? value.hashCode() : 0;
     }
 
-    public Period[] getPeriods() {
+    public Period[] periods() {
         return periodList.toArray(new Period[0]);
     }
 
-    public Duration getDuration() {
+    public Duration duration() {
         Duration d = Duration.ZERO;
 
         for (Period p : periodList) {
@@ -87,15 +87,15 @@ public class PeriodSet extends DataType {
         return d;
     }
 
-    public Duration getTimespan() {
+    public Duration timespan() {
         if (periodList.isEmpty()) {
             return Duration.ZERO;
         }
 
-        return Duration.between(getStartTimestamp(), getEndTimestamp());
+        return Duration.between(startTimestamp(), endTimestamp());
     }
 
-    public Period getPeriod() throws SQLException {
+    public Period period() throws SQLException {
         if (periodList.isEmpty()) {
             return null;
         }
@@ -106,7 +106,7 @@ public class PeriodSet extends DataType {
         return new Period(first.getLower(), last.getUpper(), first.isLowerInclusive(), last.isUpperInclusive());
     }
 
-    public OffsetDateTime[] getTimestamps() {
+    public OffsetDateTime[] timestamps() {
         LinkedHashSet<OffsetDateTime> timestamps = new LinkedHashSet<>();
 
         for (Period period : periodList) {
@@ -118,10 +118,10 @@ public class PeriodSet extends DataType {
     }
 
     public int numTimestamps() {
-        return getTimestamps().length;
+        return timestamps().length;
     }
 
-    public OffsetDateTime getStartTimestamp() {
+    public OffsetDateTime startTimestamp() {
         if (periodList.isEmpty()) {
             return null;
         }
@@ -129,7 +129,7 @@ public class PeriodSet extends DataType {
         return periodList.get(0).getLower();
     }
 
-    public OffsetDateTime getEndTimestamp() {
+    public OffsetDateTime endTimestamp() {
         if (periodList.isEmpty()) {
             return null;
         }
@@ -138,14 +138,14 @@ public class PeriodSet extends DataType {
     }
 
     public OffsetDateTime timestampN(int n) {
-        return getTimestamps()[n];
+        return timestamps()[n];
     }
 
     public int numPeriods() {
         return periodList.size();
     }
 
-    public Period getStartPeriod() {
+    public Period startPeriod() {
         if (periodList.isEmpty()) {
             return null;
         }
@@ -153,7 +153,7 @@ public class PeriodSet extends DataType {
         return periodList.get(0);
     }
 
-    public Period getEndPeriod() {
+    public Period endPeriod() {
         if (periodList.isEmpty()) {
             return null;
         }
