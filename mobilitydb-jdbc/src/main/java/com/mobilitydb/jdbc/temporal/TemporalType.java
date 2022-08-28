@@ -13,10 +13,10 @@ public enum TemporalType {
 
     /**
      * Gets the temporal type based on the string received.
-     * @param value The string to be analyzed
-     * @param temporalDataTypeName The name of the calling class
-     * @return TemporalType
-     * @throws SQLException
+     * @param value - the string to be analyzed
+     * @param temporalDataTypeName - the name of the calling class
+     * @return a TemporalType
+     * @throws SQLException if the value does not have a valid format
      */
     public static TemporalType getTemporalType(String value, String temporalDataTypeName) throws SQLException {
         if (value.startsWith("Interp=Stepwise;")) {

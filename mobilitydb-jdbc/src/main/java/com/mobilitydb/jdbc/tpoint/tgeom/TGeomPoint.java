@@ -9,18 +9,35 @@ import org.postgis.Point;
 
 import java.sql.SQLException;
 
+/**
+ * Class that represents the MobilityDB type TGeomPoint
+ */
 @TypeName(name = "tgeompoint")
 public class TGeomPoint extends TPoint {
+
+    /**
+     * The default constructor
+     */
     public TGeomPoint() { super(); }
 
+    /**
+     * The string constructor
+     * @param value - the string with the TGeomPoint value
+     * @throws SQLException
+     */
     public TGeomPoint(String value) throws SQLException {
         super(value);
     }
 
+    /**
+     * The constructor for temporal types
+     * @param temporal - a TGeomPointInst, TGeomPointInstSet, TGeomPointSeq or a TGeomPointSeqSet
+     */
     public TGeomPoint(Temporal<Point> temporal) {
         super(temporal);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setValue(String value) throws SQLException {
         TemporalType temporalType = getTemporalType(value);

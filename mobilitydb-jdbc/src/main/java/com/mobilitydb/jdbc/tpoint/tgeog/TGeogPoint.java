@@ -10,19 +10,41 @@ import org.postgis.Point;
 
 import java.sql.SQLException;
 
+
+/**
+ * Class that represents the MobilityDB type TGeogPoint
+ */
 @TypeName(name = "tgeogpoint")
 public class TGeogPoint extends TPoint {
+
+    /**
+     * The default constructor
+     */
     public TGeogPoint() { super(); }
 
+    /**
+     * The string constructor
+     * @param value - the string with the TGeogPoint value
+     * @throws SQLException
+     */
     public TGeogPoint(String value) throws SQLException {
         super(value);
     }
 
+    /**
+     * The constructor for temporal types
+     * @param temporal - a TGeogPointInst, TGeogPointInstSet, TGeogPointSeq or a TGeogPointSeqSet
+     */
     public TGeogPoint(Temporal<Point> temporal) {
         super(temporal);
     }
 
-
+    /**
+     * Method with compatible signature for delegate
+     * {@link com.mobilitydb.jdbc.temporal.delegates.GetSingleTemporalValueFunction}
+     * @param value string representation of the value
+     * @return Temporal value wrapper with the value parsed
+     */
     public static TemporalValue<Point> getSingleTemporalValue(String value) throws SQLException {
         TemporalValue<Point> temporalValue = TPoint.getSingleTemporalValue(value);
 
@@ -33,6 +55,7 @@ public class TGeogPoint extends TPoint {
         return temporalValue;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setValue(String value) throws SQLException {
         TemporalType temporalType = getTemporalType(value);

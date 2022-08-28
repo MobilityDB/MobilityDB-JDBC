@@ -211,9 +211,7 @@ class TimestampSetTest {
         TimestampSet set = new TimestampSet(OffsetDateTime.now());
         SQLException thrown = assertThrows(
                 SQLException.class,
-                () -> {
-                    OffsetDateTime v = set.timestampN(4);
-                }
+                () -> set.timestampN(4)
         );
         assertEquals("There is no value at this index.", thrown.getMessage());
     }
