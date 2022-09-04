@@ -1,12 +1,13 @@
 # MobilityDB-JDBC
 
-**Author: Tatiana Millan Poveda**<br>
+**Author: Tatiana del Pilar Millan Poveda**<br>
 **Email: tatimilpo@gmail.com**
 
 JDBC driver for MobilityDB has been performed as the Master Thesis of the MSc in Computer Science of ULB.
 The original repository can be found [here](https://github.com/tatimilpo/MobilityDB-JDBC/). <br> 
 A report with the detailed information is available [here](https://docs.mobilitydb.com/pub/MobilityDB-JDBC.pdf) or in 
-this [folder](https://github.com/tatimilpo/MobilityDB-JDBC/tree/main/files).
+this [folder](https://github.com/tatimilpo/MobilityDB-JDBC/tree/main/files) and the slides 
+[here](https://docs.mobilitydb.com/pub/MobilityDB-JDBC-slides.pdf).
 
 ## Abstract
 The purpose of this project is the creation of Java Database Connectivity Driver (JDBC) that helps programs written in Java to connect with MobilityDB databases by extending PostgreSQL JDBC types. MobilityDB is an open-source database management system extension of PostgreSQL, that offers support for object moving data and special temporal data.
