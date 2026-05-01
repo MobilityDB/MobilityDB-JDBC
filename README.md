@@ -1,3 +1,15 @@
+# MobilityDB-JDBC — DEPRECATED
+
+> **⚠️ This repository is archived and no longer maintained.**
+>
+> **Use [JMEOS](https://github.com/MobilityDB/JMEOS) instead.**
+>
+> JMEOS is the actively maintained Java binding for the MEOS C library underneath MobilityDB. It supersedes this driver — it provides the full MEOS API to JVM languages (Java, Kotlin, Scala, Clojure), is suitable for use with MobilityDB, MobilityDuck, or standalone MEOS, and is the recommended path for any new JVM project consuming MEOS-style temporal data.
+>
+> This repository is preserved in archived form for historical reference (it originated as a 2022 MSc thesis at ULB by Tatiana del Pilar Millán Poveda) and to keep existing links / citations resolvable.
+
+---
+
 # MobilityDB-JDBC
 
 **Author: Tatiana del Pilar Millan Poveda**<br>
